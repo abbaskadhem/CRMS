@@ -42,12 +42,14 @@ struct Request: Codable, Identifiable {
     var buildingRef: UUID            // Building Ref.
     var roomRef: UUID                // Room Ref.
     var description: String          // Description
-    var images: [String]?             // Images (URLs or paths)
-    var priority: Priority             // Priority
+    var images: [String]?            // Images (URLs or paths)
+    var priority: Priority           // Priority
     var status: Status               // Status
     var servicerRef: UUID?           // Servicer Ref. (optional)
-    var startDate: Date?             // Start Date
-    var endDate: Date?               // End Date
+    var estimatedStartDate: Date?    // Estimated start date the servicer schedueles
+    var estimatedEndDate: Date?      // Estimated end date the servicer schedueles
+    var actualStartDate: Date?       // Actual Start Date (when servicer clicks start, this is set)
+    var actualEndDate: Date?         // Actual End Date (when servicer clicks complete, this is set)
     var ownerId: UUID                // Owner ID
 
     // Default Common Fields
