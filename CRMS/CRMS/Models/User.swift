@@ -7,10 +7,17 @@
 
 import Foundation
 
-enum UserType: String, Codable {
-    case admin = "Admin"
-    case requester = "Requester"
-    case servicer = "Servicer"
+enum UserType: Int, Codable {
+    case admin = 1000
+    case requester = 1001
+    case servicer = 1002
+}
+
+enum SubType: Int, Codable {
+    case student = 1000
+    case staff = 1001
+    case maintenance = 1002
+    case technician = 1003
 }
 
 // MARK: - User
@@ -19,7 +26,7 @@ struct User: Codable, Identifiable {
     var userNo: String           // User No.
     var fullName: String         // Full Name
     var type: UserType           // Type (Admin/Requester/Servicer)
-    var subtype: String?         // Subtype (optional)
+    var subtype: SubType?         // Subtype (optional)
     var email: String            // Email
     var hashedPassword: String   // Hashed Password
 
