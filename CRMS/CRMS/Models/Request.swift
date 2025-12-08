@@ -63,12 +63,11 @@ struct Request: Codable, Identifiable {
 // MARK: - RequestHistory
 struct RequestHistory: Codable, Identifiable {
     var id: UUID                 // UUID
-    var recordNo: String         // Record No.
+    var historyNo: String         // Record No.
     var requestRef: UUID         // Request Ref.
     var action: Action           // Action
     var sentBackReason: String?  // Sent back reason (optional)
     var reassignReason: String?  // Reassign reason (optional)
-    var dateTime: Date           // Date/Time
 
     // Default Common Fields
     var createdOn: Date          // Created on
@@ -81,7 +80,7 @@ struct RequestHistory: Codable, Identifiable {
 // MARK: - RequestFeedback
 struct RequestFeedback: Codable, Identifiable {
     var id: UUID                 // UUID
-    var recordNo: String         // Record No.
+    var feedbackNo: String         // Record No.
     var requestRef: UUID         // Request Ref.
     var requesterRef: UUID       // Requester Ref.
     var servicerRef: UUID        // Servicer Ref.
