@@ -43,7 +43,7 @@ struct Request: Codable, Identifiable {
     var roomRef: UUID                // Room Ref.
     var description: String          // Description
     var images: [String]?            // Images (URLs or paths)
-    var priority: Priority           // Priority
+    var priority: Priority?           // Priority
     var status: Status               // Status
     var servicerRef: UUID?           // Servicer Ref. (optional)
     var estimatedStartDate: Date?    // Estimated start date the servicer schedueles
