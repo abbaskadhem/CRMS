@@ -9,7 +9,8 @@ import UIKit
 
 class LoginViewController: UIViewController {
 
-    @IBOutlet weak var background: UIView!
+
+    @IBOutlet weak var backgroundLogin: UIView!
     
     @IBOutlet weak var email: UITextField!
     @IBOutlet weak var password: UITextField!
@@ -38,11 +39,15 @@ class LoginViewController: UIViewController {
     }
     */
     
+    //this method is for rounding the bottom edge of the view
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        background.layer.cornerRadius = background.frame.height/2
         
-        background.translatesAutoresizingMaskIntoConstraints = true
+        //rounding the view bottom edge
+        backgroundLogin.layer.cornerRadius = 200
+        backgroundLogin.layer.maskedCorners=[.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        backgroundLogin.layer.masksToBounds = true
+        
     }
 
 }

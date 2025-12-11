@@ -9,11 +9,15 @@ import UIKit
 
 class WelcomeViewController: UIViewController {
 
-    @IBOutlet weak var background: UIView!
     
+    @IBOutlet var backgroundWelcomeScreen: UIView!
+    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        print("Welcome view controller")
         
         // Do any additional setup after loading the view.
     }
@@ -30,9 +34,11 @@ class WelcomeViewController: UIViewController {
     */
     
     override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        background.layer.cornerRadius = background.frame.height/2
-        background.translatesAutoresizingMaskIntoConstraints = true
+        //rounding the view bottom edge
+        backgroundWelcomeScreen.layer.cornerRadius = 200
+        backgroundWelcomeScreen.layer.maskedCorners=[.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        backgroundWelcomeScreen.layer.masksToBounds = true
+        
     }
 
 }
