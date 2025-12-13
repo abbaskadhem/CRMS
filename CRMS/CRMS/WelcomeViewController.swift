@@ -35,10 +35,15 @@ class WelcomeViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         //rounding the view bottom edge
+
+        //rounding the view bottom edge to raduis 200
         backgroundWelcomeScreen.layer.cornerRadius = 200
+        //specify which corner (botton left & right)
         backgroundWelcomeScreen.layer.maskedCorners=[.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        backgroundWelcomeScreen.layer.masksToBounds = true
         
+        //Ensure that any subviews are clipped to the rounded corners.
+        backgroundWelcomeScreen.layer.masksToBounds = true
+
     }
 
 }
