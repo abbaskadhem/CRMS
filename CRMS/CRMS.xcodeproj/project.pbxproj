@@ -34,7 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		D3A10FFB2ED6E96D006D6692 /* CRMS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CRMS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ACF74FC72EEEFC1D00180902 /* CRMS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = CRMS.app; path = "/Users/Guest/Desktop/CRMS/CRMS/build/Debug-iphoneos/CRMS.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -97,16 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				D3A10FFD2ED6E96D006D6692 /* CRMS */,
-				D3A10FFC2ED6E96D006D6692 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		D3A10FFC2ED6E96D006D6692 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				D3A10FFB2ED6E96D006D6692 /* CRMS.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -155,7 +146,7 @@
 				D3A110442ED6EBDA006D6692 /* FirebaseStorageCombine-Community */,
 			);
 			productName = CRMS;
-			productReference = D3A10FFB2ED6E96D006D6692 /* CRMS.app */;
+			productReference = ACF74FC72EEEFC1D00180902 /* CRMS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -186,7 +177,7 @@
 				D3A110152ED6EA41006D6692 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = D3A10FFC2ED6E96D006D6692 /* Products */;
+			productRefGroup = D3A10FF22ED6E96D006D6692;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -226,7 +217,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CRMS/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -253,7 +244,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CRMS/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

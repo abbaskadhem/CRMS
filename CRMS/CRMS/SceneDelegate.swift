@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -18,14 +19,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
 
-        guard let windowScene = (scene as? UIWindowScene) else { return }
+        /*guard let windowScene = (scene as? UIWindowScene) else { return }
 
         window = UIWindow(windowScene: windowScene)
         setRootViewController()
-        window?.makeKeyAndVisible()
+        window?.makeKeyAndVisible()*/
     }
 
-    private func setRootViewController(){
+    /*private func setRootViewController(){
         let storyboard =    UIStoryboard(name: "Main", bundle: nil)
 
         //check if user ID exist in UserDefaults
@@ -42,6 +43,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
     }
+     */
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.

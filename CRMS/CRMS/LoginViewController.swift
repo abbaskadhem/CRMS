@@ -26,10 +26,12 @@ class LoginViewController: UIViewController {
 
     @IBOutlet weak var loginButton : UIButton!
     
+    
+    
 
     //property to disable the login button ONLY if both text fields are empty
     var isLoginButtonEnabled : Bool {
-        guard let email = emailTextField.text,  password = passwordTextField.text else {
+        guard let email = emailTextField.text, let password = passwordTextField.text else {
             return false // will return false if both not empty
         }
         return !email.isEmpty && !password.isEmpty
@@ -47,17 +49,18 @@ class LoginViewController: UIViewController {
 
         //disable login buttom intially when the page loaded
         loginButton.isEnabled = false
-        loginButton.alpha = 0.5
+        loginButton.alpha = 0.75
 
         //listening to text changes for live validation
         emailTextField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
         passwordTextField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
         
-        //making forgot password lable tappable
+        //making forgot password tappable
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(forgotPasswordTapped))
         forgotPassword.isUserInteractionEnabled = true
-        // FIX: typo in method name
         forgotPassword.addGestureRecognizer(tapGesture)
+        
+        
     }
 
     // Enables / disables login button while user types
@@ -68,8 +71,13 @@ class LoginViewController: UIViewController {
         }
         else {
             loginButton.isEnabled = false
-            loginButton.alpha = 0.5
+            loginButton.alpha = 0.75
         }
+    }
+    
+    //Forgot password clickable
+    @objc private func forgotPasswordTapped(){
+        performSegue(withIdentifier: "ForgotPasswordSegue", sender: self)
     }
 
 
@@ -92,7 +100,7 @@ class LoginViewController: UIViewController {
 
         //disable button during authentication to prevent mutiple taps
         loginButton.isEnabled = false
-        loginButton.alpha = 0.5 //opacity level
+        loginButton.alpha = 0.75 //opacity level
 
         //Log in with FireBase Authentication
         //Authenticate the user
@@ -116,59 +124,23 @@ class LoginViewController: UIViewController {
             if let userID = authResult?.user.uid {
                 UserDefaults.standard.set(userID, forKey: UserDefaultsKeys.userID)
             }
+            
+            //calling sendOTP function
+            
+            
 
             //navigate to home screen
-            self?.navigateToHome()
+            //self?.navigateToHome()
         }
     }
-
-
-    //forgot password action --> display bottom sheet 
-    @objc private func forgotPasswordTapped(){
-
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-
-        //instantiate forgot password view controller
-        if let forgotPasswordVC = storyboard.instantiateViewController( withIdentifier: "ForgotPasswordViewController") as? ForgotPasswordViewController 
-        {
-            //present view controller as bottom sheet
-            if let sheet = forgotPasswordVC.sheetPresentationController {
-                sheet.detents = [.medium()]
-                sheet.prefersGrabberVisible = true
-                sheet.preferredCornerRadius = 20
-            }
-
-            present(forgotPasswordVC, animated: true)
-        }
-    }
-
-    /*
-    //forgot password action --> display bottom sheet 
-        @objc private func forgotPasswordTapped() {
-
-        // Ensure email is entered
-        guard let email = emailTextField.text?
-            .trimmingCharacters(in: .whitespacesAndNewlines),
-            !email.isEmpty else {
-            showAlert(title: "Email Required",
-                      message: "Please enter your email to reset your password.")
-            return
-        }
-
-        // Send password reset email
-        Auth.auth().sendPasswordReset(withEmail: email) { [weak self] error in
-            if let error = error {
-                self?.showAlert(title: "Error",
-                                message: error.localizedDescription)
-            } else {
-                self?.showAlert(title: "Email Sent",
-                                message: "A password reset link has been sent to your email.")
-            }
-        }
-    }
-    */
+    
+    //after email verification the system will sent an OTP to the user email fro extra security verification
+    /*func sendOTP(){
+        Auth.auth().sen
+    }*/
 
     //navigating to home screen function
+    /*
     private func navigateToHome(){
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let homeVC = storyboard.instantiateViewController(withIdentifier: "HomeViewController") as? HomeViewController {
@@ -176,17 +148,7 @@ class LoginViewController: UIViewController {
             present(homeVC, animated: true)
         }
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-    
+     */
 
     //this method is for rounding the bottom edge of the view
     override func viewDidLayoutSubviews() {
@@ -215,5 +177,18 @@ class LoginViewController: UIViewController {
         // Present the alert on the screen.
         present(alert, animated: true)
     }
+    
+    
+    
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
+    }
+    */
+    
 
 }
