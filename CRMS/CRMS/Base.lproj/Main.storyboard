@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.16" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="zNj-mP-4xA">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.12"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -9,16 +11,592 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" xcode11CocoaTouchSystemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="61N-yG-PoQ">
+                                <rect key="frame" x="146.66666666666666" y="85.666666666666686" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="Rve-Ts-raB"/>
+                                    <constraint firstAttribute="height" constant="100" id="wOx-v8-enI"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="61N-yG-PoQ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" multiplier="0.7" constant="3" id="5Wy-s3-mDy"/>
+                            <constraint firstItem="61N-yG-PoQ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="wE7-Rb-if3"/>
+                        </constraints>
                     </view>
+                    <tabBarItem key="tabBarItem" title="" id="jLe-Y5-2mO">
+                        <imageReference key="image" image="bell.badge" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                        <imageReference key="selectedImage" image="bell.badge" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                    </tabBarItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="-793" y="746"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="RKh-Wo-Q0t">
+            <objects>
+                <viewController id="tW5-EY-vNK" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="so0-d3-0G4">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="YEw-x4-hLg">
+                                <rect key="frame" x="146.66666666666666" y="85.666666666666686" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="WuX-I3-tjS"/>
+                                    <constraint firstAttribute="width" constant="100" id="eES-xt-Tyt"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="9SD-0Q-DFW"/>
+                        <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="YEw-x4-hLg" firstAttribute="centerX" secondItem="so0-d3-0G4" secondAttribute="centerX" id="9QQ-ZB-h6p"/>
+                            <constraint firstItem="YEw-x4-hLg" firstAttribute="top" secondItem="9SD-0Q-DFW" secondAttribute="top" multiplier="0.7" constant="3" id="sMx-hD-FAi"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="" id="c3f-qK-aRP">
+                        <imageReference key="image" image="calendar" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                        <imageReference key="selectedImage" image="calendar" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                    </tabBarItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VHn-aV-L2N" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-102" y="746"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="mBW-im-oej">
+            <objects>
+                <viewController id="A6q-7g-Wyi" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="5Zn-5K-cHn">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="ZGz-Bg-xKp">
+                                <rect key="frame" x="146.66666666666666" y="85.666666666666686" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="8dB-AD-BJo"/>
+                                    <constraint firstAttribute="height" constant="100" id="siH-us-SSK"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="K88-jK-93z"/>
+                        <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="ZGz-Bg-xKp" firstAttribute="top" secondItem="K88-jK-93z" secondAttribute="top" multiplier="0.7" constant="3" id="RPy-P7-Onl"/>
+                            <constraint firstItem="ZGz-Bg-xKp" firstAttribute="centerX" secondItem="5Zn-5K-cHn" secondAttribute="centerX" id="hxN-qp-pK8"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="" id="EH3-ln-juT">
+                        <imageReference key="image" image="list.bullet.clipboard" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                        <imageReference key="selectedImage" image="list.bullet.clipboard" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                    </tabBarItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VGp-8j-IYG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="573" y="746"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="Zph-FG-n1a">
+            <objects>
+                <viewController id="52T-Qv-BIW" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SgP-hW-pVW">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="RhB-yM-1qV">
+                                <rect key="frame" x="146.66666666666666" y="85.666666666666686" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="OB1-Zw-MWp"/>
+                                    <constraint firstAttribute="width" constant="100" id="Q1A-bn-qmE"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="GwK-w4-caz"/>
+                        <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="RhB-yM-1qV" firstAttribute="top" secondItem="GwK-w4-caz" secondAttribute="top" multiplier="0.7" constant="3" id="eQk-wM-GKH"/>
+                            <constraint firstItem="RhB-yM-1qV" firstAttribute="centerX" secondItem="SgP-hW-pVW" secondAttribute="centerX" id="f9f-ie-GxF"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="" id="gcb-16-mO0">
+                        <imageReference key="image" image="gearshape" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                        <imageReference key="selectedImage" image="gearshape" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                    </tabBarItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bDq-De-E43" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1329" y="746"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="CD2-Vh-GuY">
+            <objects>
+                <viewController id="sHu-A6-BG0" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="edd-wy-sP4">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="diH-l5-C4J">
+                                <rect key="frame" x="146.66666666666666" y="85.666666666666686" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="fpv-GF-UtN"/>
+                                    <constraint firstAttribute="width" constant="100" id="wdD-6b-YBc"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="zmu-zJ-edp"/>
+                        <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="diH-l5-C4J" firstAttribute="top" secondItem="zmu-zJ-edp" secondAttribute="top" multiplier="0.7" constant="3" id="G5F-rU-Zb6"/>
+                            <constraint firstItem="diH-l5-C4J" firstAttribute="centerX" secondItem="edd-wy-sP4" secondAttribute="centerX" id="SX2-TO-LQu"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="" id="qKt-oB-Drl">
+                        <imageReference key="image" image="bell.badge" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                        <imageReference key="selectedImage" image="bell.badge" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                    </tabBarItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OoU-ag-XEN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2367" y="746"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="BtR-tQ-c2r">
+            <objects>
+                <viewController id="Q1G-Zg-DsI" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="l2a-Eg-jwz">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="Gx4-ye-Q8u">
+                                <rect key="frame" x="146.66666666666666" y="85.666666666666686" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="MY2-3N-SAs"/>
+                                    <constraint firstAttribute="height" constant="100" id="eB9-WE-7RP"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="2RC-QO-Zzj"/>
+                        <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="Gx4-ye-Q8u" firstAttribute="top" secondItem="2RC-QO-Zzj" secondAttribute="top" multiplier="0.7" constant="3" id="KRE-ee-3qv"/>
+                            <constraint firstItem="Gx4-ye-Q8u" firstAttribute="centerX" secondItem="l2a-Eg-jwz" secondAttribute="centerX" id="wUw-R0-27n"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="" id="JQ8-OB-6TX">
+                        <imageReference key="image" image="list.bullet.clipboard" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                        <imageReference key="selectedImage" image="list.bullet.clipboard" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                    </tabBarItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6c5-Pz-mBB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3112" y="746"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="3ZN-BJ-qj9">
+            <objects>
+                <viewController id="Eoo-9b-2bH" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="gZ0-bi-Wkd">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="L5k-Kr-01Y">
+                                <rect key="frame" x="146.66666666666666" y="85.666666666666686" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="0oZ-uK-6ni"/>
+                                    <constraint firstAttribute="height" constant="100" id="vnr-CY-9sh"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="fl8-Ih-1gq"/>
+                        <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="L5k-Kr-01Y" firstAttribute="centerX" secondItem="gZ0-bi-Wkd" secondAttribute="centerX" id="Gxt-qo-pig"/>
+                            <constraint firstItem="L5k-Kr-01Y" firstAttribute="top" secondItem="fl8-Ih-1gq" secondAttribute="top" multiplier="0.7" constant="3" id="yrU-6E-21R"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="" id="9fT-Xz-TxY">
+                        <imageReference key="image" image="gearshape" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                        <imageReference key="selectedImage" image="gearshape" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                    </tabBarItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ajv-x3-cYF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3856" y="746"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="VFq-Re-aSs">
+            <objects>
+                <viewController id="euP-yB-Ltq" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Agj-lZ-rBW">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="2DT-kj-3ep">
+                                <rect key="frame" x="146.66666666666666" y="85.666666666666686" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="xGr-Be-wKo"/>
+                                    <constraint firstAttribute="width" constant="100" id="zpV-zq-tKq"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Gl0-wM-Wwp"/>
+                        <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="2DT-kj-3ep" firstAttribute="top" secondItem="Gl0-wM-Wwp" secondAttribute="top" multiplier="0.7" constant="3" id="Sv6-m1-glj"/>
+                            <constraint firstItem="2DT-kj-3ep" firstAttribute="centerX" secondItem="Agj-lZ-rBW" secondAttribute="centerX" id="udr-Ne-WBO"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="" id="lnN-IF-Ko0">
+                        <imageReference key="image" image="bell.badge" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                        <imageReference key="selectedImage" image="bell.badge" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                    </tabBarItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iL0-ki-aCJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5265" y="746"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="68Y-pP-TEb">
+            <objects>
+                <viewController id="wqp-jI-CXU" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="04G-Vj-8hV">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="WSb-xh-PFZ">
+                                <rect key="frame" x="146.66666666666666" y="85.666666666666686" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="Xu8-lg-hIJ"/>
+                                    <constraint firstAttribute="width" constant="100" id="gEz-t4-Dxa"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="CUV-Qt-zvE"/>
+                        <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="WSb-xh-PFZ" firstAttribute="centerX" secondItem="04G-Vj-8hV" secondAttribute="centerX" id="39R-ce-lXc"/>
+                            <constraint firstItem="WSb-xh-PFZ" firstAttribute="top" secondItem="CUV-Qt-zvE" secondAttribute="top" multiplier="0.7" constant="3" id="iti-3E-nAm"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="" id="whi-mX-knh">
+                        <imageReference key="image" image="shippingbox" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                        <imageReference key="selectedImage" image="shippingbox" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                    </tabBarItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="IcM-6b-S3E" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6092" y="746"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="yff-hk-ZLB">
+            <objects>
+                <viewController id="d1x-AM-zA0" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="M6y-Sd-Zos">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="bG1-1p-wW0">
+                                <rect key="frame" x="146.66666666666666" y="85.666666666666686" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="2aM-h1-45j"/>
+                                    <constraint firstAttribute="width" constant="100" id="3IN-LW-S6F"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="ZZc-ld-HHe"/>
+                        <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="bG1-1p-wW0" firstAttribute="top" secondItem="ZZc-ld-HHe" secondAttribute="top" multiplier="0.7" constant="3" id="Ijw-dm-xLh"/>
+                            <constraint firstItem="bG1-1p-wW0" firstAttribute="centerX" secondItem="M6y-Sd-Zos" secondAttribute="centerX" id="ist-yv-J68"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="" id="9k3-3J-R3R">
+                        <imageReference key="image" image="list.bullet.clipboard" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                        <imageReference key="selectedImage" image="list.bullet.clipboard" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                    </tabBarItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DSj-Nj-R7s" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6906" y="746"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="ioH-hL-Qx5">
+            <objects>
+                <viewController id="G92-j3-Htt" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="frN-bf-PTQ">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="S7z-j1-rsi">
+                                <rect key="frame" x="146.66666666666666" y="85.666666666666686" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="ePh-Ns-Rpz"/>
+                                    <constraint firstAttribute="height" constant="100" id="zNl-TG-kGq"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="00a-wO-asM"/>
+                        <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="S7z-j1-rsi" firstAttribute="top" secondItem="00a-wO-asM" secondAttribute="top" multiplier="0.7" constant="3" id="F3q-wa-6FQ"/>
+                            <constraint firstItem="S7z-j1-rsi" firstAttribute="centerX" secondItem="frN-bf-PTQ" secondAttribute="centerX" id="KBm-zd-Bwa"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="" id="kTF-N6-9Qy">
+                        <imageReference key="image" image="chart.line.uptrend.xyaxis" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                        <imageReference key="selectedImage" image="chart.line.uptrend.xyaxis" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                    </tabBarItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aau-Qf-6c4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="7698" y="746"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="EN7-Q3-MFX">
+            <objects>
+                <viewController id="WBP-Rc-PLR" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Nlh-tP-yrb">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="NY3-hF-xpS">
+                                <rect key="frame" x="146.66666666666666" y="85.666666666666686" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="JV4-Js-nsK"/>
+                                    <constraint firstAttribute="width" constant="100" id="lqP-kf-Uez"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="2fg-rN-znM"/>
+                        <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="NY3-hF-xpS" firstAttribute="top" secondItem="2fg-rN-znM" secondAttribute="top" multiplier="0.7" constant="3" id="SI7-Bs-iS5"/>
+                            <constraint firstItem="NY3-hF-xpS" firstAttribute="centerX" secondItem="Nlh-tP-yrb" secondAttribute="centerX" id="Uoa-OA-VhJ"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="" image="gearshape" catalog="system" id="uI9-PO-xal">
+                        <imageReference key="selectedImage" image="gearshape" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                    </tabBarItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KTD-nE-ugf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="8534" y="746"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="G4c-66-gBH">
+            <objects>
+                <tabBarController id="6oG-Xh-qHx" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="bc9-J2-h7c">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="euP-yB-Ltq" kind="relationship" relationship="viewControllers" id="0eh-U0-S0h"/>
+                        <segue destination="wqp-jI-CXU" kind="relationship" relationship="viewControllers" id="5rY-gE-efn"/>
+                        <segue destination="d1x-AM-zA0" kind="relationship" relationship="viewControllers" id="RIF-ex-CFI"/>
+                        <segue destination="G92-j3-Htt" kind="relationship" relationship="viewControllers" id="DTj-Yu-WVj"/>
+                        <segue destination="WBP-Rc-PLR" kind="relationship" relationship="viewControllers" id="hTP-8o-9L0"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sro-RI-iE4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6905" y="12"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="XzM-YI-sGC">
+            <objects>
+                <tabBarController id="zNj-mP-4xA" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="gMG-WT-5wK">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="sHu-A6-BG0" kind="relationship" relationship="viewControllers" id="zG6-vT-pEo"/>
+                        <segue destination="Q1G-Zg-DsI" kind="relationship" relationship="viewControllers" id="mcC-ms-I0N"/>
+                        <segue destination="Eoo-9b-2bH" kind="relationship" relationship="viewControllers" id="WgY-N7-OYa"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="EGK-eT-3iN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3111" y="12"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="eQ1-gJ-tIR">
+            <objects>
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="q1r-l9-gwa" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="0vS-WG-jz5">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="GBe-wC-suW"/>
+                        <segue destination="tW5-EY-vNK" kind="relationship" relationship="viewControllers" id="bif-M6-TIk"/>
+                        <segue destination="A6q-7g-Wyi" kind="relationship" relationship="viewControllers" id="i2X-n7-9iA"/>
+                        <segue destination="52T-Qv-BIW" kind="relationship" relationship="viewControllers" id="ZsV-rL-lLT"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Mjk-Qg-HF5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="204" y="12"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Light mode logo, compressed &amp; cropped" width="5524" height="3070"/>
+        <image name="bell.badge" catalog="system" width="117" height="128"/>
+        <image name="calendar" catalog="system" width="128" height="107"/>
+        <image name="chart.line.uptrend.xyaxis" catalog="system" width="128" height="102"/>
+        <image name="gearshape" catalog="system" width="128" height="123"/>
+        <image name="list.bullet.clipboard" catalog="system" width="98" height="128"/>
+        <image name="shippingbox" catalog="system" width="128" height="123"/>
+    </resources>
 </document>
