@@ -5,10 +5,6 @@
 //  Created by Hoor Hasan
 //
 
-/* needs to be checked 
-    1- validating user role is missing !!
-    2- ForgotPasswordViewController !!
-*/
 
 
 import UIKit
@@ -22,12 +18,16 @@ class LoginViewController: UIViewController {
     
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
+    
     @IBOutlet weak var forgotPassword: UILabel!
-
+    
+    
+    @IBOutlet weak var rememberMeButton: UIButton!
     @IBOutlet weak var loginButton : UIButton!
     
     
-    
+    //property of remember me checkbox
+    var isRememberMeChecked = false
 
     //property to disable the login button ONLY if both text fields are empty
     var isLoginButtonEnabled : Bool {
@@ -46,8 +46,11 @@ class LoginViewController: UIViewController {
 
         //hiding "back" button in the navigation bar    
         navigationItem.hidesBackButton = true
+        
+        //rounding login button raduis
+        loginButton.layer.cornerRadius = 20
 
-        //disable login buttom intially when the page loaded
+        //disable login button intially when the page loaded
         loginButton.isEnabled = false
         loginButton.alpha = 0.75
 
@@ -59,7 +62,6 @@ class LoginViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(forgotPasswordTapped))
         forgotPassword.isUserInteractionEnabled = true
         forgotPassword.addGestureRecognizer(tapGesture)
-        
         
     }
 
@@ -77,10 +79,37 @@ class LoginViewController: UIViewController {
     
     //Forgot password clickable
     @objc private func forgotPasswordTapped(){
-        performSegue(withIdentifier: "ForgotPasswordSegue", sender: self)
+        performSegue(withIdentifier: "ForgotPasswordSegue", sender: nil)
     }
-
-
+    
+    //cofiguring bottom sheet
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ForgotPasswordSegue" {
+            if let sheet = segue.destination.sheetPresentationController{
+                sheet.detents = [.medium()]
+                sheet.prefersGrabberVisible = true
+                sheet.preferredCornerRadius = 20
+            }
+        }
+    }
+    
+    //reememberMe Button Action
+    @IBAction func rememberMeButtonTapped(_ sender: UIButton){
+        //switching between true and false
+        isRememberMeChecked.toggle()
+        
+        //updating the checkbox image based on the isRememberMeChecked state
+        //when clicked to true
+        if isRememberMeChecked{
+            sender.setImage(UIImage(systemName: "checkmark.square"), for: .normal)
+        }
+        //when clicked to false
+        else {
+            sender.setImage(UIImage(systemName: "square"), for: .normal)
+        }
+    }
+    
+    
     //Login Button Action
     @IBAction func loginButtonTapped(_ sender: UIButton){
         
@@ -105,7 +134,7 @@ class LoginViewController: UIViewController {
         //Log in with FireBase Authentication
         //Authenticate the user
         Auth.auth().signIn(withEmail: email, password: password){
-            //[weak self] --> to avoid retain cycle
+            //[weak self] -> to avoid retain cycle
            [weak self] authResult, error in
 
            //re-enable the button after authentication
@@ -124,14 +153,21 @@ class LoginViewController: UIViewController {
             if let userID = authResult?.user.uid {
                 UserDefaults.standard.set(userID, forKey: UserDefaultsKeys.userID)
             }
-            
-            //calling sendOTP function
-            
-            
-
-            //navigate to home screen
-            //self?.navigateToHome()
         }
+        
+        
+        //saving the user choosing of remember me button
+        if isRememberMeChecked {
+            UserDefaults.standard.set(true, forKey: "rememberMeButton")
+        }
+        else {
+            UserDefaults.standard.removeObject(forKey: "rememberMeBtton")
+        }
+        
+        
+        //calling sendOTP function
+        
+
     }
     
     //after email verification the system will sent an OTP to the user email fro extra security verification

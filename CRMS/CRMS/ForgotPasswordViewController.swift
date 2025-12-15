@@ -41,11 +41,9 @@ class ForgotPasswordViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if let sheet = sheetPresentationController{
-            sheet.detents = [.medium()]
-            sheet.prefersGrabberVisible = true
-            sheet.preferredCornerRadius = 20
-        }
+        //rounding send button raduis
+        sendButton.layer.cornerRadius = 20
+     
     }
     
     // Enables / disables send button while user types
