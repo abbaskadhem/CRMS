@@ -34,7 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		ACF74FC72EEEFC1D00180902 /* CRMS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = CRMS.app; path = "/Users/Guest/Desktop/CRMS/CRMS/build/Debug-iphoneos/CRMS.app"; sourceTree = "<absolute>"; };
+		D402B5ED2EF0414F0022E1E2 /* CRMS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CRMS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -97,6 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				D3A10FFD2ED6E96D006D6692 /* CRMS */,
+				D402B5ED2EF0414F0022E1E2 /* CRMS.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -146,7 +147,7 @@
 				D3A110442ED6EBDA006D6692 /* FirebaseStorageCombine-Community */,
 			);
 			productName = CRMS;
-			productReference = ACF74FC72EEEFC1D00180902 /* CRMS.app */;
+			productReference = D402B5ED2EF0414F0022E1E2 /* CRMS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

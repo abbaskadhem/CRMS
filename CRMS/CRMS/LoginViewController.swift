@@ -24,11 +24,8 @@ class LoginViewController: UIViewController {
     
     @IBOutlet weak var rememberMeButton: UIButton!
     @IBOutlet weak var loginButton : UIButton!
-    
-    
-    //property of remember me checkbox
-    var isRememberMeChecked = false
 
+    
     //property to disable the login button ONLY if both text fields are empty
     var isLoginButtonEnabled : Bool {
         guard let email = emailTextField.text, let password = passwordTextField.text else {
@@ -84,6 +81,8 @@ class LoginViewController: UIViewController {
     
     //cofiguring bottom sheet
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        //forgot password bottom sheet
         if segue.identifier == "ForgotPasswordSegue" {
             if let sheet = segue.destination.sheetPresentationController{
                 sheet.detents = [.medium()]
@@ -91,21 +90,28 @@ class LoginViewController: UIViewController {
                 sheet.preferredCornerRadius = 20
             }
         }
+        
+        //verifictaion bottom sheet
+        if segue.identifier == "verificationSegue" {
+            if let sheet = segue.destination.sheetPresentationController {
+                sheet.detents = [.medium()]
+                sheet.prefersGrabberVisible = true
+                sheet.preferredCornerRadius = 20
+            }
+        }
     }
+    
     
     //reememberMe Button Action
     @IBAction func rememberMeButtonTapped(_ sender: UIButton){
-        //switching between true and false
-        isRememberMeChecked.toggle()
         
-        //updating the checkbox image based on the isRememberMeChecked state
-        //when clicked to true
-        if isRememberMeChecked{
-            sender.setImage(UIImage(systemName: "checkmark.square"), for: .normal)
+        rememberMeButton.isSelected.toggle()
+        
+        if rememberMeButton.isSelected {
+                UserDefaults.standard.set(true, forKey: "rememberMeButton")
         }
-        //when clicked to false
         else {
-            sender.setImage(UIImage(systemName: "square"), for: .normal)
+            UserDefaults.standard.removeObject(forKey: "rememberMeBtton")
         }
     }
     
@@ -156,25 +162,10 @@ class LoginViewController: UIViewController {
         }
         
         
-        //saving the user choosing of remember me button
-        if isRememberMeChecked {
-            UserDefaults.standard.set(true, forKey: "rememberMeButton")
-        }
-        else {
-            UserDefaults.standard.removeObject(forKey: "rememberMeBtton")
-        }
+        //if verification completed
         
-        
-        //calling sendOTP function
-        
-
     }
     
-    //after email verification the system will sent an OTP to the user email fro extra security verification
-    /*func sendOTP(){
-        Auth.auth().sen
-    }*/
-
     //navigating to home screen function
     /*
     private func navigateToHome(){

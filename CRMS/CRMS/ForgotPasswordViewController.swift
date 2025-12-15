@@ -15,7 +15,7 @@ class ForgotPasswordViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
     
-    //property to disable the send button ONLY if both text fields are empty
+    //property to disable the send button ONLY if text field is empty
     var isSendButtonEnabled : Bool {
         guard let email = emailTextField.text else {
             return false // will return false if not empty
