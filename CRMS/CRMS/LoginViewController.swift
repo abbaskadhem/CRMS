@@ -8,7 +8,7 @@
 
 
 import UIKit
-import FirebaseAuth
+import FirebaseAuths
 
 class LoginViewController: UIViewController {
 
@@ -154,28 +154,17 @@ class LoginViewController: UIViewController {
                 self?.showAlert(title: "Login Failed", message: error.localizedDescription)
                 return
             }
+            else {
+                //display verification bottom sheet
+                self?.performSegue(withIdentifier: "verificationSegue" , sender: nil)
+            }
 
             //Login in successful - save user ID to UserDefaults
             if let userID = authResult?.user.uid {
                 UserDefaults.standard.set(userID, forKey: UserDefaultsKeys.userID)
             }
         }
-        
-        
-        //if verification completed
-        
     }
-    
-    //navigating to home screen function
-    /*
-    private func navigateToHome(){
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let homeVC = storyboard.instantiateViewController(withIdentifier: "HomeViewController") as? HomeViewController {
-            homeVC.modalPresentationStyle = .fullScreen
-            present(homeVC, animated: true)
-        }
-    }
-     */
 
     //this method is for rounding the bottom edge of the view
     override func viewDidLayoutSubviews() {
