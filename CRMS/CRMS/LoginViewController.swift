@@ -8,7 +8,7 @@
 
 
 import UIKit
-import FirebaseAuths
+import FirebaseAuth
 
 class LoginViewController: UIViewController {
 
@@ -20,7 +20,6 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     
     @IBOutlet weak var forgotPassword: UILabel!
-    
     
     @IBOutlet weak var rememberMeButton: UIButton!
     @IBOutlet weak var loginButton : UIButton!
@@ -111,7 +110,7 @@ class LoginViewController: UIViewController {
                 UserDefaults.standard.set(true, forKey: "rememberMeButton")
         }
         else {
-            UserDefaults.standard.removeObject(forKey: "rememberMeBtton")
+            UserDefaults.standard.removeObject(forKey: "rememberMeButton")
         }
     }
     
@@ -122,14 +121,14 @@ class LoginViewController: UIViewController {
         //email input validation + dispaly alert message if empty using optional unwrap
         guard let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), 
         !email.isEmpty else {
-            showAlert(title: "Missing Email", message: "Please Enter Your Email Address")
+            showAlert(title: "Missing Email", message: "Please Enter Your Email")
             return
         }
 
         //password input validation + display alert message if empty using optional unwrap
         guard let password = passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
         !password.isEmpty else {
-            showAlert(title: "Missing Password", message: "Please Enter Your Password Address")
+            showAlert(title: "Missing Password", message: "Please Enter Your Password")
             return
         }
 
@@ -155,6 +154,12 @@ class LoginViewController: UIViewController {
                 return
             }
             else {
+                //get the current user 
+                guard let user = Auth.auth().currentUser else {
+                    return
+                }
+                //send user verification link through email 
+                user.sendEmailVerification
                 //display verification bottom sheet
                 self?.performSegue(withIdentifier: "verificationSegue" , sender: nil)
             }

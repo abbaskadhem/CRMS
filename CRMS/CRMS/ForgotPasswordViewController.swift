@@ -26,6 +26,9 @@ class ForgotPasswordViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+                
+        //rounding send button raduis
+        sendButton.layer.cornerRadius = 20
         
         self.title = "Forgot Password"
 
@@ -39,11 +42,7 @@ class ForgotPasswordViewController: UIViewController {
 
     //make the page appears as bottom sheet
     override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        //rounding send button raduis
-        sendButton.layer.cornerRadius = 20
-     
+        super.viewDidAppear(animated)   
     }
     
     // Enables / disables send button while user types

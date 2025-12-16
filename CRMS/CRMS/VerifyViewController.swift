@@ -11,11 +11,14 @@ import FirebaseFirestore
 
 class VerifyViewController: UIViewController {
 
-    @IBOutlet var verifyButton: UIView!
+    @IBOutlet var verifyButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+              
+        //rounding verify button raduis
+        verifyButton.layer.cornerRadius = 20
+
         self.title = "Verification"
 
     }
@@ -23,10 +26,6 @@ class VerifyViewController: UIViewController {
     //make the page appears as bottom sheet
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        //rounding verify button raduis
-        verifyButton.layer.cornerRadius = 20
-     
     }
 
     @IBAction func verifyButtonTapped(_ sender : UIButton){
@@ -36,8 +35,7 @@ class VerifyViewController: UIViewController {
         guard let user = Auth.auth().currentUser else {
             return
         }
-
-        //reload user info to check if verified
+        
         // Reload user info to check if verified
         user.reload(completion: { [weak self] error in
             if let error = error {
