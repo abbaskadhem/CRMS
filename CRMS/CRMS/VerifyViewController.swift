@@ -11,21 +11,53 @@ import FirebaseFirestore
 
 class VerifyViewController: UIViewController {
 
-    @IBOutlet var verifyButton: UIButton!
+    @IBOutlet weak var verifyButton: UIButton!
+
+    @IBOutlet weak var resend : UILabel! 
+    @IBOutlet weak var counter : UILabel!
+
+    //set timer & count down
+    var timer: Timer?
+    var countDown = 30 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-              
-        //rounding verify button raduis
-        verifyButton.layer.cornerRadius = 20
 
         self.title = "Verification"
+
+        // Initially hide the resend & counter
+        resend.isHidden = true
+        counter.isHidden = true
+        startTimer()
+
+        //making resend tappable
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(resendTapped))
+        resend.isUserInteractionEnabled = true
+        resend.addGestureRecognizer(tapGesture)
 
     }
     
     //make the page appears as bottom sheet
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+    }
+
+    //resend label tapped
+    @objc private func resendTapped(){
+
+        // Hide the resend label and restart the timer
+        resend.isHidden = true
+        
+        //fade effect
+        UIView.animate(withDuration: 0.5, animations: {
+            self.resend.alpha = 0.0 }) { _ in
+
+            self.resend.alpha = 1.0 // Reset alpha for next time
+            self.startTimer() // Restart the timer
+        }
+        
+        // Resend verification email
+        resendVerificationEmail()
     }
 
     @IBAction func verifyButtonTapped(_ sender : UIButton){
@@ -52,6 +84,51 @@ class VerifyViewController: UIViewController {
                 self?.showAlert(title: "Email Not Verified", message: "Please verify your email before proceeding")
             }
         })
+    }
+
+    private func startTimer(){
+        // Update the label to show countdown initially
+        resend.isHidden = true
+        counter.isHidden = false
+
+        countDown = 30 // Reset countdown time
+        timer?.invalidate() // Invalidate any previous timer
+        
+        // Create a new timer
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateCountdown), userInfo: nil, repeats: true)
+    }
+
+    @objc func updateCountdown() {
+        if countDown > 0 {
+            countDown -= 1
+            counter.text = "Resend in \(countDown)s"
+        } 
+        else {
+            // Timer finished
+            timer?.invalidate()
+            resend.isHidden = false
+            counter.isHidden = true
+        }
+    }
+
+    private func resendVerificationEmail(){
+        //get the current user 
+        guard let user = Auth.auth().currentUser else {
+            return
+        }
+        //send user verification link through email if resend ie clicked
+            user.sendEmailVerification {
+                //[weak self] -> to avoid retain cycle
+                [weak self] error in 
+                if let error = error {
+                    self?.showAlert(title: "Error", message: error.localizedDescription)
+                    return
+                } 
+                else {
+                    self?.showAlert(title: "Email Sent", message: "Verification email has been resent")
+                }
+            }   
+        }    
     }
 
     //check for role function
@@ -90,7 +167,15 @@ class VerifyViewController: UIViewController {
         }
     }
 
-    private func navigateToUserHome() {
+    private func navigateToTechHome() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let userHomeVC = storyboard.instantiateViewController(withIdentifier: "UserHomeViewController") as? UserHomeViewController {
+            userHomeVC.modalPresentationStyle = .fullScreen
+            present(userHomeVC, animated: true)
+        }
+    }
+
+    private func navigateToRequesterHome() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let userHomeVC = storyboard.instantiateViewController(withIdentifier: "UserHomeViewController") as? UserHomeViewController {
             userHomeVC.modalPresentationStyle = .fullScreen
@@ -99,6 +184,14 @@ class VerifyViewController: UIViewController {
     }
     */
     
+    //this method is for rounding the button
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        //rounding verify button raduis
+        verifyButton.layer.cornerRadius = 20
+    }
+
     //helper method for alert messages 
     func showAlert (title: String, message: String){
 

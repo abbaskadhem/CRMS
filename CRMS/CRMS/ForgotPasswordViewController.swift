@@ -13,8 +13,16 @@ class ForgotPasswordViewController: UIViewController {
     
     //IBOutlets
     @IBOutlet weak var emailTextField: UITextField!
+
     @IBOutlet weak var sendButton: UIButton!
+
+    @IBOutlet weak var resend : UILabel!
+    @IBOutlet weak var counter : UILabel!
     
+    ////set timer & count down
+    var timer: Timer?
+    var countDown = 30 
+
     //property to disable the send button ONLY if text field is empty
     var isSendButtonEnabled : Bool {
         guard let email = emailTextField.text else {
@@ -36,13 +44,41 @@ class ForgotPasswordViewController: UIViewController {
         sendButton.isEnabled = false
         sendButton.alpha = 0.75
 
+        // Initially hide the resend & counter
+        resend.isHidden = true
+        counter.isHidden = true
+
         //listening to text changes for live validation
         emailTextField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
+
+        //making resend tappable
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(resendTapped))
+        resend.isUserInteractionEnabled = true
+        resend.addGestureRecognizer(tapGesture)
     }
 
     //make the page appears as bottom sheet
     override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)   
+        super.viewDidAppear(animated)
+    }
+
+    //resend label tapped
+    @objc private func resendTapped(){
+
+        // Hide the resend label and restart the timer
+        resend.isHidden = true
+
+        //fade effect
+        UIView.animate(withDuration: 0.5, animations: {
+            self.resend.alpha = 0.0 }) { _ in
+
+            self.resend.alpha = 1.0 // Reset alpha for next time
+            self.startTimer() // Restart the timer
+        }
+        
+        //resend forgot password link
+        sendLink()
+        
     }
     
     // Enables / disables send button while user types
@@ -60,6 +96,12 @@ class ForgotPasswordViewController: UIViewController {
     //send reset password email
     @IBAction func sendButtonTapped(_ sender: UIButton) {
 
+        //send forgot password link
+        sendLink()
+         
+    }
+
+    private func sendLink(){
         //email input validation
         guard let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
             !email.isEmpty else {
@@ -83,7 +125,33 @@ class ForgotPasswordViewController: UIViewController {
             }
             else {
                 self?.showAlert(title: "Email Sent", message: "A password reset link has been sent to your email")
+                self?.startTimer() // Start timer after sending email
             }
+        }
+    }
+
+    private func startTimer(){
+        // Update the label to show countdown initially
+        resend.isHidden = true
+        counter.isHidden = false
+
+        countDown = 30 // Reset countdown time
+        timer?.invalidate() // Invalidate any previous timer
+        
+        // Create a new timer
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateCountdown), userInfo: nil, repeats: true)
+    }
+
+    @objc func updateCountdown() {
+        if countDown > 0 {
+            countDown -= 1
+            counter.text = "Resend in \(countDown)s"
+        } 
+        else {
+            // Timer finished
+            timer?.invalidate()
+            resend.isHidden = false
+            counter.isHidden = true
         }
     }
 

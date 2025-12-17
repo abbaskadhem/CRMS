@@ -42,9 +42,6 @@ class LoginViewController: UIViewController {
 
         //hiding "back" button in the navigation bar    
         navigationItem.hidesBackButton = true
-        
-        //rounding login button raduis
-        loginButton.layer.cornerRadius = 20
 
         //disable login button intially when the page loaded
         loginButton.isEnabled = false
@@ -107,10 +104,14 @@ class LoginViewController: UIViewController {
         rememberMeButton.isSelected.toggle()
         
         if rememberMeButton.isSelected {
-                UserDefaults.standard.set(true, forKey: "rememberMeButton")
+            UserDefaults.standard.set(true, forKey: "rememberMeButton")
+            UserDefaults.standard.set(emailTextField.text, forKey: "savedEmail")
+        UserDefaults.standard.set(passwordTextField.text, forKey: "savedPassword")
         }
         else {
             UserDefaults.standard.removeObject(forKey: "rememberMeButton")
+            UserDefaults.standard.removeObject(forKey: "savedEmail")
+            UserDefaults.standard.removeObject(forKey: "savedPassword")
         }
     }
     
@@ -158,10 +159,21 @@ class LoginViewController: UIViewController {
                 guard let user = Auth.auth().currentUser else {
                     return
                 }
-                //send user verification link through email 
-                user.sendEmailVerification
-                //display verification bottom sheet
-                self?.performSegue(withIdentifier: "verificationSegue" , sender: nil)
+                //send user verification link through email every time the user login
+                if !user.sendEmailVerification{
+                    user.sendEmailVerification {
+                        //[weak self] -> to avoid retain cycle
+                        [weak self] error in 
+                        if let error = error {
+                            self?.showAlert(title: "Error", message: error.localizedDescription)
+                            return
+                        }
+                        else {
+                            //display verification bottom sheet
+                            self?.performSegue(withIdentifier: "verificationSegue" , sender: nil)
+                        }   
+                    }   
+                }   
             }
 
             //Login in successful - save user ID to UserDefaults
