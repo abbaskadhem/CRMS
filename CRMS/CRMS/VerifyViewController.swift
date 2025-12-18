@@ -78,8 +78,8 @@ class VerifyViewController: UIViewController {
             // Check if email is verified
             if user.isEmailVerified {
                 //check user role and navigate accourdingly
-                self?.checkUserRole(user)
-            } 
+                //self?.checkUserRole(user: user)
+            }
             else {
                 self?.showAlert(title: "Email Not Verified", message: "Please verify your email before proceeding")
             }
@@ -117,22 +117,22 @@ class VerifyViewController: UIViewController {
             return
         }
         //send user verification link through email if resend ie clicked
-            user.sendEmailVerification {
-                //[weak self] -> to avoid retain cycle
-                [weak self] error in 
-                if let error = error {
-                    self?.showAlert(title: "Error", message: error.localizedDescription)
-                    return
-                } 
-                else {
-                    self?.showAlert(title: "Email Sent", message: "Verification email has been resent")
-                }
-            }   
-        }    
+        user.sendEmailVerification {
+            //[weak self] -> to avoid retain cycle
+            [weak self] error in
+            if let error = error {
+                self?.showAlert(title: "Error", message: error.localizedDescription)
+                return
+            }
+            else {
+                self?.showAlert(title: "Email Sent", message: "Verification email has been resent")
+            }
+        }
     }
+    
 
     //check for role function
-    private func checkUserRole(_ user: User){
+    private func checkUserRole(_ user: CRMS.User){
         /*
         let db = Firestore.firestore()
         let userID = user.uid

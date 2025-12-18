@@ -9,6 +9,7 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseStorage
 
 class LoginViewController: UIViewController {
 
@@ -24,6 +25,8 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var rememberMeButton: UIButton!
     @IBOutlet weak var loginButton : UIButton!
 
+    //For navigating to home page
+    var window: UIWindow?
     
     //property to disable the login button ONLY if both text fields are empty
     var isLoginButtonEnabled : Bool {
@@ -103,16 +106,6 @@ class LoginViewController: UIViewController {
         
         rememberMeButton.isSelected.toggle()
         
-        if rememberMeButton.isSelected {
-            UserDefaults.standard.set(true, forKey: "rememberMeButton")
-            UserDefaults.standard.set(emailTextField.text, forKey: "savedEmail")
-        UserDefaults.standard.set(passwordTextField.text, forKey: "savedPassword")
-        }
-        else {
-            UserDefaults.standard.removeObject(forKey: "rememberMeButton")
-            UserDefaults.standard.removeObject(forKey: "savedEmail")
-            UserDefaults.standard.removeObject(forKey: "savedPassword")
-        }
     }
     
     
@@ -154,33 +147,91 @@ class LoginViewController: UIViewController {
                 self?.showAlert(title: "Login Failed", message: error.localizedDescription)
                 return
             }
-            else {
-                //get the current user 
+            /*else {
+                //get the current user
                 guard let user = Auth.auth().currentUser else {
                     return
                 }
                 //send user verification link through email every time the user login
-                if !user.sendEmailVerification{
-                    user.sendEmailVerification {
-                        //[weak self] -> to avoid retain cycle
-                        [weak self] error in 
-                        if let error = error {
-                            self?.showAlert(title: "Error", message: error.localizedDescription)
-                            return
-                        }
-                        else {
-                            //display verification bottom sheet
-                            self?.performSegue(withIdentifier: "verificationSegue" , sender: nil)
-                        }   
-                    }   
-                }   
-            }
+                user.sendEmailVerification {
+                    //[weak self] -> to avoid retain cycle
+                    [weak self] error in
+                    if let error = error {
+                        self?.showAlert(title: "Error", message: error.localizedDescription)
+                        return
+                    }
+                    else {
+                        self?.showAlert(title: "Email Sent", message: "Verification email has been resent")
+                    }
+                }
+            }*/
 
+            //save remember me
+            if self?.rememberMeButton.isSelected == true {
+                UserDefaults.standard.set(true, forKey: "rememberMeButton")
+            }
+            else {
+                UserDefaults.standard.removeObject(forKey: "rememberMeButton")
+            }
+            
             //Login in successful - save user ID to UserDefaults
             if let userID = authResult?.user.uid {
                 UserDefaults.standard.set(userID, forKey: UserDefaultsKeys.userID)
             }
+            
+            //call checkUserRole Function to navigate to the correct home page
+            
+            
         }
+    }
+
+    
+    
+    
+    //check for role function
+    private func checkUserRole(_ user: User){
+        /*
+        let db = Firestore.firestore()
+        let userID = user.uid
+        
+        db.collection("users").document(userID).getDocument {
+            [weak self] document, error in
+            guard let self = self else {
+                return
+            }
+            
+            if let error = error {
+                self?.showAlert(title: "Error", message: error.localizedDescription)
+                return
+            }
+            
+            //user exist
+            if let document = document, document.exists {
+                let role = document.get("role") as? String ?? ""
+                
+                var vc : UIViewController?
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                
+                // Navigate based on user role
+                if role == "admin" {
+                    vc = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
+                }
+                else if role == "technician" {
+                    vc = storyboard.instantiateViewController(withIdentifier: "TechnicianHomeViewController")
+                }
+                else if role == "Requester" {
+                    vc = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
+                }
+            }
+            
+            //user does't exist
+            else {
+                let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginViewController") as! LoginViewController
+                self.window?.rootViewController = loginVC
+                self.window?.makeKeyAndVisible()
+            }
+        }
+        */
     }
 
     //this method is for rounding the bottom edge of the view
@@ -195,7 +246,6 @@ class LoginViewController: UIViewController {
 
         //Ensure that any subviews are clipped to the rounded corners.
         backgroundLogin.layer.masksToBounds = true
-        
     }
 
     //helper method for alert messages 

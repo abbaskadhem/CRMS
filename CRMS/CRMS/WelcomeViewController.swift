@@ -33,7 +33,6 @@ class WelcomeViewController: UIViewController {
         
         //Ensure that any subviews are clipped to the rounded corners.
         backgroundWelcomeScreen.layer.masksToBounds = true
-
     }
     
     

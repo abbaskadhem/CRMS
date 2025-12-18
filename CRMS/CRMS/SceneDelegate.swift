@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseStorage
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -19,97 +20,76 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         
         
-        guard let windowScene = (scene as? UIWindowScene) else { return }
-        
-        window = UIWindow(windowScene: windowScene)
-
-        //check if there if any stored credentials 
-        let rememberUser = UserDefaults.standard.bool(forKey: "rememberMeButton")
-        let userID = UserDefaults.standard.string(forKey: UserDefaultsKeys.userID)
-
-        if rememberUser, let id = userID {
-            
-            // Automatically log in the user if they are remembered
-            Auth.auth().signIn(withEmail: id, password: UserDefaults.standard.string(forKey: "savedPassword")!) { 
-                authResult, error in
-                if let error = error {
-                    print("Login failed: \(error.localizedDescription)")
-
-                    // login failure --> navigate to login screen
-                    let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginViewController") as! LoginViewController
-                    self.window?.rootViewController = loginVC
-                    self.window?.makeKeyAndVisible()
-                } 
-                else {
-                    //get the current user 
-                    guard let user = Auth.auth().currentUser else {
-                        return
-                    }
-                    // Navigate to the main app screen according to the user role
-                    checkUserRole(user: user)
-                }
-            }
-        } 
-        else {
-            // Navigate to the login screen
-            let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginViewController")
-            self.window?.rootViewController = loginVC
-            self.window?.makeKeyAndVisible()
-        }
-
-    }
-
-    //check for role function
-    private func checkUserRole(_ user: User){
         /*
+         guard let windowScene = (scene as? UIWindowScene) else { return }
+         
+         window = UIWindow(windowScene: windowScene)
+         
+         //check if there if any stored credentials
+         guard let rememberUser = UserDefaults.standard.bool(forKey: "rememberMeButton"),
+         let currentUser = Auth.auth().currentUser else {
+         return
+         }
+         
+         if rememberUser, let user = currentUser {
+         checkUserRole(user)
+         }
+         else {
+         / login failure --> navigate to login screen
+         let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginViewController") as! LoginViewController
+         self.window?.rootViewController = loginVC
+         self.window?.makeKeyAndVisible()
+         }
+         */
+    }
+         
+    //check for role function
+    /*
+    private func checkUserRole(_ user: User){
+        
         let db = Firestore.firestore()
         let userID = user.uid
-
-        db.collection("users").document(userID).getDocument { [weak self] document, error in
+        
+        db.collection("users").document(userID).getDocument {
+            [weak self] document, error in
+            guard let self = self else {
+                return
+            }
+            
             if let error = error {
                 self?.showAlert(title: "Error", message: error.localizedDescription)
                 return
             }
-
+            
+            //user exist
             if let document = document, document.exists {
                 let role = document.get("role") as? String ?? ""
-
+                
+                var vc : UIViewController?
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                
                 // Navigate based on user role
                 if role == "admin" {
-                    self?.navigateToAdminHome()
-                } else {
-                    self?.navigateToUserHome()
+                    vc = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
+                }
+                else if role == "technician" {
+                    vc = storyboard.instantiateViewController(withIdentifier: "TechnicianHomeViewController")
+                }
+                else if role == "Requester" {
+                    vc = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
                 }
             }
+            
+            //user does't exist
+            else {
+                let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginViewController") as! LoginViewController
+                self.window?.rootViewController = loginVC
+                self.window?.makeKeyAndVisible()
+            }
         }
-        */
-    }
-
-    //navigation methods for each role (admin, technician, requester)
-    /*
-    private func navigateToAdminHome() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let adminHomeVC = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
-        window?.rootViewController = adminHomeVC
-        window?.makeKeyAndVisible()
-    }
-
-    private func navigateToTechHome() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let techHomeVC = storyboard.instantiateViewController(withIdentifier: "TechHomeViewController")
-        window?.rootViewController = techHomeVC
-        window?.makeKeyAndVisible()
-    }
-
-    private func navigateToRequesterHome() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let requesterHomeVC = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
-        window?.rootViewController = requesterHomeVC
-        window?.makeKeyAndVisible()
     }
     */
-    
-
+        
         func sceneDidDisconnect(_ scene: UIScene) {
             // Called as the scene is being released by the system.
             // This occurs shortly after the scene enters the background, or when its session is discarded.
@@ -137,7 +117,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Use this method to save data, release shared resources, and store enough scene-specific state information
             // to restore the scene back to its current state.
         }
-        
-        
 }
-    
