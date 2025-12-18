@@ -10,7 +10,7 @@ The application is designed for **iOS (iPhone & iPad)** using **Swift (UIKit + S
 
 This project fulfills the **Project Demonstration (60%)** assessment requirements and addresses all required learning outcomes.
 
-## 🖼️ Application Screenshots
+## 🖼️ Application Prototype 
 
 ![Add Category](screenshots/add-category.jpeg)
 ![Confirmation Dialog](screenshots/confirmation-dialog.jpeg)
