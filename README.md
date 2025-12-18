@@ -10,7 +10,6 @@ The application is designed for **iOS (iPhone & iPad)** using **Swift (UIKit + S
 
 This project fulfills the **Project Demonstration (60%)** assessment requirements and addresses all required learning outcomes.
 
----
 ## 🖼️ Application Screenshots
 
 ![Add Category](screenshots/add-category.jpeg)
@@ -18,14 +17,13 @@ This project fulfills the **Project Demonstration (60%)** assessment requirement
 ![Edit Categories](screenshots/edit-categories.jpeg)
 ![Sub-Category Saved](screenshots/sub-category-saved.jpeg)
 
----
+
 ## 🎯 Learning Outcomes Covered
 
 * **LO1:** Design a user-centric interface following UI & UX best practices
 * **LO2:** Implement a functional mobile application that meets business requirements
 * **LO3:** Apply industry standards, professional coding practices, and clear documentation
 
----
 
 ## 🧩 Key Features
 
@@ -44,7 +42,6 @@ This project fulfills the **Project Demonstration (60%)** assessment requirement
 * Edit existing categories with inline editing
 * Delete categories with confirmation dialog
 
----
 
 ## 🛠️ Technical Details
 
@@ -54,7 +51,6 @@ This project fulfills the **Project Demonstration (60%)** assessment requirement
 **Interface Builder:** Storyboards  
 **Architecture:** MVC Pattern
 
----
 
 ## 👥 Contributors
 
@@ -63,9 +59,8 @@ This project fulfills the **Project Demonstration (60%)** assessment requirement
 * **abbaskadhem Abbas**
 * **44AlJamri Abbas**
 
----
 
 ## 📊 Languages
 * Swift: 100.0%
 
----
+
