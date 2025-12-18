@@ -19,6 +19,61 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+<<<<<<< HEAD
+=======
+            <point key="canvasLocation" x="-373" y="439"/>
+        </scene>
+        <!--Calender-->
+        <scene sceneID="N52-sS-fEF">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Calender" id="K0C-R3-7b4" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="20Q-0I-f1G"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="19B-Pv-fHb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="121" y="439"/>
+        </scene>
+        <!--Requests-->
+        <scene sceneID="mHG-KJ-ClK">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Requests" id="uYC-zx-Qaf" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="Ih3-sK-LiU"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qXa-e8-SWl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="784" y="436"/>
+        </scene>
+        <!--SettingsViewController-->
+        <scene sceneID="v44-hH-xJH">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Settings" referencedIdentifier="SettingsViewController" id="SMd-0X-ZHm" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="ydl-km-nKh"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bZB-Q0-4fM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1169" y="436"/>
+        </scene>
+        <!--Req Tech Tab Bar Controller-->
+        <scene sceneID="eQ1-gJ-tIR">
+            <objects>
+                <tabBarController storyboardIdentifier="ReqTechTabBarController" automaticallyAdjustsScrollViewInsets="NO" id="q1r-l9-gwa" customClass="ReqTechTabBarController" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="0vS-WG-jz5">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="P6T-09-Mpu" kind="relationship" relationship="viewControllers" id="ahK-LO-zCW"/>
+                        <segue destination="K0C-R3-7b4" kind="relationship" relationship="viewControllers" id="ZAS-bU-LYy"/>
+                        <segue destination="uYC-zx-Qaf" kind="relationship" relationship="viewControllers" id="Qrp-c9-MPX"/>
+                        <segue destination="SMd-0X-ZHm" kind="relationship" relationship="viewControllers" id="DUQ-Bn-XGu"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Mjk-Qg-HF5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="422" y="12"/>
+>>>>>>> 67533e7 (settings UI phase 1)
         </scene>
     </scenes>
     <resources>
