@@ -15,10 +15,10 @@ This project fulfills the **Project Demonstration (60%)** assessment requirement
 ## 🖼️ Application Screenshots
 
 ![Category Management](screenshots/category-management.jpg)
-![Add Category](/screenshots/add-category.jpg)
-![Confirmation Dialog](/screenshots/confirmation-dialog.jpg)
-![Edit Categories](/screenshots/edit-categories.jpg)
-![Sub-Category Saved](/screenshots/sub-category-saved.jpg)
+![Add Category](screenshots/add-category.jpg)
+![Confirmation Dialog](screenshots/confirmation-dialog.jpg)
+![Edit Categories](screenshots/edit-categories.jpg)
+![Sub-Category Saved](screenshots/sub-category-saved.jpg)
 
 ---
 ## 🎯 Learning Outcomes Covered
