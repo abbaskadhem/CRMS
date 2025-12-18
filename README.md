@@ -15,7 +15,7 @@ This project fulfills the **Project Demonstration (60%)** assessment requirement
 ---
 ## 🖼️ Application Screenshots
 
-![Category Management](/screenshots/category-management.jpg)
+![Category Management](CRMS/screenshots/category-management.jpg)
 ![Add Category](screenshots/add-category.jpg)
 ![Confirmation Dialog](screenshots/confirmation-dialog.jpg)
 ![Edit Categories](screenshots/edit-categories.jpg)
