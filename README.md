@@ -1,4 +1,3 @@
-
 # 📱 CRM Category Management App
 
 **IT8108 – Mobile Programming | Project Demonstration**
@@ -9,15 +8,17 @@ This project is a **CRM Category Management mobile application** developed as pa
 
 The application is designed for **iOS (iPhone & iPad)** using **Swift (UIKit + Storyboards)** and demonstrates real-world mobile development practices including structured architecture, responsive layouts, and professional documentation.
 
-This project fulfills the **Project Demonstration (60%)** assessment requirements and addresses all required learning outcomes .
+This project fulfills the **Project Demonstration (60%)** assessment requirements and addresses all required learning outcomes.
 
-
+---
 ## 🖼️ Application Screenshots
+
 ![Add Category](screenshots/add-category.jpeg)
 ![Confirmation Dialog](screenshots/confirmation-dialog.jpeg)
 ![Edit Categories](screenshots/edit-categories.jpeg)
 ![Sub-Category Saved](screenshots/sub-category-saved.jpeg)
 
+---
 ## 🎯 Learning Outcomes Covered
 
 * **LO1:** Design a user-centric interface following UI & UX best practices
@@ -29,125 +30,42 @@ This project fulfills the **Project Demonstration (60%)** assessment requirement
 ## 🧩 Key Features
 
 ### Category Management
-
 * View all categories in a structured list
 * Expand/collapse categories (e.g., IT, HVAC, Electrical, Security)
 * Search categories in real time
 
 ### Sub-Category Management
-
 * Add new sub-categories under a selected category
 * Edit existing sub-categories
 * Enable/disable sub-categories using toggle controls
 
 ### Add / Edit Flow
-
 * Add new categories via modal form
-* Edit categories using inline controls
-* Keyboard-aware layouts for smooth text input
-
-### Confirmation & Feedback
-
-* Confirmation dialogs before saving or canceling actions
-* Success feedback screens after saving changes
-* Prevents accidental data loss through confirmation modals
+* Edit existing categories with inline editing
+* Delete categories with confirmation dialog
 
 ---
 
-## 🖼️ User Interface Highlights
+## 🛠️ Technical Details
 
-* Clean, minimal CRM-style layout
-* Modal-based add/edit workflows
-* Consistent confirmation dialogs
-* Supports **Light Mode & Dark Mode**
-* Responsive UI for **iPhone & iPad**
-
----
-
-## 🏗️ Architecture
-
-* **MVC (Model–View–Controller)** architecture
-* Clear separation of concerns
-* Scalable structure for future feature expansion
+**Platform:** iOS (iPhone & iPad)  
+**Language:** Swift  
+**Framework:** UIKit  
+**Interface Builder:** Storyboards  
+**Architecture:** MVC Pattern
 
 ---
 
-## 🛠️ Technologies Used
+## 👥 Contributors
 
-| Area            | Technology               |
-| --------------- | ------------------------ |
-| Language        | Swift                    |
-| UI Framework    | UIKit (Storyboards)      |
-| IDE             | Xcode 15 / 16            |
-| Target OS       | iOS 17.0+                |
-| Layout          | AutoLayout & Constraints |
-| Architecture    | MVC                      |
-| Version Control | GitHub                   |
+* **mahaN26**
+* **MaryamTalaH05**
+* **abbaskadhem Abbas**
+* **44AlJamri Abbas**
 
 ---
 
-## 💾 Data Handling
-
-* Local test data implemented for demonstration purposes
-* Structure ready for backend integration (e.g., Firebase or REST APIs)
-* Designed to support future cloud-based storage if required
+## 📊 Languages
+* Swift: 100.0%
 
 ---
-
-## 📱 Device Support
-
-* iPhone (All supported sizes)
-* iPad (Responsive layouts)
-* iOS Simulator used for live demonstration as required 
-
----
-
-## 📑 Demonstration Readiness
-
-This project is prepared for **live demonstration** and includes:
-
-* Fully working UI flows
-* Sufficient test data
-* Error-free Xcode build (no warnings)
-* Clear README documentation (this file)
-
-All team members can confidently explain:
-
-* UI/UX decisions
-* App structure and navigation
-* Feature implementation
-* Future scalability
-
----
-
-## 📦 Submission Details
-
-* Repository hosted on **GitHub (Public)**
-* README kept updated throughout development
-* Project submitted before the deadline as required 
-
----
-
-## 🚀 Future Enhancements (Optional)
-
-* Backend integration (Firebase / REST API)
-* User authentication & roles
-* Analytics for category usage
-* Cloud-based category synchronization
-
----
-
-## 👨‍💻 Team Contribution
-
-Each team member contributed to:
-
-* UI implementation
-* Feature development
-* Testing & refinement
-* Documentation & presentation preparation
-
----
-
-## ✅ Conclusion
-
-This CRM Category Management App demonstrates a **complete, professional mobile application** that meets academic requirements while reflecting **industry-level development standards**. The project emphasizes **clarity, usability, maintainability, and presentation quality**, making it suitable for both academic evaluation and real-world use.
