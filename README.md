@@ -11,16 +11,13 @@ The application is designed for **iOS (iPhone & iPad)** using **Swift (UIKit + S
 
 This project fulfills the **Project Demonstration (60%)** assessment requirements and addresses all required learning outcomes .
 
----
+
 ## 🖼️ Application Screenshots
+![Add Category](screenshots/add-category.jpeg)
+![Confirmation Dialog](screenshots/confirmation-dialog.jpeg)
+![Edit Categories](screenshots/edit-categories.jpeg)
+![Sub-Category Saved](screenshots/sub-category-saved.jpeg)
 
-![Category Management](screenshots/category-management.jpg)
-![Add Category](screenshots/add-category.jpg)
-![Confirmation Dialog](screenshots/confirmation-dialog.jpg)
-![Edit Categories](screenshots/edit-categories.jpg)
-![Sub-Category Saved](screenshots/sub-category-saved.jpg)
-
----
 ## 🎯 Learning Outcomes Covered
 
 * **LO1:** Design a user-centric interface following UI & UX best practices
