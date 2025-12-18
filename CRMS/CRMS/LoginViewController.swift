@@ -147,24 +147,6 @@ class LoginViewController: UIViewController {
                 self?.showAlert(title: "Login Failed", message: error.localizedDescription)
                 return
             }
-            /*else {
-                //get the current user
-                guard let user = Auth.auth().currentUser else {
-                    return
-                }
-                //send user verification link through email every time the user login
-                user.sendEmailVerification {
-                    //[weak self] -> to avoid retain cycle
-                    [weak self] error in
-                    if let error = error {
-                        self?.showAlert(title: "Error", message: error.localizedDescription)
-                        return
-                    }
-                    else {
-                        self?.showAlert(title: "Email Sent", message: "Verification email has been resent")
-                    }
-                }
-            }*/
 
             //save remember me
             if self?.rememberMeButton.isSelected == true {

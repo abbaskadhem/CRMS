@@ -114,7 +114,6 @@
                                                 </buttonConfiguration>
                                                 <connections>
                                                     <action selector="loginButtonTapped:" destination="cNJ-0M-6Jx" eventType="touchUpInside" id="U6E-xS-lda"/>
-                                                    <segue destination="ccn-03-69U" kind="presentation" identifier="verificationSegue" modalPresentationStyle="automatic" modalTransitionStyle="coverVertical" id="sEG-95-Xbi"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -243,81 +242,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="M1I-No-DlS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2111" y="739"/>
-        </scene>
-        <!--Verify View Controller-->
-        <scene sceneID="mVc-CV-hB3">
-            <objects>
-                <viewController id="ccn-03-69U" customClass="VerifyViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="hAC-1h-02a">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="783"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="13" translatesAutoresizingMaskIntoConstraints="NO" id="NNY-RP-VvZ">
-                                <rect key="frame" x="30" y="143" width="333" height="157"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JRe-BO-0FY">
-                                        <rect key="frame" x="0.0" y="0.0" width="333" height="77"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="77" id="497-CI-1TB"/>
-                                            <constraint firstAttribute="height" constant="77" id="w8M-jR-0iX"/>
-                                        </constraints>
-                                        <string key="text">A verification link has been sent to your email.. 
-Please check your inbox and click the link to continue </string>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <color key="textColor" red="0.32549019610000002" green="0.41176470590000003" blue="0.49803921569999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GjZ-nE-3P8">
-                                        <rect key="frame" x="0.0" y="90" width="333" height="38.333333333333343"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="38.329999999999998" id="YSR-G5-gkZ"/>
-                                        </constraints>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="filled" title="Verified">
-                                            <color key="baseForegroundColor" red="0.96078431369999995" green="0.93725490199999995" blue="0.92156862750000001" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="baseBackgroundColor" red="0.32549019610000002" green="0.41176470590000003" blue="0.49803921569999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        </buttonConfiguration>
-                                        <connections>
-                                            <action selector="sendButtonTapped:" destination="yze-kq-oFl" eventType="touchUpInside" id="xhz-3r-lJg"/>
-                                        </connections>
-                                    </button>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="BBm-YZ-L8v">
-                                        <rect key="frame" x="0.0" y="141.33333333333331" width="333" height="15.666666666666657"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aya-gS-L3C">
-                                                <rect key="frame" x="0.0" y="0.0" width="163" height="15.666666666666666"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                <color key="textColor" red="0.32549019610000002" green="0.41176470590000003" blue="0.49803921569999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Re-send link" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XDG-Ff-aPM">
-                                                <rect key="frame" x="170" y="0.0" width="163" height="15.666666666666666"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                <color key="textColor" red="0.32549019610000002" green="0.41176470590000003" blue="0.49803921569999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                    </stackView>
-                                </subviews>
-                            </stackView>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="rwq-Vr-vgs"/>
-                        <color key="backgroundColor" red="0.96078431369999995" green="0.93725490199999995" blue="0.92156862750000001" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstAttribute="trailing" secondItem="NNY-RP-VvZ" secondAttribute="trailing" constant="30" id="Vyj-oj-vp1"/>
-                            <constraint firstItem="NNY-RP-VvZ" firstAttribute="top" secondItem="rwq-Vr-vgs" secondAttribute="top" constant="84" id="vKL-Op-9kc"/>
-                            <constraint firstItem="NNY-RP-VvZ" firstAttribute="leading" secondItem="hAC-1h-02a" secondAttribute="leading" constant="30" id="vrS-Hx-jN4"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="counter" destination="aya-gS-L3C" id="XFo-Ft-Iub"/>
-                        <outlet property="resend" destination="XDG-Ff-aPM" id="iVk-ZK-6sh"/>
-                        <outlet property="verifyButton" destination="hAC-1h-02a" id="EgQ-yF-Stx"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="hwi-yQ-F53" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2817.5572519083967" y="738.73239436619724"/>
         </scene>
         <!--Welcome View Controller-->
         <scene sceneID="Z05-QC-vfv">
