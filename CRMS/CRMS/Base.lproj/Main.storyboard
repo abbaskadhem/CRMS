@@ -178,7 +178,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="21" translatesAutoresizingMaskIntoConstraints="NO" id="Jj8-zR-uU3">
-                                <rect key="frame" x="30" y="425.33333333333331" width="333" height="191.66666666666669"/>
+                                <rect key="frame" x="30" y="391" width="333" height="226"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please enter the email address that is associated with your account" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q8Q-4S-O00">
                                         <rect key="frame" x="0.0" y="0.0" width="333" height="40.666666666666664"/>
@@ -194,16 +194,16 @@
                                         <textInputTraits key="textInputTraits" textContentType="email"/>
                                     </textField>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="-129" translatesAutoresizingMaskIntoConstraints="NO" id="a8m-9G-EbB">
-                                        <rect key="frame" x="0.0" y="116.66666666666669" width="333" height="15.666666666666657"/>
+                                        <rect key="frame" x="0.0" y="116.66666666666669" width="333" height="50"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wJi-OU-V3Q">
-                                                <rect key="frame" x="0.0" y="0.0" width="231" height="15.666666666666666"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wJi-OU-V3Q">
+                                                <rect key="frame" x="0.0" y="0.0" width="231" height="50"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <color key="textColor" red="0.32549019610000002" green="0.41176470590000003" blue="0.49803921569999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Re-send link" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AJG-Bq-6fA">
-                                                <rect key="frame" x="102" y="0.0" width="231" height="15.666666666666666"/>
+                                                <rect key="frame" x="102" y="0.0" width="231" height="50"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <color key="textColor" red="0.32549019610000002" green="0.41176470590000003" blue="0.49803921569999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -211,7 +211,7 @@
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QVT-Ry-boU">
-                                        <rect key="frame" x="0.0" y="153.33333333333331" width="333" height="38.333333333333343"/>
+                                        <rect key="frame" x="0.0" y="187.66666666666663" width="333" height="38.333333333333343"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="filled" title="Send">
                                             <color key="baseForegroundColor" red="0.96078431369999995" green="0.93725490199999995" blue="0.92156862750000001" alpha="1" colorSpace="calibratedRGB"/>
