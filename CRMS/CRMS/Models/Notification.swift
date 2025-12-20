@@ -7,13 +7,18 @@
 
 import Foundation
 
+enum NotiType: Int, Codable {
+    case notification = 1000
+    case announcement = 1001
+}
+
 // MARK: - Notification
 struct NotificationModel: Codable, Identifiable {
 var id: UUID // UUID
 var title: String // Title
 var description: String? // Description
 var toWho: [UUID] // To who
-var type: String? // Type
+var type: NotiType // Type
 var requestRef: UUID? // Request Ref.
 
 // Default Common Fields
