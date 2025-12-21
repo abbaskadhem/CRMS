@@ -63,7 +63,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
             //user exist
             if let document = document, document.exists {
-                let role = document.get("role") as? String ?? ""
+                let role = document.get("type") as? String ?? ""
                 
                 var vc : UIViewController?
                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
