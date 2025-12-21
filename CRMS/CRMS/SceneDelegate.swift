@@ -46,46 +46,54 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     //check for role function
     /*
     private func checkUserRole(_ user: User){
+        guard await hasInternetConnection() else {
+            throw NetworkError.noInternet
+        }
         
         let db = Firestore.firestore()
         let userID = user.uid
         
-        db.collection("users").document(userID).getDocument {
-            [weak self] document, error in
-            guard let self = self else {
-                return
-            }
-            
-            if let error = error {
-                self?.showAlert(title: "Error", message: error.localizedDescription)
-                return
-            }
-            
-            //user exist
-            if let document = document, document.exists {
-                let role = document.get("type") as? Int ?? ""
+        do {
+            try db.collection("users").document(userID).getDocument {
+                [weak self] document, error in
+                guard let self = self else {
+                    return
+                }
                 
-                var vc : UIViewController?
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                if let error = error {
+                    self?.showAlert(title: "Error", message: error.localizedDescription)
+                    return
+                }
                 
-                // Navigate based on user role
-                if role == 1000 { //admin
-                    vc = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
+                //user exist
+                if let document = document, document.exists {
+                    let role = document.get("type") as? Int ?? ""
+                    
+                    var vc : UIViewController?
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    
+                    // Navigate based on user role
+                    if role == 1000 { //admin
+                        vc = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
+                    }
+                    else if role == 1002 { //servicer
+                        vc = storyboard.instantiateViewController(withIdentifier: "ServicerHomeViewController")
+                    }
+                    else if role == 1001 { //requester
+                        vc = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
+                    }
                 }
-                else if role == 1002 { //servicer
-                    vc = storyboard.instantiateViewController(withIdentifier: "ServicerHomeViewController")
-                }
-                else if role == 1001 { //requester
-                    vc = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
+                
+                //user does't exist
+                else {
+                    let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginViewController") as! LoginViewController
+                    self.window?.rootViewController = loginVC
+                    self.window?.makeKeyAndVisible()
                 }
             }
-            
-            //user does't exist
-            else {
-                let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginViewController") as! LoginViewController
-                self.window?.rootViewController = loginVC
-                self.window?.makeKeyAndVisible()
-            }
+        }
+        catch {
+            throw NetworkError.serviceUnavailable
         }
     }
     */
