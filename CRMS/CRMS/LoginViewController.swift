@@ -187,21 +187,21 @@ class LoginViewController: UIViewController {
                 return
             }
             
-            //user exist
+           //user exist
             if let document = document, document.exists {
-                let role = document.get("type") as? String ?? ""
+                let role = document.get("type") as? Int ?? ""
                 
                 var vc : UIViewController?
                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 
                 // Navigate based on user role
-                if role == "admin" {
+                if role == 1000 { //admin
                     vc = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
                 }
-                else if role == "technician" {
-                    vc = storyboard.instantiateViewController(withIdentifier: "TechnicianHomeViewController")
+                else if role == 1002 { //servicer
+                    vc = storyboard.instantiateViewController(withIdentifier: "ServicerHomeViewController")
                 }
-                else if role == "Requester" {
+                else if role == 1001 { //requester
                     vc = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
                 }
             }
