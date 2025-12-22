@@ -2,7 +2,7 @@
 //  SceneDelegate.swift
 //  CRMS
 //
-//  Created by BP-36-201-10 on 26/11/2025.
+//  Created by Hoor Hasan on 26/11/2025.
 //
 
 import UIKit
@@ -45,7 +45,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
          
     //check for role function
     /*
-    private func checkUserRole(_ user: User){
+    private func checkUserRole(_ user: User) async throws -> String {
         guard await hasInternetConnection() else {
             throw NetworkError.noInternet
         }
