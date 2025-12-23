@@ -60,7 +60,7 @@
                                                             </imageReference>
                                                         </imageView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="orO-dq-vRt">
-                                                            <rect key="frame" x="108" y="15.999999999999996" width="269" height="51.666666666666657"/>
+                                                            <rect key="frame" x="108" y="4" width="269" height="94"/>
                                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
@@ -79,8 +79,8 @@
                                                         </label>
                                                     </subviews>
                                                     <constraints>
-                                                        <constraint firstItem="IkB-Ad-ZW1" firstAttribute="top" secondItem="orO-dq-vRt" secondAttribute="bottom" constant="4" id="15A-Kc-UIp"/>
-                                                        <constraint firstItem="orO-dq-vRt" firstAttribute="top" secondItem="olc-dc-4dg" secondAttribute="top" constant="16" id="5Gp-SC-1Gx"/>
+                                                        <constraint firstItem="IkB-Ad-ZW1" firstAttribute="top" secondItem="orO-dq-vRt" secondAttribute="bottom" multiplier="0.7" constant="3" id="15A-Kc-UIp"/>
+                                                        <constraint firstItem="orO-dq-vRt" firstAttribute="top" secondItem="olc-dc-4dg" secondAttribute="top" constant="4" id="5Gp-SC-1Gx"/>
                                                         <constraint firstItem="EDq-Lk-toy" firstAttribute="leading" secondItem="olc-dc-4dg" secondAttribute="leading" constant="16" id="8jq-OX-fKh"/>
                                                         <constraint firstItem="EDq-Lk-toy" firstAttribute="centerY" secondItem="olc-dc-4dg" secondAttribute="centerY" id="Gio-qC-sN3"/>
                                                         <constraint firstAttribute="trailingMargin" secondItem="T6j-FT-p7y" secondAttribute="trailing" constant="-16" id="IOx-6a-i0Y"/>
@@ -209,13 +209,13 @@
         <image name="gearshape" catalog="system" width="128" height="123"/>
         <image name="person.crop.circle.fill" catalog="system" width="128" height="123"/>
         <systemColor name="secondaryLabelColor">
-            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="tertiaryLabelColor">
-            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.29803921568627451" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29803921570000003" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
