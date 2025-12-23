@@ -10,6 +10,7 @@
 import UIKit
 import FirebaseAuth
 import FirebaseStorage
+import FirebaseFirestore
 
 class LoginViewController: UIViewController {
 
@@ -157,22 +158,23 @@ class LoginViewController: UIViewController {
             }
             
             //Login in successful - save user ID to UserDefaults
-            if let userID = authResult?.user.uid {
-                UserDefaults.standard.set(userID, forKey: UserDefaultsKeys.userID)
-            }
-            
-            //call checkUserRole Function to navigate to the correct home page
-            
-            
+            if let user = authResult?.user.uid {
+                UserDefaults.standard.set(user, forKey: UserDefaultsKeys.userID)
+                //call checkUserRole Function to navigate to the correct home page
+                self?.checkUserRole(for: user)
+            }            
         }
     }
 
-    
-    
-    
     //check for role function
+<<<<<<< HEAD
     private func checkUserRole(_ user: User) async throws -> String{
         /*
+=======
+    private func checkUserRole(for user: User) async throws -> String {
+        
+        //check for connectivity
+>>>>>>> f715860e526bca69a2ad9f7f6aaa493c74d65c4b
         guard await hasInternetConnection() else {
             throw NetworkError.noInternet
         }
@@ -181,7 +183,7 @@ class LoginViewController: UIViewController {
         let userID = user.uid
         
         do {
-            try db.collection("users").document(userID).getDocument {
+            try db.collection("User").document(userID).getDocument {
                 [weak self] document, error in
                 guard let self = self else {
                     return
@@ -193,36 +195,41 @@ class LoginViewController: UIViewController {
                 }
                 
                 //user exist
-                if let document = document, document.exists {
-                    let role = document.get("type") as? Int ?? ""
-                    
-                    var vc : UIViewController?
-                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                    
-                    // Navigate based on user role
-                    if role == 1000 { //admin
-                        vc = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
-                    }
-                    else if role == 1002 { //servicer
-                        vc = storyboard.instantiateViewController(withIdentifier: "ServicerHomeViewController")
-                    }
-                    else if role == 1001 { //requester
-                        vc = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
-                    }
-                }
-                
-                //user does't exist
-                else {
+                guard let document = document, document.exists else {
+                    self.showAlert(title: "User Not Found", message: "No user found with this ID.")
                     let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginViewController") as! LoginViewController
                     self.window?.rootViewController = loginVC
                     self.window?.makeKeyAndVisible()
+                    return
+                }
+                
+                //fetch role type
+                let role = document.get("type") as? Int ?? -1
+                    
+                var vc : UIViewController?
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    
+                // Navigate based on user role
+                if role == 1000 { //admin
+                    vc = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
+                }
+                else if role == 1002 { //servicer
+                    vc = storyboard.instantiateViewController(withIdentifier: "ServicerHomeViewController")
+                }
+                else if role == 1001 { //requester
+                    vc = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
+                }
+
+                if let vc = vc {
+                    window?.rootViewController = vc
+                    window?.makeKeyAndVisible()
                 }
             }
         }
         catch {
             throw NetworkError.serviceUnavailable
         }
-        */
+        
     }
 
     //this method is for rounding the bottom edge of the view
