@@ -167,14 +167,9 @@ class LoginViewController: UIViewController {
     }
 
     //check for role function
-<<<<<<< HEAD
-    private func checkUserRole(_ user: User) async throws -> String{
-        /*
-=======
     private func checkUserRole(for user: User) async throws -> String {
         
         //check for connectivity
->>>>>>> f715860e526bca69a2ad9f7f6aaa493c74d65c4b
         guard await hasInternetConnection() else {
             throw NetworkError.noInternet
         }
