@@ -22,8 +22,13 @@ class ServicerAvgTimeCollectionViewCell: UICollectionViewCell {
 
         //changing cell border color
         self.contentView.layer.borderWidth = 1
-        self.contentView.layer.borderColor = UIColor(red: 122, green: 167, blue: 188, alpha: 1.0).cgColor
+        self.contentView.layer.borderColor = UIColor(red: 122/255, green: 167/255, blue: 188/255, alpha: 1.0).cgColor
         
+        /*
+        GColor is a Core Graphics representation of a color. 
+        It's a lower-level structure that doesn't have the same flexibility as UIColor
+        The borderColor property of a CALayer expects a CGColor, not a UIColor. thats why we convert it
+        */
         
     }
     

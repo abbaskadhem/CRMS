@@ -6,19 +6,19 @@
 //
 
 import UIKit
-import FirebaseStorage
+import FirebaseFirestore
 
 class TimeContainerViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     //IBOutlets
-    @IBOutlet weak var view1: UIView!
-    @IBOutlet weak var view2: UIView!
+    @IBOutlet weak var view1: UIView! //whole avg time
+    @IBOutlet weak var view2: UIView! //ser avg time title
     
     @IBOutlet weak var avgTime: UILabel!
     
     @IBOutlet weak var collectionView: UICollectionView!
     
-    var servicerState: [(name: String, avgDays: Double)] = []
+    var servicerState: [(name: String, avgDays: Double)] = [] //dictionary
     
     
     override func viewDidLoad() {
@@ -26,14 +26,17 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
 
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(UINib(nibName: "TechAvgTimeCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "techCell")
+        collectionView.register(UINib(nibName: "ServicerAvgTimeCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "techCell")
         
-        fetchServicerAvgTime()
+        Task {
+            try? await fetchServicerAvgTime()
+        }
+        
         
     }
     
     //fetch data
-    private func fetchServicerAvgTime() async throws -> String {
+    private func fetchServicerAvgTime() async throws {
 
         //check connectivity
         guard await hasInternetConnection() else {
@@ -43,13 +46,54 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
         let db = Firestore.firestore()
 
         do {
-            
+            //fetch requests
+            let snapshot = try await db.collection("Request").getDocuments()
+                
+            var serTimes: [String : [Double]] = [:] //servicer id : durations in days
+                
+            //gathering data from "Request" collection
+            for doc in snapshot.documents {
+                guard let serId = doc["servicerRef"] as? String, 
+                      let start = doc["actualStartDate"] as? Timestamp, 
+                      let end = doc["actualEndDate"] as? Timestamp else {
+                    continue
+                }
 
+                //calculating the difference in days from the timestamps and appending them to the dictionary
+                let start = doc["actualStartDate"] as? Timestamp
+                let end = doc["actualEndDate"] as? Timestamp
+                let days = Calendar.current.dateComponents([.day], from: start, to: end).day ?? 0
+                
+                serTimes[serId, default: []].append(days)
+            }
+
+            var results: [(String, Double)] = []
+
+            //fetch servicers names and calculate average days
+            for (serId, daysArray) in serTimes {
+                let avgDays = daysArray.reduce(0, +) / Double(daysArray.count)
+
+                //fetch names
+                let serDoc = try await db.collection("User").document(serId).getDocuments()
+                let name = serDoc.get("name") as? String ?? "Unkown"
+
+                //append names and avg days to the results array
+                results.append((name, avgDays))
+            }
+
+            await MainActor.run {
+                self?.servicerState = results
+
+                // Calculate overall average in days
+                let overallAvg = results.map { $0.avgDays }.reduce(0, +) / Double(max(results.count, 1))
+                self.avgTime.text = "Overall Avg: \(String(format: "%.2f", overallAvg)) Days"
+                self.collectionView.reloadData()
+            }
+            
         }
         catch {
             throw NetworkError.serverUnavailable
         }
-        
     }
     
     func collectionView (_ collectionView: UICollectionView, numberOfItemsInSection section:Int) -> Int {
@@ -57,7 +101,7 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
     }
     
     func collectionView (_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "techCell", for: indexPath) as! TechAvgTimeCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "techCell", for: indexPath) as! ServicerAvgTimeCollectionViewCell
         let servicer = servicerState[indexPath.item]
         cell.nameLabel.text = servicer.name
         cell.timeLabel.text = "\(String(format: "%.2f",servicer.avgDays)) Days"

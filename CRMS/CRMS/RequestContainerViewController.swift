@@ -8,6 +8,7 @@
 import UIKit
 import Charts
 import FirebaseStorage
+import FirebaseFirestore
 
 class RequestContainerViewController: UIViewController {
 
@@ -39,12 +40,14 @@ class RequestContainerViewController: UIViewController {
         onHolLabel.layer.cornerRadius = 10
         onHolLabel.layer.masksToBounds = true
         
-
-        fetchRequests()
+        Task {
+           try? await fetchRequests() 
+        }
+        
     }
     
     //fetching requests status 
-    private func fetchRequests() async throws -> String {
+    private func fetchRequests() async throws {
 
         //check connectivity
         guard await hasInternetConnection() else {
@@ -54,57 +57,47 @@ class RequestContainerViewController: UIViewController {
         let db = Firestore.firestore()
 
         do {
-            try db.collection("Request").getDocuments {
-                [weak self] snapshot, error in
-                if let error = error {
-                    self?.showAlert(title: "Error", message: error.localizedDescription)
-                    return
+            let snapshot = try await db.collection("Request").getDocuments()
+
+            var completed = 0
+            var inProgress = 0
+            var onHold = 0
+            var cancelled = 0
+
+            for doc in snapshot.documents {
+                //taking the numeric data from the firebase and convert them to enum 
+                guard let statusValue = doc["status"] as? Int, let status = Status(rawValue: statusValue) else {
+                    continue
                 }
 
-                guard let documents = snapshot?.documents else {
-                    return
-                }
-
-                var completed = 0
-                var inProgress = 0
-                var onHold = 0
-                var cancelled = 0
-
-                for doc in documents {
-                    //taking the numeric data from the firebase and convert them to enum 
-                    guard let statusValue = doc["status"] as? Int, let status = Status(rawValue: statusValue) else {
-                        continue
-                    }
-
-                    switch status {
-                        case .completed:
-                            completed += 1
+                switch status {
+                    case .completed:
+                        completed += 1
                         
-                        case .onHold:
-                            onHold += 1
+                    case .onHold:
+                        onHold += 1
                         
-                        case .submitted, .assigned, .inProgress, .delayed:
-                            inProgress += 1
-                    }
+                    case .submitted, .assigned, .inProgress, .delayed:
+                        inProgress += 1
                 }
+            }
 
-                //ensuring the code is running on main thread 
-                DispatchQueue.main.async {
-                    //updating the UI 
-                    self?.totalNum.text = "\(documents.count)"
-                    self?.completedNum.text = "\(completed)"
-                    self?.inProgressNum.text = "\(inProgress)"
-                    self?.onHoldNum.text = "\(onHold)"
-                    self?.cancelledNum.text = "\(cancelled)"
+            //ensuring the code is running on main thread 
+            await MainActor.run {
+                //updating the UI 
+                self?.totalNum.text = "\(documents.count)"
+                self?.completedNum.text = "\(completed)"
+                self?.inProgressNum.text = "\(inProgress)"
+                self?.onHoldNum.text = "\(onHold)"
+                self?.cancelledNum.text = "\(cancelled)"
 
-                    //sneding data to the showPieChart Function
-                    self?.showPieChart(
-                        completed: completed,
-                        inProgress: inProgress,
-                        onHold: onHold,
-                        cancelled: cancelled
-                    )
-                }
+                //sneding data to the showPieChart Function
+                self?.showPieChart(
+                    completed: completed,
+                    inProgress: inProgress,
+                    onHold: onHold,
+                    cancelled: cancelled
+                )
             }
         }
         catch {
@@ -123,7 +116,7 @@ class RequestContainerViewController: UIViewController {
         //creating pie chart from Charts Library
         let chart PieChartView()
         chart.frame = pieChart.bounds
-        chart..autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        chart.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
         //preparing data entries
         let entries = [
@@ -139,10 +132,10 @@ class RequestContainerViewController: UIViewController {
         dataSet.sliceSpace = 2 
         //chart colors
         dataSet.colors = [
-            UIColor.(red: 83/255 , green: 105/255, blue: 127/255, alpha: 1.0).cgColor, // Completed
-            UIColor.(red: 138/255 , green: 167/255, blue: 188/255, alpha: 1.0).cgColor, // In Progress
-            UIColor.(red: 217/255 , green: 217/255, blue: 217/255, alpha: 1.0).cgColor, // On Hold
-            UIColor.(red: 153/255 , green: 153/255, blue: 153/255, alpha: 1.0).cgColor // Cancelled
+            UIColor(red: 83/255 , green: 105/255, blue: 127/255, alpha: 1.0), // Completed
+            UIColor(red: 138/255 , green: 167/255, blue: 188/255, alpha: 1.0), // In Progress
+            UIColor(red: 217/255 , green: 217/255, blue: 217/255, alpha: 1.0), // On Hold
+            UIColor(red: 153/255 , green: 153/255, blue: 153/255, alpha: 1.0) // Cancelled
         ]
         
         //attaching dataset to chart
