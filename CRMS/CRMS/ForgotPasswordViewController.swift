@@ -109,31 +109,32 @@ class ForgotPasswordViewController: UIViewController {
             showAlert(title: "Missing Email", message: "Please Enter Your Email Address")
             return
         }
+
+        //disable button during request
+        sendButton.isEnabled = false
+        sendButton.alpha = 0.75
         
         //checking if the email is correctly and in the db
-        /*
         let db = Firestore.firestore()
-        let usersRef = db.collection("users")
 
-        usersRef.whereField("email", isEqualTo: email).getDocuments { snapshot, error in
+        db.collection("User").whereField("email", isEqualTo: email).getDocuments { snapshot, error in
             if let error = error {
                 self.showAlert(title: "Error", message: error.localizedDescription)
                 return
             }
             
+
             if let snapshot = snapshot, !snapshot.documents.isEmpty {
                 // Email exists, send reset link
                 self.sendPasswordReset(email: email)
-            } else {
+            } 
+            else {
                 self.showAlert(title: "Email Not Found", message: "No account found with this email")
             }
         }
-        */
-        
-        //disable button during request
-        sendButton.isEnabled = false
-        sendButton.alpha = 0.75
+    }
 
+    private func sendPasswordReset(_ email: String){
         //send reset password email using firebase
         Auth.auth().sendPasswordReset(withEmail: email) { [weak self] error in
 
