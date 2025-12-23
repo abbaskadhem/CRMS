@@ -2,7 +2,7 @@
 //  TimeContainerViewController.swift
 //  CRMS
 //
-//  Created by BP-19-130-05 on 22/12/2025.
+//  Created by Hoor Hasan on 22/12/2025.
 //
 
 import UIKit
@@ -33,7 +33,22 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
     }
     
     //fetch data
-    private func fetchServicerAvgTime() {
+    private func fetchServicerAvgTime() async throws -> String {
+
+        //check connectivity
+        guard await hasInternetConnection() else {
+            throw NetworkError.noInternet
+        }
+
+        let db = Firestore.firestore()
+
+        do {
+            
+
+        }
+        catch {
+            throw NetworkError.serverUnavailable
+        }
         
     }
     
