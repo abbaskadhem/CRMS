@@ -113,6 +113,18 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
         return CGSize(width: collectionView.frame.width, height: 27) //full width , height 27pt
     }
     
+    //this method is for rounding the corners of the view
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        view1.layer.cornerRadius = 20
+        view1.layer.masksToBounds = true
+
+        view2.layer.cornerRadius = 20
+        view2.layer.masksToBounds = true
+    }
+
+
     //helper method for alert messages
     func showAlert (title: String, message: String){
 
