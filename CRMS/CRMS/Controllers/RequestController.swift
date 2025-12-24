@@ -51,7 +51,7 @@ final class RequestController {
 
         let history = RequestHistory(
             id: UUID(),
-            historyNo: try await getNextAutonumber("requestHistories"),
+            historyNo: try await getNextAutonumber(document: "requestHistories"),
             requestRef: requestRef,
             action: action,
             sentBackReason: sentBackReason,
@@ -83,7 +83,7 @@ final class RequestController {
 
         let request = Request(
             id: UUID(),
-            requestNo: try await getNextAutonumber("requests"),
+            requestNo: try await getNextAutonumber(document: "requests"),
             requesterRef: userId,
             requestCategoryRef: requestCategoryRef,
             requestSubcategoryRef: requestSubcategoryRef,
@@ -103,7 +103,7 @@ final class RequestController {
             inactive: false
         )
 
-        createHistoryRecord(requestRef: request.id, action: .submitted, sentBackReason: nil, reassignReason: nil)
+        try await createHistoryRecord(requestRef: request.id, action: .submitted, sentBackReason: nil, reassignReason: nil)
 
         try db.collection("requests")
             .document(request.id.uuidString)
