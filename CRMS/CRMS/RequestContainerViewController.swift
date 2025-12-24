@@ -18,6 +18,7 @@ class RequestContainerViewController: UIViewController {
     @IBOutlet weak var cmpLabel: UILabel!
     @IBOutlet weak var inProLabel: UILabel!
     @IBOutlet weak var onHolLabel: UILabel!
+    @IBOutlet weak var cancelledLabel: UILabel!
     
     @IBOutlet weak var totalNum: UILabel!
     @IBOutlet weak var completedNum: UILabel!
@@ -39,7 +40,9 @@ class RequestContainerViewController: UIViewController {
         inProLabel.layer.masksToBounds = true
         onHolLabel.layer.cornerRadius = 10
         onHolLabel.layer.masksToBounds = true
-        
+        cancelledLabel.layer.cornerRadius = 10
+        cancelledLabel.layer.masksToBounds = true
+
         Task {
            try? await fetchRequests() 
         }
@@ -106,7 +109,7 @@ class RequestContainerViewController: UIViewController {
     }
 
     //pie chart function
-    private func showPieChart(completed: Int, inProgress: Int, onHold: Int, cancelled: Int) async throws -> String {
+    private func showPieChart(completed: Int, inProgress: Int, onHold: Int, cancelled: Int) async throws {
         
         //removing any previous chart views from the container
         pieChart.subviews.foreach { 
@@ -138,9 +141,25 @@ class RequestContainerViewController: UIViewController {
             UIColor(red: 153/255 , green: 153/255, blue: 153/255, alpha: 1.0) // Cancelled
         ]
         
+        //attaching data persentage onto the chart
+        dataSet.valueFormatter = DefaultValueFormatter ( 
+            formatter: {
+            let f = NumberFormatter()
+            f.numberStyle = .percent
+            f.maximumFractionDigits = 1
+            return f
+            }()
+        )
+
         //attaching dataset to chart
+        chart.usePercentValuesEnabled = true //make the values visible
+        dataSet.valueFont = .systemFont(ofSize: 10, weight: .medium)
+        dataSet.valueTextColor = UIColor(red: 15/255 , green: 125/255, blue: 41/255, alpha: 1.0)
+        dataSet.drawLabelsEnabled = false
+        dataSet.valuePosition = .outsideSlice //the persantage will be outside the slice
+
         chart.data = PieChartData(dataSet: dataSet)
-        chart.holeRadiusPercent = 0.55 //doughnut chart
+        chart.holeRadiusPercent = 0.75 //doughnut chart
         chart.animate(yAxisDuration: 1.0) //animated on load
         
 
