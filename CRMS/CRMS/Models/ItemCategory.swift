@@ -6,20 +6,75 @@
 //
 
 import Foundation
+import UIKit
 
 struct ItemCategoryModel: Codable, Identifiable {
-var id: UUID // UUID
-var name: String // Name
-var isParent: Bool // Is Parent
-var parentCategoryRef: UUID? // Parent Category Ref.
-
-// Default Common Fields
-var createdOn: Date // Created on
-var createdBy: UUID // Created by
-var modifiedOn: Date? // Modified on
-var modifiedBy: UUID? // Modified by
-var inactive: Bool // Inactive
+    var id: UUID
+    var name: String
+    var isParent: Bool
+    var parentCategoryRef: UUID?
+    var createdOn: Date
+    var createdBy: UUID
+    var modifiedOn: Date?
+    var modifiedBy: UUID?
+    var inactive: Bool
+    
+    // UI state
+    var isExpanded: Bool = true
 }
 
+class CategoryCell: UITableViewCell {
+
+    static let reuseID = "CategoryCell"
+
+    let arrowImageView: UIImageView = {
+        let iv = UIImageView(image: UIImage(systemName: "chevron.right"))
+        iv.tintColor = UIColor(hex: "#0f1929")
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        return iv
+    }()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupUI()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupUI()
+    }
+
+    private func setupUI() {
+        selectionStyle = .none
+        backgroundColor = .clear
+
+        contentView.backgroundColor = .clear
+        contentView.layer.cornerRadius = 8
+        contentView.layer.borderWidth = 1
+        contentView.layer.borderColor = UIColor.black.cgColor
+        contentView.clipsToBounds = true
+        contentView.layer.masksToBounds = true
+        contentView.directionalLayoutMargins =
+            NSDirectionalEdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16)
 
 
+        contentView.directionalLayoutMargins =
+            NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+
+        textLabel?.numberOfLines = 0
+        textLabel?.preservesSuperviewLayoutMargins = true
+
+        contentView.addSubview(arrowImageView)
+
+        NSLayoutConstraint.activate([
+            arrowImageView.trailingAnchor.constraint(
+                equalTo: contentView.layoutMarginsGuide.trailingAnchor
+            ),
+            arrowImageView.centerYAnchor.constraint(
+                equalTo: contentView.centerYAnchor
+            ),
+            arrowImageView.widthAnchor.constraint(equalToConstant: 12),
+            arrowImageView.heightAnchor.constraint(equalToConstant: 12)
+        ])
+    }
+}
