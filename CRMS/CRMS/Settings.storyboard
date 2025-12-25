@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hfa-r7-K3Z">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="co2-jN-ub6">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="Image references" minToolsVersion="12.0"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -27,14 +28,14 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="23l-jF-QKf">
                                 <rect key="frame" x="153.66666666666666" y="188.66666666666666" width="86" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" name="text"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="892-Ck-v2o">
-                                <rect key="frame" x="16" y="225.66666666666669" width="361" height="542.33333333333326"/>
+                                <rect key="frame" x="16" y="225.66666666666666" width="361" height="493.33333333333337"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="gBF-aH-YTH">
-                                        <rect key="frame" x="0.0" y="0.0" width="361" height="542.33333333333337"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="361" height="493.33333333333331"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <color key="separatorColor" red="0.86274516580000005" green="0.84313726430000002" blue="0.83137255909999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <prototypes>
@@ -62,7 +63,7 @@
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="orO-dq-vRt">
                                                             <rect key="frame" x="108" y="4" width="269" height="94"/>
                                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
-                                                            <nil key="textColor"/>
+                                                            <color key="textColor" name="text"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="user@email.com" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IkB-Ad-ZW1">
@@ -105,7 +106,7 @@
                                                             <rect key="frame" x="20" y="0.0" width="321" height="50"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                            <nil key="textColor"/>
+                                                            <color key="textColor" name="text"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
@@ -122,7 +123,7 @@
                                                             <rect key="frame" x="20" y="0.0" width="321" height="50"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                            <nil key="textColor"/>
+                                                            <color key="textColor" name="text"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="nwd-uB-eMV">
@@ -143,7 +144,7 @@
                                                             <rect key="frame" x="20" y="0.0" width="321" height="50"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                            <nil key="textColor"/>
+                                                            <color key="textColor" name="text"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="djU-fT-5cM">
@@ -179,35 +180,43 @@
                             <constraint firstItem="rle-W0-6RB" firstAttribute="trailing" secondItem="892-Ck-v2o" secondAttribute="trailing" constant="16" id="zm3-4H-1dB"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="" id="BpZ-wP-45H">
-                        <imageReference key="image" image="gearshape" catalog="system" renderingMode="hierarchical">
-                            <hierarchicalColors>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                            </hierarchicalColors>
-                        </imageReference>
-                        <imageReference key="selectedImage" image="gearshape" catalog="system" renderingMode="hierarchical">
-                            <hierarchicalColors>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                            </hierarchicalColors>
-                        </imageReference>
-                    </tabBarItem>
+                    <navigationItem key="navigationItem" id="YNA-RA-SE3"/>
                     <connections>
                         <outlet property="tableView" destination="gBF-aH-YTH" id="aoR-hi-fcW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="P6P-7r-OnQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="448" y="-150"/>
+            <point key="canvasLocation" x="4521.3740458015263" y="-159.1549295774648"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Hia-oL-OgN">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" toolbarHidden="NO" id="co2-jN-ub6" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="mEr-Nt-J0w">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="NkT-Ve-xw3">
+                        <rect key="frame" x="0.0" y="735" width="393" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="hfa-r7-K3Z" kind="relationship" relationship="rootViewController" id="L53-KM-ZG0"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Wdc-hf-4ju" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3594.6564885496182" y="-159.1549295774648"/>
         </scene>
     </scenes>
     <resources>
         <image name="Light mode logo, compressed &amp; cropped" width="5524" height="3070"/>
-        <image name="gearshape" catalog="system" width="128" height="123"/>
         <image name="person.crop.circle.fill" catalog="system" width="128" height="123"/>
+        <namedColor name="text">
+            <color red="0.058823529411764705" green="0.098039215686274508" blue="0.16078431372549021" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="secondaryLabelColor">
             <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

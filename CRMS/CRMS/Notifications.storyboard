@@ -57,7 +57,7 @@
                         </imageReference>
                         <imageReference key="selectedImage" image="bell.badge" catalog="system" renderingMode="hierarchical">
                             <hierarchicalColors>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color white="0.33000000000000002" alpha="1" colorSpace="calibratedWhite"/>
                                 <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             </hierarchicalColors>
