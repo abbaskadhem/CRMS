@@ -1,6 +1,6 @@
 //
 //  ReqCategory.swift
-//  CRMS
+//  Inventory
 //
 //  Created by BP-36-201-10 on 01/12/2025.
 //
@@ -27,12 +27,7 @@ class CategoryCell: UITableViewCell {
 
     static let reuseID = "CategoryCell"
 
-    let arrowImageView: UIImageView = {
-        let iv = UIImageView(image: UIImage(systemName: "chevron.right"))
-        iv.tintColor = UIColor(hex: "#0f1929")
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        return iv
-    }()
+    
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -64,17 +59,5 @@ class CategoryCell: UITableViewCell {
         textLabel?.numberOfLines = 0
         textLabel?.preservesSuperviewLayoutMargins = true
 
-        contentView.addSubview(arrowImageView)
-
-        NSLayoutConstraint.activate([
-            arrowImageView.trailingAnchor.constraint(
-                equalTo: contentView.layoutMarginsGuide.trailingAnchor
-            ),
-            arrowImageView.centerYAnchor.constraint(
-                equalTo: contentView.centerYAnchor
-            ),
-            arrowImageView.widthAnchor.constraint(equalToConstant: 12),
-            arrowImageView.heightAnchor.constraint(equalToConstant: 12)
-        ])
     }
 }

@@ -1,6 +1,6 @@
 //
 //  ItemViewController.swift
-//  CRMS
+//  Inventory
 //
 //  Created by BP-36-201-11 on 24/12/2025.
 //
@@ -23,7 +23,16 @@ class ItemViewController: UIViewController,
         // Set title
         title = child?.name
         
-        print(child)
+        print(child!)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: .add,   // + icon
+                target: self,
+                action: #selector(addButtonTapped)
+            )
+        
+        navigationItem.rightBarButtonItem?.tintColor = UIColor(hex: "#53697f")
+        navigationController?.navigationBar.tintColor = UIColor(hex: "#53697f")
+
         setupTableView()
         
         allItems = loadSampleItems()
@@ -37,7 +46,9 @@ class ItemViewController: UIViewController,
             }
         }
     
-    
+    @objc private func addButtonTapped() {
+        print("Add button tapped")
+    }
     
     
     private func setupTableView() {
@@ -135,6 +146,8 @@ class ItemViewController: UIViewController,
             let item = items[itemIndex]
             cell.nameLabel.text = item.name
             cell.descriptionLabel.text = item.description
+            cell.backgroundColor = .clear
+            
             return cell
         }
     }
@@ -148,6 +161,17 @@ class ItemViewController: UIViewController,
         let itemIndex = (indexPath.row - 1) / 2
         let item = items[itemIndex]
         print("Selected item: \(item.name)")
+        performSegue(withIdentifier: "ShowDetailSegue", sender: item)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowDetailSegue",
+           let detailVC = segue.destination as? DetailViewController,
+           let item = sender as? ItemModel {
+            detailVC.item = item
+        }
+        
+        
     }
  
         /*

@@ -14,11 +14,14 @@ class InventoryViewController: UIViewController,
 
     @IBOutlet weak var tableView: UITableView!
     
+    @IBOutlet weak var addButton: UIButton!
+    
     var categories: [ItemCategoryModel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        
         setupTableView()
         loadSampleData()
     }
@@ -191,8 +194,9 @@ class InventoryViewController: UIViewController,
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
         // Arrow
-        let arrowImageView = UIImageView(image: UIImage(systemName: "chevron.right"))
-        arrowImageView.tintColor = UIColor(hex: "#0f1929")
+        let arrowImageView = UIImageView(image: UIImage(named: "custom_arrow"))
+        arrowImageView.contentMode = .scaleAspectFit
+
         arrowImageView.translatesAutoresizingMaskIntoConstraints = false
         arrowImageView.tag = 999   // IMPORTANT: identify arrow later
 
@@ -298,7 +302,30 @@ class InventoryViewController: UIViewController,
         }
     }
 
+    
+    @IBOutlet weak var addView: UIView!
+    
+    var overlayView: UIView!
 
+    @IBAction func addCategoryTapped(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+           if let categoryVC = storyboard.instantiateViewController(withIdentifier: "AddViewController") as? AddViewController {
+
+               // This enables the "slide up" animation and dimmed background automatically
+               categoryVC.modalPresentationStyle = .pageSheet
+
+               if let sheet = categoryVC.sheetPresentationController {
+                   sheet.detents = [.medium()]               // roughly half-screen
+                   sheet.prefersGrabberVisible = true        // optional drag handle
+                   sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+                   sheet.preferredCornerRadius = 16
+               }
+
+               self.present(categoryVC, animated: true)      // slide-up animation
+           }
+    }
+
+    
 }
 
 extension UIColor {

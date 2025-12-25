@@ -62,5 +62,131 @@ class ItemCell: UITableViewCell {
             stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
+        
+        selectionStyle = .none
+        backgroundColor = .clear
+
+        contentView.backgroundColor = .clear
+        contentView.layer.cornerRadius = 8
+        contentView.layer.borderWidth = 1
+        contentView.layer.borderColor = UIColor.black.cgColor
+        contentView.clipsToBounds = true
+        contentView.layer.masksToBounds = true
+        contentView.directionalLayoutMargins =
+            NSDirectionalEdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16)
+
+
+        contentView.directionalLayoutMargins =
+            NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+
+        textLabel?.numberOfLines = 0
+        textLabel?.preservesSuperviewLayoutMargins = true
+    }
+}
+
+class InfoCell: UITableViewCell {
+
+    static let reuseID = "InfoCell"
+
+    let titleLabel = UILabel()
+    let valueLabel = UILabel()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupUI()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupUI()
+    }
+
+    private func setupUI() {
+        titleLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        titleLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        titleLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+
+        valueLabel.font = .systemFont(ofSize: 16)
+        valueLabel.textColor = .darkGray
+        valueLabel.textAlignment = .right
+        valueLabel.numberOfLines = 0
+
+        let stack = UIStackView(arrangedSubviews: [titleLabel, valueLabel])
+        stack.axis = .horizontal
+        stack.spacing = 8
+        stack.alignment = .center // ensures vertical alignment
+        stack.distribution = .fill
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        contentView.addSubview(stack)
+
+        NSLayoutConstraint.activate([
+            stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            stack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
+        ])
+        
+        let bottomBorder = UIView()
+        bottomBorder.backgroundColor = UIColor(hex: "#53697f")
+        bottomBorder.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(bottomBorder)
+
+        NSLayoutConstraint.activate([
+            bottomBorder.heightAnchor.constraint(equalToConstant: 0.5),
+            bottomBorder.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            bottomBorder.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            bottomBorder.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        ])
+    }
+
+    func configure(title: String, value: String) {
+        titleLabel.text = title
+        valueLabel.text = value
+    }
+}
+
+class TextAreaCell: UITableViewCell {
+
+    static let reuseID = "TextAreaCell"
+
+    let titleLabel = UILabel()
+    let textView = UITextView()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupUI()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupUI()
+    }
+
+    private func setupUI() {
+        titleLabel.font = .systemFont(ofSize: 16, weight: .medium)
+
+        textView.font = .systemFont(ofSize: 14)
+        textView.isScrollEnabled = false
+        textView.backgroundColor = .clear
+
+        let stack = UIStackView(arrangedSubviews: [titleLabel, textView])
+        stack.axis = .vertical
+        stack.spacing = 4
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        contentView.addSubview(stack)
+
+        NSLayoutConstraint.activate([
+            stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            stack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
+        ])
+    }
+
+    func configure(title: String, text: String) {
+        titleLabel.text = title
+        textView.text = text
     }
 }
