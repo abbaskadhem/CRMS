@@ -24,22 +24,39 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
          
         window = UIWindow(windowScene: windowScene)
-         
+
         //check if there if any stored credentials
-        guard let rememberUser = UserDefaults.standard.bool(forKey: "rememberMeButton"), let currentUser = Auth.auth().currentUser else {
-            let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginViewController") as! LoginViewController
+        let rememberUser = UserDefaults.standard.bool(forKey: "rememberMeButton")
+        if !rememberUser || Auth.auth().currentUser == nil {
+            let loginVC = UIStoryboard(name: "Main", bundle: nil)
+                .instantiateViewController(identifier: "LoginViewController") as! LoginViewController
             self.window?.rootViewController = loginVC
             self.window?.makeKeyAndVisible()
             return
         }
 
         //call check user role if credentials exist 
-        checkUserRole(for: user)
-        
+        if let user = Auth.auth().currentUser {
+            Task {
+                do {
+                    try await checkUserRole(for: user)
+                }
+                catch {
+                    print("Failed to check user role: \(error)")
+                }
+            }
+        }
+        else {
+            let loginVC = UIStoryboard(name: "Main", bundle: nil)
+                .instantiateViewController(identifier: "LoginViewController") as! LoginViewController
+            self.window?.rootViewController = loginVC
+            self.window?.makeKeyAndVisible()
+        }
+
     }
          
     //check for role function
-    private func checkUserRole(for user: User) async throws -> String {
+    private func checkUserRole(for user: FirebaseAuth.User) async throws {
         
         //check for connectivity
         guard await hasInternetConnection() else {
@@ -50,54 +67,44 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let userID = user.uid
         
         do {
-            try db.collection("User").document(userID).getDocument {
-                [weak self] document, error in
-                guard let self = self else {
-                    return
-                }
-                
-                if let error = error {
-                    self?.showAlert(title: "Error", message: error.localizedDescription)
-                    return
-                }
-                
-                //user exist
-                guard let document = document, document.exists else {
-                    self.showAlert(title: "User Not Found", message: "No user found with this ID.")
-                    let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginViewController") as! LoginViewController
-                    self.window?.rootViewController = loginVC
-                    self.window?.makeKeyAndVisible()
-                    return
-                }
-                
-                //fetch role type
-                let role = document.get("type") as? Int ?? -1
-                    
-                var vc : UIViewController?
+            let document = try await db.collection("User").document(userID).getDocument()
+            
+            guard let data = document.data() else {
+                // Handle no document
+                return
+            }
+            
+            let role = data["type"] as? Int ?? -1
+            
+            await MainActor.run {
+                var vc: UIViewController?
                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                    
-                // Navigate based on user role
-                if role == 1000 { //admin
+                
+                switch role {
+                case 1000:
                     vc = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
-                }
-                else if role == 1002 { //servicer
+                case 1002:
                     vc = storyboard.instantiateViewController(withIdentifier: "ServicerHomeViewController")
-                }
-                else if role == 1001 { //requester
+                case 1001:
                     vc = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
+                default:
+                    vc = storyboard.instantiateViewController(identifier: "LoginViewController")
                 }
-
+                
                 if let vc = vc {
-                    window?.rootViewController = vc
-                    window?.makeKeyAndVisible()
+                    self.window?.rootViewController = vc
+                    self.window?.makeKeyAndVisible()
                 }
             }
         }
         catch {
-            throw NetworkError.serviceUnavailable
+            print("Failed to fetch user document: \(error)")
+            throw NetworkError.serverUnavailable
         }
+
     }
-        
+
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.

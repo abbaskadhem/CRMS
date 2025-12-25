@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import Charts
+import DGCharts
 import FirebaseStorage
 import FirebaseFirestore
 
@@ -44,7 +44,7 @@ class RequestContainerViewController: UIViewController {
         cancelledLabel.layer.masksToBounds = true
 
         Task {
-           try? await fetchRequests() 
+           try? await fetchRequests()
         }
         
     }
@@ -82,20 +82,23 @@ class RequestContainerViewController: UIViewController {
                         
                     case .submitted, .assigned, .inProgress, .delayed:
                         inProgress += 1
+                    
+                    case .cancelled:
+                        cancelled += 1
                 }
             }
 
             //ensuring the code is running on main thread 
             await MainActor.run {
                 //updating the UI 
-                self?.totalNum.text = "\(documents.count)"
-                self?.completedNum.text = "\(completed)"
-                self?.inProgressNum.text = "\(inProgress)"
-                self?.onHoldNum.text = "\(onHold)"
-                self?.cancelledNum.text = "\(cancelled)"
+                self.totalNum.text = "\(snapshot.documents.count)"
+                self.completedNum.text = "\(completed)"
+                self.inProgressNum.text = "\(inProgress)"
+                self.onHoldNum.text = "\(onHold)"
+                self.cancelledNum.text = "\(cancelled)"
 
                 //sneding data to the showPieChart Function
-                self?.showPieChart(
+                self.showPieChart(
                     completed: completed,
                     inProgress: inProgress,
                     onHold: onHold,
@@ -109,15 +112,15 @@ class RequestContainerViewController: UIViewController {
     }
 
     //pie chart function
-    private func showPieChart(completed: Int, inProgress: Int, onHold: Int, cancelled: Int) async throws {
+    private func showPieChart(completed: Int, inProgress: Int, onHold: Int, cancelled: Int){
         
         //removing any previous chart views from the container
-        pieChart.subviews.foreach { 
+        pieChart.subviews.forEach {
             $0.removeFromSuperview()
         }
 
         //creating pie chart from Charts Library
-        let chart PieChartView()
+        let chart = PieChartView()
         chart.frame = pieChart.bounds
         chart.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
@@ -138,7 +141,7 @@ class RequestContainerViewController: UIViewController {
             UIColor(red: 83/255 , green: 105/255, blue: 127/255, alpha: 1.0), // Completed
             UIColor(red: 138/255 , green: 167/255, blue: 188/255, alpha: 1.0), // In Progress
             UIColor(red: 217/255 , green: 217/255, blue: 217/255, alpha: 1.0), // On Hold
-            UIColor(red: 153/255 , green: 153/255, blue: 153/255, alpha: 1.0) // Cancelled
+            UIColor(red: 206/255 , green: 206/255, blue: 206/255, alpha: 1.0) // Cancelled
         ]
         
         //attaching data persentage onto the chart
@@ -155,9 +158,14 @@ class RequestContainerViewController: UIViewController {
         chart.usePercentValuesEnabled = true //make the values visible
         dataSet.valueFont = .systemFont(ofSize: 10, weight: .medium)
         dataSet.valueTextColor = UIColor(red: 15/255 , green: 125/255, blue: 41/255, alpha: 1.0)
-        dataSet.drawLabelsEnabled = false
-        dataSet.valuePosition = .outsideSlice //the persantage will be outside the slice
-
+        chart.drawEntryLabelsEnabled = false
+        
+        //the persantage will be outside the slice
+        dataSet.yValuePosition = .outsideSlice
+        dataSet.xValuePosition = .outsideSlice
+        dataSet.valueLinePart1Length = 0
+        dataSet.valueLinePart2Length = 0
+        
         chart.data = PieChartData(dataSet: dataSet)
         chart.holeRadiusPercent = 0.75 //doughnut chart
         chart.animate(yAxisDuration: 1.0) //animated on load

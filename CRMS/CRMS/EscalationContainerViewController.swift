@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import Charts
+import DGCharts
 import FirebaseFirestore
 
 class EscalationContainerViewController: UIViewController {
@@ -30,7 +30,7 @@ class EscalationContainerViewController: UIViewController {
     }
 
     //fetching Escalated Requests
-    private func fetchEscalationAnalysis() aync throws {
+    private func fetchEscalationAnalysis() async throws {
 
         //check connectivity
         guard await hasInternetConnection() else {
@@ -67,16 +67,16 @@ class EscalationContainerViewController: UIViewController {
 
             let escalatedCount = escalatedRequests.count
             let nonEscalatedCount = totalRequests - escalatedCount
-            let escalationRate = Double(escalatedCount) / Double(max(totalRequests, 1)) * 100
+            //let escalationRate = Double(escalatedCount) / Double(max(totalRequests, 1)) * 100
 
             //ensuring the code is running on main thread 
             await MainActor.run {
                 //updating the UI 
-                self?.totalNum.text = totalRequests
-                self?.escalatedNum = escalatedCount
+                self.totalNum.text = "\(totalRequests)"
+                self.escalatedNum.text = "\(escalatedCount)"
 
                 //sneding data to the showPieChart Function
-                self?.showPieChart(
+                self.showPieChart(
                     escalated: escalatedCount,
                     nonEscalated: nonEscalatedCount
                 )
@@ -88,15 +88,15 @@ class EscalationContainerViewController: UIViewController {
     }
 
      //pie chart function
-    private func showPieChart(escalated: Int, nonEscalated: Int) async throws {
+    private func showPieChart(escalated: Int, nonEscalated: Int){
         
         //removing any previous chart views from the container
-        pieChart.subviews.foreach { 
+        pieChart.subviews.forEach {
             $0.removeFromSuperview()
         }
 
         //creating pie chart from Charts Library
-        let chart PieChartView()
+        let chart = PieChartView()
         chart.frame = pieChart.bounds
         chart.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
@@ -131,8 +131,13 @@ class EscalationContainerViewController: UIViewController {
         dataSet.valueFont = .systemFont(ofSize: 10, weight: .medium)
         dataSet.valueTextColor = UIColor(red: 15/255 , green: 125/255, blue: 41/255, alpha: 1.0)
         dataSet.entryLabelColor = UIColor(red: 15/255 , green: 125/255, blue: 41/255, alpha: 1.0)
-        dataSet.valuePosition = .outsideSlice //the persantage will be outside the slice
-
+        
+        //the persantage will be outside the slice
+        dataSet.yValuePosition = .outsideSlice
+        dataSet.xValuePosition = .outsideSlice
+        dataSet.valueLinePart1Length = 0
+        dataSet.valueLinePart2Length = 0
+        
         chart.data = PieChartData(dataSet: dataSet)
         chart.holeRadiusPercent = 0.75 //doughnut chart
         chart.animate(yAxisDuration: 1.0) //animated on load

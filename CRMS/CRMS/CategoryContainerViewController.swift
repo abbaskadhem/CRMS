@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import Charts
+import DGCharts
 import FirebaseFirestore
 
 class CategoryContainerViewController: UIViewController {
@@ -131,7 +131,7 @@ class CategoryContainerViewController: UIViewController {
         ]
 
         //attaching data to chart 
-        chart.data = BarChartData(dataSet, dataSet)
+        chart.data = BarChartData(arrayLiteral: dataSet, dataSet)
 
         chart.xAxis.valueFormatter = IndexAxisValueFormatter(values: data.map { $0.name }) //setting X-axis labels to category names
         chart.xAxis.granularity = 1 //ensuring one label per bar

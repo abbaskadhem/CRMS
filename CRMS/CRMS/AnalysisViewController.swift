@@ -94,7 +94,11 @@ class AnalysisViewController: UIViewController {
         //ask for user confirmation to generate the pdf
         showConfirmationAlert(title: "Save PDF", message: "Do you want to save the analytics as a PDF?") { 
             [weak self] in
-
+            
+            guard let self = self else {
+                return
+            }
+            
             //ensuring all collection/ scroll views are shown
             self.requestAnalysis.setNeedsLayout()
             self.requestAnalysis.layoutIfNeeded()
@@ -130,7 +134,7 @@ class AnalysisViewController: UIViewController {
             }
 
             // Proceed with PDF generation
-            self?.createAndSavePDF()
+            self.createAndSavePDF()
         }
 
 
@@ -236,7 +240,7 @@ class AnalysisViewController: UIViewController {
     //draw view content + 
     private func drawViewContent(_ view: UIView){
 
-        let contex = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()
 
         //starting below the header
         let startY: CGFloat = 90

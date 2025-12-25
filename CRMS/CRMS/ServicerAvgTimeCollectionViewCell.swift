@@ -13,6 +13,7 @@ class ServicerAvgTimeCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
     
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         

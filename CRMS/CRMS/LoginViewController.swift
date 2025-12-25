@@ -158,16 +158,23 @@ class LoginViewController: UIViewController {
             }
             
             //Login in successful - save user ID to UserDefaults
-            if let user = authResult?.user.uid {
-                UserDefaults.standard.set(user, forKey: UserDefaultsKeys.userID)
+            if let user = authResult?.user{
+                UserDefaults.standard.set(user.uid, forKey: UserDefaultsKeys.userID)
                 //call checkUserRole Function to navigate to the correct home page
-                self?.checkUserRole(for: user)
-            }            
+                Task {
+                    do {
+                            try await self?.checkUserRole(for: user)
+                    }
+                    catch {
+                            self?.showAlert(title: "Error", message: "Failed to check user role: \(error.localizedDescription)")
+                    }
+                }
+            }
         }
     }
 
     //check for role function
-    private func checkUserRole(for user: User) async throws -> String {
+    private func checkUserRole(for user: FirebaseAuth.User) async throws{
         
         //check for connectivity
         guard await hasInternetConnection() else {
@@ -178,53 +185,52 @@ class LoginViewController: UIViewController {
         let userID = user.uid
         
         do {
-            try db.collection("User").document(userID).getDocument {
-                [weak self] document, error in
-                guard let self = self else {
-                    return
-                }
+            // Fetch the document asynchronously
+            let document = try await db.collection("User").document(userID).getDocument()
+            
+            // Ensure document exists
+            guard let data = document.data() else {
                 
-                if let error = error {
-                    self?.showAlert(title: "Error", message: error.localizedDescription)
-                    return
-                }
-                
-                //user exist
-                guard let document = document, document.exists else {
-                    self.showAlert(title: "User Not Found", message: "No user found with this ID.")
-                    let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginViewController") as! LoginViewController
-                    self.window?.rootViewController = loginVC
-                    self.window?.makeKeyAndVisible()
-                    return
-                }
-                
-                //fetch role type
-                let role = document.get("type") as? Int ?? -1
-                    
-                var vc : UIViewController?
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                    
-                // Navigate based on user role
-                if role == 1000 { //admin
-                    vc = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
-                }
-                else if role == 1002 { //servicer
-                    vc = storyboard.instantiateViewController(withIdentifier: "ServicerHomeViewController")
-                }
-                else if role == 1001 { //requester
-                    vc = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
-                }
-
+                self.showAlert(title: "User Not Found", message: "No user found with this ID.")
+                let loginVC = UIStoryboard(name: "Main", bundle: nil)
+                    .instantiateViewController(identifier: "LoginViewController") as! LoginViewController
+                self.window?.rootViewController = loginVC
+                self.window?.makeKeyAndVisible()
+                return
+            }
+            
+            // Fetch role type
+            let role = data["type"] as? Int ?? -1
+            
+            // Determine the correct view controller
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            var vc: UIViewController?
+            
+            switch role {
+            case 1000: // admin
+                vc = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
+            case 1002: // servicer
+                vc = storyboard.instantiateViewController(withIdentifier: "ServicerHomeViewController")
+            case 1001: // requester
+                vc = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
+            default:
+                vc = storyboard.instantiateViewController(identifier: "LoginViewController")
+            }
+            
+            // Set root view controller on main thread
+            await MainActor.run {
                 if let vc = vc {
-                    window?.rootViewController = vc
-                    window?.makeKeyAndVisible()
+                    self.window?.rootViewController = vc
+                    self.window?.makeKeyAndVisible()
                 }
             }
+            
         }
         catch {
-            throw NetworkError.serviceUnavailable
+            self.showAlert(title: "Error", message: "Failed to fetch user: \(error.localizedDescription)")
+            throw NetworkError.serverUnavailable
         }
-        
+
     }
 
     //this method is for rounding the bottom edge of the view

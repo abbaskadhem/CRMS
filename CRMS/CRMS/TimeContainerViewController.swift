@@ -53,16 +53,28 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
                 
             //gathering data from "Request" collection
             for doc in snapshot.documents {
-                guard let serId = doc["servicerRef"] as? String, 
-                      let start = doc["actualStartDate"] as? Timestamp, 
-                      let end = doc["actualEndDate"] as? Timestamp else {
+                guard let serId = doc["servicerRef"] as? String else
+                {
                     continue
                 }
 
                 //calculating the difference in days from the timestamps and appending them to the dictionary
-                let start = doc["actualStartDate"] as? Timestamp
-                let end = doc["actualEndDate"] as? Timestamp
-                let days = Calendar.current.dateComponents([.day], from: start, to: end).day ?? 0
+                
+                var days: Double = 0
+                
+                // Only calculate days if both timestamps exist
+                if let startTimestamp = doc["actualStartDate"] as? Timestamp,
+                   let endTimestamp = doc["actualEndDate"] as? Timestamp {
+
+                    let startDate = startTimestamp.dateValue()
+                    let endDate = endTimestamp.dateValue()
+
+                    let daysInt = Calendar.current
+                        .dateComponents([.day], from: startDate, to: endDate)
+                        .day ?? 0
+
+                    days = Double(daysInt)
+                }
                 
                 serTimes[serId, default: []].append(days)
             }
@@ -74,7 +86,7 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
                 let avgDays = daysArray.reduce(0, +) / Double(daysArray.count)
 
                 //fetch names
-                let serDoc = try await db.collection("User").document(serId).getDocuments()
+                let serDoc = try await db.collection("User").document(serId).getDocument()
                 let name = serDoc.get("name") as? String ?? "Unkown"
 
                 //append names and avg days to the results array
@@ -82,10 +94,10 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
             }
 
             await MainActor.run {
-                self?.servicerState = results
+                self.servicerState = results
 
                 // Calculate overall average in days
-                let overallAvg = results.map { $0.avgDays }.reduce(0, +) / Double(max(results.count, 1))
+                let overallAvg = results.map { $0.1 }.reduce(0, +) / Double(max(results.count, 1))
                 self.avgTime.text = "Overall Avg: \(String(format: "%.2f", overallAvg)) Days"
                 self.collectionView.reloadData()
             }
