@@ -15,7 +15,11 @@ final class ConfirmEditAlertViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.backgroundColor = .clear
+        let blur = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+        blur.frame = view.bounds
+        blur.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.insertSubview(blur, at: 0)
     }
 
     @IBAction func saveButton(_ sender: UIButton) {
@@ -53,13 +57,13 @@ final class ConfirmEditAlertViewController: UIViewController {
     private func showSuccessAndClose() {
         let sb = UIStoryboard(name: "Main", bundle: nil)
         let successVC = sb.instantiateViewController(
-            withIdentifier: "FAQSuccessViewController" // or your edit success ID
-        ) as! FAQSuccessViewController
+            withIdentifier: "FAQEditSuccessViewController"
+        ) as! FAQEditSuccessViewController
 
         successVC.modalPresentationStyle = .overFullScreen
         successVC.modalTransitionStyle = .crossDissolve
 
-        let presenter = presentingViewController  // EditFAQViewController
+        let presenter = presentingViewController
 
         dismiss(animated: false) {
             presenter?.present(successVC, animated: true)

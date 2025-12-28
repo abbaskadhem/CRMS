@@ -44,11 +44,7 @@ class FAQDetailsViewController: UIViewController {
     
    
     @IBAction func deleteButtonAction(_ sender: Any) {
-//        Task{
-//            try await handleDelete()
-//        }
         showConfirmDelete()
-        
     }
     
     func handleDelete()async throws{

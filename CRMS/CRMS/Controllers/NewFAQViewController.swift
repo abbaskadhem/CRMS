@@ -27,6 +27,13 @@ class NewFAQViewController: UIViewController {
         vc.answer = answerTextView.text
         vc.question = questionTextView.text
 
+        // --- ADD THIS BLOCK ---
+        // When the confirmation screen finishes saving successfully, pop this view controller
+        vc.onSaveSuccess = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        // ----------------------
+
         vc.modalPresentationStyle = .overFullScreen
         vc.modalTransitionStyle = .crossDissolve
 
@@ -36,13 +43,28 @@ class NewFAQViewController: UIViewController {
     
     
     @IBAction func cancelButtonAction(_ sender: Any) {
-        self.navigationController?.popViewController(animated: true)
+        view.endEditing(true)
+            
+            let sb = UIStoryboard(name: "Main", bundle: nil)
+            let vc = sb.instantiateViewController(withIdentifier: "CancelAddingConfirmationViewController") as! CancelAddingConfirmationViewController
+            
+            // Set the closure here
+            vc.onConfirmCancel = { [weak self] in
+                // This code runs in the parent after the popup is gone
+                self?.navigationController?.popViewController(animated: true)
+            }
+            
+            vc.modalPresentationStyle = .overFullScreen
+            vc.modalTransitionStyle = .crossDissolve
+            
+            self.present(vc, animated: true)
     }
     
     @IBAction func addButtonAction(_ sender: Any) {
         showAddConfirmationScreen()
     }
     
+ 
     
     
 }
