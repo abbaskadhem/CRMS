@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Kwr-Ys-10l">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
@@ -8,44 +8,63 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Main Temp View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="MainTempViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r1t-Hn-nhA">
-                                <rect key="frame" x="97" y="406.66666666666669" width="199" height="39"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1pR-c9-nLU">
+                                <rect key="frame" x="149.33333333333334" y="406.66666666666669" width="94.666666666666657" height="39"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Inventory Management"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Inventory"/>
                                 <connections>
-                                    <segue destination="tqe-5n-haJ" kind="show" id="RBA-Cu-cyt"/>
+                                    <segue destination="iMn-O3-tJW" kind="show" id="wBx-9Z-byR"/>
                                 </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="r1t-Hn-nhA" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="MWc-xZ-lFm"/>
-                            <constraint firstItem="r1t-Hn-nhA" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="ZZ5-DX-23E"/>
+                            <constraint firstItem="1pR-c9-nLU" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="TRj-kN-HpV"/>
+                            <constraint firstItem="1pR-c9-nLU" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="aIR-As-73Z"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="z7d-yS-sqf"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="48" y="-2"/>
+            <point key="canvasLocation" x="973.28244274809151" y="-2.1126760563380285"/>
         </scene>
-        <!--InventoryViewNav-->
-        <scene sceneID="D4Y-z5-W7Z">
+        <!--Navigation Controller-->
+        <scene sceneID="jnc-ki-4PY">
             <objects>
-                <viewControllerPlaceholder storyboardName="Inventory" referencedIdentifier="InventoryViewNav" id="tqe-5n-haJ" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="ekE-rL-djJ"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="jhb-An-CZW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Kwr-Ys-10l" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="uVp-P8-npO">
+                        <rect key="frame" x="0.0" y="118" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="WK6-TH-xhw"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Gpa-fE-JD5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="51" y="404"/>
+            <point key="canvasLocation" x="46.564885496183201" y="-2.1126760563380285"/>
+        </scene>
+        <!--Inventory-->
+        <scene sceneID="UKo-mR-a95">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Inventory" id="iMn-O3-tJW" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="0L1-mh-0dq"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Fea-QN-EBl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1647" y="-2"/>
         </scene>
     </scenes>
     <resources>

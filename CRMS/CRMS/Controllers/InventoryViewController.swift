@@ -14,13 +14,13 @@ class InventoryViewController: UIViewController,
 
     @IBOutlet weak var tableView: UITableView!
     
-    @IBOutlet weak var addButton: UIButton!
     
     var categories: [ItemCategoryModel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        print("LOADED:", type(of: self))
         
         setupTableView()
         loadSampleData()
@@ -301,9 +301,6 @@ class InventoryViewController: UIViewController,
             itemVC.title = selectedChild?.name
         }
     }
-
-    
-    @IBOutlet weak var addView: UIView!
     
     var overlayView: UIView!
 

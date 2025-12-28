@@ -138,15 +138,15 @@
         <scene sceneID="Rf2-Wq-iFg">
             <objects>
                 <viewController storyboardIdentifier="AddViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ROf-Ae-ywX" customClass="AddViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="fBH-YS-PiN">
+                    <view key="view" contentMode="center" id="fBH-YS-PiN">
                         <rect key="frame" x="0.0" y="0.0" width="395" height="427"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="KWb-pO-doJ">
-                                <rect key="frame" x="19" y="194.33333333333334" width="357.33333333333331" height="38.333333333333343"/>
+                                <rect key="frame" x="18" y="194.33333333333334" width="359" height="38.333333333333343"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dhi-MO-RS7">
-                                        <rect key="frame" x="0.0" y="0.0" width="166.66666666666666" height="38.333333333333336"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="167.66666666666666" height="38.333333333333336"/>
                                         <color key="tintColor" red="0.34117650989999998" green="0.40784314269999999" blue="0.49019610879999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="filled" title="Add category"/>
@@ -155,7 +155,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kYU-O1-n6b">
-                                        <rect key="frame" x="190.66666666666669" y="0.0" width="166.66666666666669" height="38.333333333333336"/>
+                                        <rect key="frame" x="191.66666666666663" y="0.0" width="167.33333333333337" height="38.333333333333336"/>
                                         <color key="tintColor" red="0.34117650989999998" green="0.40784314269999999" blue="0.49019610879999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="filled" title="Add Sub-Category"/>
@@ -170,6 +170,9 @@
                         <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstItem="KWb-pO-doJ" firstAttribute="top" secondItem="fBH-YS-PiN" secondAttribute="topMargin" constant="76.333333333333314" id="0cY-ut-N8F"/>
+                            <constraint firstItem="NRv-0l-ZSE" firstAttribute="bottom" secondItem="KWb-pO-doJ" secondAttribute="bottom" constant="126.33333333333331" id="1Ls-8k-QND"/>
+                            <constraint firstItem="NRv-0l-ZSE" firstAttribute="trailing" secondItem="KWb-pO-doJ" secondAttribute="trailing" constant="18" id="Hey-ck-ClZ"/>
+                            <constraint firstItem="KWb-pO-doJ" firstAttribute="top" secondItem="NRv-0l-ZSE" secondAttribute="top" constant="76.333333333333343" id="QuM-2T-51I"/>
                             <constraint firstItem="KWb-pO-doJ" firstAttribute="centerX" secondItem="fBH-YS-PiN" secondAttribute="centerX" id="fgv-qz-t4x"/>
                             <constraint firstItem="KWb-pO-doJ" firstAttribute="centerY" secondItem="fBH-YS-PiN" secondAttribute="centerY" id="gr5-hC-vF1"/>
                         </constraints>
@@ -485,7 +488,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="l1x-3P-sZf"/>
                     <connections>
-                        <outlet property="addView" destination="h53-Ti-I3V" id="Bg5-aV-EPm"/>
                         <outlet property="tableView" destination="UBm-QQ-FUc" id="Y99-n3-hKj"/>
                         <segue destination="Knk-Ah-X6Y" kind="show" identifier="ShowItemSegue" id="hor-4J-BaY"/>
                     </connections>
