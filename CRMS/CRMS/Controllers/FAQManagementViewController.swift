@@ -14,6 +14,13 @@ class FAQManagementViewController: UIViewController {
     @IBAction func backButtonTapped(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
+    
+    @IBAction func addButtonTapped(_ sender: Any) {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+            guard let faqVC = sb.instantiateViewController(withIdentifier: "NewFAQViewController") as? NewFAQViewController else { return }
+      
+            self.navigationController?.pushViewController(faqVC, animated: true)
+    }
     var faqList: [FAQ] = []
 
     override func viewDidLoad() {
@@ -76,7 +83,5 @@ extension FAQManagementViewController: UITableViewDataSource, UITableViewDelegat
         
         self.navigationController?.pushViewController(vc, animated: true)
     }
-    
-    
     
 }

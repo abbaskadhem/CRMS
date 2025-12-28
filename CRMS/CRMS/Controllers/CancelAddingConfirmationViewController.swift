@@ -8,21 +8,26 @@
 import UIKit
 
 final class CancelAddingConfirmationViewController: UIViewController {
-
+    
+        var onConfirmCancel: (() -> Void)?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.4)
-    }
-
-    // NO = keep adding (close only this popup)
+        view.backgroundColor = .clear
+        let blur = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+        blur.frame = view.bounds
+        blur.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.insertSubview(blur, at: 0)    }
+    
     @IBAction func noButtonTapped(_ sender: UIButton) {
         dismiss(animated: true)
     }
-
-    // YES = cancel adding (close this popup, then close the confirmation behind it)
+    
     @IBAction func yesButtonTapped(_ sender: UIButton) {
-        dismiss(animated: true) { [weak self] in
-            self?.presentingViewController?.dismiss(animated: true)
+        // Dismiss the popup first
+                self.dismiss(animated: true) {
+                    // After dismissal is complete, tell the parent to execute the code
+                    self.onConfirmCancel?()
         }
     }
 }

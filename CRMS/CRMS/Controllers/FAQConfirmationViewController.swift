@@ -11,7 +11,8 @@ final class FAQConfirmationViewController: UIViewController {
 
     var question: String?
     var answer: String?
-
+    var onSaveSuccess: (() -> Void)?
+    
     @IBOutlet weak var yesButton: UIButton?
     @IBOutlet weak var noButton: UIButton?
     
@@ -46,40 +47,33 @@ final class FAQConfirmationViewController: UIViewController {
     }
 
     @IBAction func noTapped(_ sender: Any) {
-        showCancelPopup()
+       dismiss(animated: true)
     }
 
     private func createFAQ() async throws {
         let newFaq = FAQ(id:"",question: question ?? "", answer: answer ?? "" )
         try await FaqController.shared.addFaq(newFaq)
     }
-    
-    private func showCancelPopup() {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
-        let vc = sb.instantiateViewController(
-            withIdentifier: "CancelAddingConfirmationViewController"
-        ) as! CancelAddingConfirmationViewController
-
-        vc.modalPresentationStyle = .overFullScreen
-        vc.modalTransitionStyle = .crossDissolve
-        present(vc, animated: true)
-    }
+ 
     
     private func showSuccessAndCloseConfirmation() {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
-        let successVC = sb.instantiateViewController(
-            withIdentifier: "FAQSuccessViewController"
-        ) as! FAQSuccessViewController
+            let sb = UIStoryboard(name: "Main", bundle: nil)
+            let successVC = sb.instantiateViewController(
+                withIdentifier: "FAQSuccessViewController"
+            ) as! FAQSuccessViewController
 
-        successVC.modalPresentationStyle = .overFullScreen
-        successVC.modalTransitionStyle = .crossDissolve
+            successVC.modalPresentationStyle = .overFullScreen
+            successVC.modalTransitionStyle = .crossDissolve
 
-        let presenter = self.presentingViewController  // NewFAQViewController
+            // Capture the NewFAQViewController
+            let presenter = self.presentingViewController
 
-        dismiss(animated: false) {
-            presenter?.present(successVC, animated: true)
+            dismiss(animated: false) {
+                // Tell the parent the save was successful before showing success screen
+                self.onSaveSuccess?()
+                presenter?.present(successVC, animated: true)
+            }
         }
-    }
-
+    
 
 }

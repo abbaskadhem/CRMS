@@ -5,318 +5,34 @@
 //  Created by Macos on 24/12/2025.
 //
 
-//import UIKit
-//
-//class CategoryManagementViewController: UIViewController {
-//
-//    // MARK: - IBOutlets
-//
-//    @IBOutlet weak var searchTextField: UITextField!
-//    @IBOutlet weak var editSearchButton: UIButton!
-//    @IBOutlet weak var addCategoryButton: UIButton!
-//    @IBOutlet weak var addSubCategoryButton: UIButton!
-//    @IBOutlet weak var tableView: UITableView!
-//    // MARK: - Properties
-//    var categories: [Category] = []
-//    var selectedCategory: Category?
-//
-//    // MARK: - Lifecycle
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        setupUI()
-//        setupTableView()
-//        loadInitialCategories()
-//    }
-//
-//    // MARK: - Setup
-//    private func setupUI() {
-//        title = "Category Management"
-//
-//        // Search field
-//        searchTextField.placeholder = "Search"
-//        searchTextField.borderStyle = .roundedRect
-//        searchTextField.clearButtonMode = .whileEditing
-//
-//        // Buttons
-//        addCategoryButton.setTitle("Add Category", for: .normal)
-//        addSubCategoryButton.setTitle("Add Sub-Category", for: .normal)
-//
-//        addCategoryButton.backgroundColor = UIColor(red: 0.4, green: 0.5, blue: 0.6, alpha: 1.0)
-//        addSubCategoryButton.backgroundColor = UIColor(red: 0.4, green: 0.5, blue: 0.6, alpha: 1.0)
-//
-//        addCategoryButton.layer.cornerRadius = 8
-//        addSubCategoryButton.layer.cornerRadius = 8
-//
-//        addCategoryButton.setTitleColor(.white, for: .normal)
-//        addSubCategoryButton.setTitleColor(.white, for: .normal)
-//    }
-//
-//    private func setupTableView() {
-//        tableView.delegate = self
-//        tableView.dataSource = self
-//        tableView.register(CategoryCell.self, forCellReuseIdentifier: "CategoryCell")
-//        tableView.register(SubCategoryCell.self, forCellReuseIdentifier: "SubCategoryCell")
-//        tableView.separatorStyle = .none
-//    }
-//
-//    private func loadInitialCategories() {
-//        // البيانات الأولية - المستوى الأول
-//        categories = [
-//            Category(name: "IT", isExpanded: false, subCategories: []),
-//            Category(name: "HVAC", isExpanded: false, subCategories: []),
-//            Category(name: "Electrical", isExpanded: false, subCategories: []),
-//            Category(name: "Security", isExpanded: false, subCategories: [])
-//        ]
-//        tableView.reloadData()
-//    }
-//    @IBAction func editButtonTapped(_ sender: Any) {
-//        print("AeditCategory tapped")
-//    }
-//
-//    @IBAction func addSubCategoryTapped(_ sender: Any) {
-//        print("Add Sub-Category tapped")
-//    }
-//    @IBAction func addCategoryTapped(_ sender: Any) {
-//        print("Add Category tapped")
-//    }
-//
-//}
-//
-//// MARK: - UITableViewDelegate & DataSource
-//extension CategoryManagementViewController: UITableViewDelegate, UITableViewDataSource {
-//
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return categories.count
-//    }
-//
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        let category = categories[section]
-//        return category.isExpanded ? category.subCategories.count + 1 : 1
-//    }
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let category = categories[indexPath.section]
-//
-//        // أول صف في كل section هو الـ Category الرئيسي
-//        if indexPath.row == 0 {
-//            let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! CategoryCell
-//            cell.configure(with: category.name, isExpanded: category.isExpanded)
-//            return cell
-//        } else {
-//            // الصفوف التانية هي الـ SubCategories
-//            let cell = tableView.dequeueReusableCell(withIdentifier: "SubCategoryCell", for: indexPath) as! SubCategoryCell
-//            let subCategory = category.subCategories[indexPath.row - 1]
-//            cell.configure(with: subCategory)
-//            return cell
-//        }
-//    }
-//
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        tableView.deselectRow(at: indexPath, animated: true)
-//
-//        // لو دوست على Category رئيسي
-//        if indexPath.row == 0 {
-//            categories[indexPath.section].isExpanded.toggle()
-//
-//            // تحميل الـ SubCategories بناءً على الـ Category المختار
-//            if categories[indexPath.section].isExpanded {
-//                loadSubCategories(for: indexPath.section)
-//            }
-//
-//            tableView.reloadSections(IndexSet(integer: indexPath.section), with: .automatic)
-//        }
-//    }
-//
-//    private func loadSubCategories(for section: Int) {
-//        let categoryName = categories[section].name
-//
-//        // تحميل الـ SubCategories بناءً على الـ Category
-//        switch categoryName {
-//        case "IT":
-//            categories[section].subCategories = ["Software", "Hardware", "Network"]
-//        case "HVAC":
-//            categories[section].subCategories = ["Heating", "Ventilation", "Air Conditioning"]
-//        case "Electrical":
-//            categories[section].subCategories = ["Lights", "Outlets", "Switches", "Elevators", "Sliding Doors"]
-//        case "Security":
-//            categories[section].subCategories = ["Fingerprint Sensors", "ID Card Sensors", "CCTV"]
-//        default:
-//            categories[section].subCategories = []
-//        }
-//    }
-//}
-//
-//// MARK: - Models
-//struct Category {
-//    let name: String
-//    var isExpanded: Bool
-//    var subCategories: [String]
-//}
-//
-//// MARK: - Category Cell
-//class CategoryCell: UITableViewCell {
-//
-//    private let containerView = UIView()
-//    private let nameLabel = UILabel()
-//    private let arrowImageView = UIImageView()
-//
-//    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-//        super.init(style: style, reuseIdentifier: reuseIdentifier)
-//        setupCell()
-//    }
-//
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//
-//    private func setupCell() {
-//        selectionStyle = .none
-//        backgroundColor = .clear
-//
-//        // Container
-//        containerView.backgroundColor = UIColor(red: 0.7, green: 0.8, blue: 0.85, alpha: 1.0)
-//        containerView.layer.cornerRadius = 8
-//        containerView.translatesAutoresizingMaskIntoConstraints = false
-//        contentView.addSubview(containerView)
-//
-//        // Label
-//        nameLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-//        nameLabel.textColor = .darkGray
-//        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-//        containerView.addSubview(nameLabel)
-//
-//        // Arrow
-//        arrowImageView.tintColor = .darkGray
-//        arrowImageView.contentMode = .scaleAspectFit
-//        arrowImageView.translatesAutoresizingMaskIntoConstraints = false
-//        containerView.addSubview(arrowImageView)
-//
-//        NSLayoutConstraint.activate([
-//            containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
-//            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-//            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-//            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
-//            containerView.heightAnchor.constraint(equalToConstant: 50),
-//
-//            arrowImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
-//            arrowImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-//            arrowImageView.widthAnchor.constraint(equalToConstant: 20),
-//            arrowImageView.heightAnchor.constraint(equalToConstant: 20),
-//
-//            nameLabel.leadingAnchor.constraint(equalTo: arrowImageView.trailingAnchor, constant: 8),
-//            nameLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-//            nameLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12)
-//        ])
-//    }
-//
-//    func configure(with name: String, isExpanded: Bool) {
-//        nameLabel.text = name
-//
-//        // السهم: لتحت لو مفتوح، لليمين لو مقفول
-//        let arrowImage = isExpanded ? UIImage(systemName: "chevron.down") : UIImage(systemName: "chevron.right")
-//        arrowImageView.image = arrowImage
-//    }
-//}
-//
-//// MARK: - SubCategory Cell
-//class SubCategoryCell: UITableViewCell {
-//
-//    private let containerView = UIView()
-//    private let nameLabel = UILabel()
-//
-//    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-//        super.init(style: style, reuseIdentifier: reuseIdentifier)
-//        setupCell()
-//    }
-//
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//
-//    private func setupCell() {
-//        selectionStyle = .none
-//        backgroundColor = .clear
-//
-//        // Container
-//        containerView.backgroundColor = .white
-//        containerView.layer.cornerRadius = 8
-//        containerView.layer.borderWidth = 1
-//        containerView.layer.borderColor = UIColor.lightGray.cgColor
-//        containerView.translatesAutoresizingMaskIntoConstraints = false
-//        contentView.addSubview(containerView)
-//
-//        // Label
-//        nameLabel.font = UIFont.systemFont(ofSize: 15)
-//        nameLabel.textColor = .darkGray
-//        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-//        containerView.addSubview(nameLabel)
-//
-//        NSLayoutConstraint.activate([
-//            containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 2),
-//            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 40),
-//            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-//            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -2),
-//            containerView.heightAnchor.constraint(equalToConstant: 44),
-//
-//            nameLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
-//            nameLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-//            nameLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12)
-//        ])
-//    }
-//
-//    func configure(with name: String) {
-//        nameLabel.text = name
-//    }
-//}
-
 import UIKit
 
-class CategoryManagementViewController: UIViewController {
-    
-    // MARK: - IBOutlets
-    @IBOutlet weak var searchTextField: UITextField!
-    @IBOutlet weak var editSearchButton: UIButton!
-    @IBOutlet weak var addCategoryButton: UIButton!
-    @IBOutlet weak var addSubCategoryButton: UIButton!
+final class CategoryManagementViewController: UIViewController {
+
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var searchBar: UISearchBar!
     
-    // MARK: - Properties
+    @IBAction func backButtonTapped(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    var filteredCategories: [Category] = []
+    var isSearching: Bool {
+        return !searchBar.text!.isEmpty
+    }
     var categories: [Category] = []
-    var selectedCategory: Category?
-    var isEditMode: Bool = false // وضع التعديل
-    
-    // MARK: - Lifecycle
+    var isEditMode = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
+        searchBar.delegate = self
         setupTableView()
-        loadInitialCategories()
+        Task { await reloadCategories() }
+        
+        // Removes the outer border/background
+        searchBar.backgroundImage = UIImage()
     }
-    
-    // MARK: - Setup
-    private func setupUI() {
-        title = "Category Management"
-        
-        
-        // Search field
-        searchTextField.placeholder = "Search"
-        searchTextField.borderStyle = .roundedRect
-        searchTextField.clearButtonMode = .whileEditing
-        
-        // Buttons
-        addCategoryButton.setTitle("Add Category", for: .normal)
-        addSubCategoryButton.setTitle("Add Sub-Category", for: .normal)
-        
-        addCategoryButton.backgroundColor = UIColor(red: 0.4, green: 0.5, blue: 0.6, alpha: 1.0)
-        addSubCategoryButton.backgroundColor = UIColor(red: 0.4, green: 0.5, blue: 0.6, alpha: 1.0)
-        
-        addCategoryButton.layer.cornerRadius = 8
-        addSubCategoryButton.layer.cornerRadius = 8
-        
-        addCategoryButton.setTitleColor(.white, for: .normal)
-        addSubCategoryButton.setTitleColor(.white, for: .normal)
-    }
-    
+
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
@@ -324,140 +40,150 @@ class CategoryManagementViewController: UIViewController {
         tableView.register(SubCategoryCell.self, forCellReuseIdentifier: "SubCategoryCell")
         tableView.separatorStyle = .none
     }
-    
-    private func loadInitialCategories() {
-        // البيانات الأولية - المستوى الأول
-        categories = [
-            Category(name: "IT", isExpanded: false, subCategories: []),
-            Category(name: "HVAC", isExpanded: false, subCategories: []),
-            Category(name: "Electrical", isExpanded: false, subCategories: []),
-            Category(name: "Security", isExpanded: false, subCategories: [])
-        ]
-        tableView.reloadData()
+
+    @MainActor
+    private func reloadCategories() async {
+        do {
+            categories = try await CategoryController.shared.getAllCategories()
+            tableView.reloadData()
+        } catch {
+            print("❌ reloadCategories failed:", error)
+        }
     }
-    
+
     // MARK: - Actions
-    @IBAction func addCategoryTapped(_ sender: UIButton) {
-        // كود إضافة Category جديد
-        print("Add Category tapped")
-        
-        let confirmVC = storyboard?.instantiateViewController(
-             withIdentifier: "AddCatogryViewController"
-         ) as! AddCatogryViewController
-
-         let confirmPopup = DraggablePopupViewController(
-             contentVC: confirmVC,
-             height: UIScreen.main.bounds.height * 0.75
-         )
-
-         present(confirmPopup, animated: false) {
-             confirmPopup.presentPopup()
-         }
-        
-    }
-    
-    @IBAction func addSubCategoryTapped(_ sender: UIButton) {
-        // كود إضافة Sub-Category جديد
-        
-        let confirmVC = storyboard?.instantiateViewController(
-             withIdentifier: "AddSubCatogryViewController"
-         ) as! AddSubCatogryViewController
-
-         let confirmPopup = DraggablePopupViewController(
-             contentVC: confirmVC,
-             height: UIScreen.main.bounds.height * 0.75
-         )
-
-         present(confirmPopup, animated: false) {
-             confirmPopup.presentPopup()
-         }
-        
-    }
-    
-    @IBAction func editButtonTapped(_ sender: Any) {
+    @IBAction func editButtonTapped(_ sender: UIButton) {
         isEditMode.toggle()
-        
-        navigationItem.rightBarButtonItem?.title = isEditMode ? "Done" : "Edit"
-        
+        titleLabel.text = isEditMode ? "Edit Categories" : "Category Management"
         tableView.reloadData()
     }
+
+    @IBAction func addSubCategoryTapped(_ sender: UIButton) {
+        let actionSheet = UIAlertController(title: "Select Category", message: "Choose a category to add a sub-item to", preferredStyle: .actionSheet)
+            
+        for category in categories {
+            let action = UIAlertAction(title: category.name, style: .default) { [weak self] _ in
+                self?.showAddSubPopup(categoryId: category.id)
+            }
+            actionSheet.addAction(action)
+        }
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        if let popover = actionSheet.popoverPresentationController {
+            popover.sourceView = sender
+            popover.sourceRect = sender.bounds
+        }
+        present(actionSheet, animated: true)
+    }
     
+    private func showAddSubPopup(categoryId: String) {
+            guard let vc = storyboard?.instantiateViewController(withIdentifier: "AddSubCatogryViewController") as? AddSubCatogryViewController else { return }
+            
+            vc.targetCategoryId = categoryId
+            
+            vc.onSubCategoryAdded = { [weak self] in
+                Task {
+                    await self?.reloadCategories()
+                    
+                    self?.presentSuccessScreen()
+                }
+            }
+
+            let popup = DraggablePopupViewController(contentVC: vc, height: 450)
+            present(popup, animated: false) { popup.presentPopup() }
+        }
+    
+    private func presentSuccessScreen() {
+            if let successVC = storyboard?.instantiateViewController(withIdentifier: "SubCategorySuccess") as? SubCategorySuccess {
+                successVC.modalPresentationStyle = .overFullScreen
+                successVC.modalTransitionStyle = .crossDissolve
+                self.present(successVC, animated: true)
+            }
+        }
+    
+    @IBAction func addCategoryTapped(_ sender: UIButton) {
+        guard let addVC = storyboard?.instantiateViewController(
+                withIdentifier: "AddCatogryViewController"
+            ) as? AddCatogryViewController else { return }
+
+            addVC.onCategoryAdded = { [weak self] in
+                Task { await self?.reloadCategories() }
+            }
+
+            let popup = DraggablePopupViewController(
+                contentVC: addVC,
+                height: 450
+            )
+
+            present(popup, animated: false) {
+                popup.presentPopup()
+            }
+    }
 }
 
-// MARK: - UITableViewDelegate & DataSource
-extension CategoryManagementViewController: UITableViewDelegate, UITableViewDataSource {
-    
+// MARK: - UITableView Delegate & DataSource
+extension CategoryManagementViewController: UITableViewDataSource, UITableViewDelegate {
+
     func numberOfSections(in tableView: UITableView) -> Int {
-        return categories.count
+        return isSearching ? filteredCategories.count : categories.count
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let category = categories[section]
-        return category.isExpanded ? category.subCategories.count + 1 : 1
+        let cat = categories[section]
+        return cat.isExpanded ? (cat.subCategories.count + 1) : 1
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let category = categories[indexPath.section]
-        
-        // أول صف في كل section هو الـ Category الرئيسي
+        let dataSource = isSearching ? filteredCategories : categories
+        let cat = dataSource[indexPath.section]
+
         if indexPath.row == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! CategoryCell
-            cell.configure(with: category.name, isExpanded: category.isExpanded)
-            return cell
-        } else {
-            // الصفوف التانية هي الـ SubCategories
-            let cell = tableView.dequeueReusableCell(withIdentifier: "SubCategoryCell", for: indexPath) as! SubCategoryCell
-            let subCategory = category.subCategories[indexPath.row - 1]
-            cell.configure(with: subCategory, isEditMode: isEditMode)
+            cell.configure(with: cat.name, isExpanded: cat.isExpanded)
             return cell
         }
+
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SubCategoryCell", for: indexPath) as! SubCategoryCell
+        let idx = indexPath.row - 1
+        let sub = cat.subCategories[idx]
+        
+        cell.configure(with: sub, isEditMode: isEditMode)
+
+        cell.onToggleChanged = { [weak self] (isOn: Bool) in
+            guard let self = self else { return }
+            
+            if let originalIndex = self.categories.firstIndex(where: { $0.id == cat.id }) {
+                self.categories[originalIndex].subCategories[idx].isActive = isOn
+            }
+            
+            Task {
+                try? await CategoryController.shared.updateSubCategories(
+                    categoryId: cat.id,
+                    subCategories: cat.subCategories
+                )
+            }
+        }
+        return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        // لو دوست على Category رئيسي
-        if indexPath.row == 0 {
+        guard indexPath.row == 0 else { return }
+
+        if isSearching {
+            filteredCategories[indexPath.section].isExpanded.toggle()
+        } else {
             categories[indexPath.section].isExpanded.toggle()
-            
-            // تحميل الـ SubCategories بناءً على الـ Category المختار
-            if categories[indexPath.section].isExpanded {
-                loadSubCategories(for: indexPath.section)
-            }
-            
-            tableView.reloadSections(IndexSet(integer: indexPath.section), with: .automatic)
         }
+        tableView.reloadSections(IndexSet(integer: indexPath.section), with: .automatic)
     }
     
-    private func loadSubCategories(for section: Int) {
-        let categoryName = categories[section].name
-        
-        // تحميل الـ SubCategories بناءً على الـ Category
-        switch categoryName {
-        case "IT":
-            categories[section].subCategories = ["Software", "Hardware", "Network"]
-        case "HVAC":
-            categories[section].subCategories = ["Heating", "Ventilation", "Air Conditioning"]
-        case "Electrical":
-            categories[section].subCategories = ["Lights", "Outlets", "Switches", "Elevators", "Sliding Doors"]
-        case "Security":
-            categories[section].subCategories = ["Fingerprint Sensors", "ID Card Sensors", "CCTV"]
-        default:
-            categories[section].subCategories = []
-        }
-    }
 }
 
-// MARK: - Models
-struct Category {
-    let name: String
-    var isExpanded: Bool
-    var subCategories: [String]
-}
+// MARK: - Custom Cells (Required to fix your errors)
 
-// MARK: - Category Cell
 class CategoryCell: UITableViewCell {
-    
     private let containerView = UIView()
     private let nameLabel = UILabel()
     private let arrowImageView = UIImageView()
@@ -467,28 +193,21 @@ class CategoryCell: UITableViewCell {
         setupCell()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     private func setupCell() {
         selectionStyle = .none
         backgroundColor = .clear
         
-        // Container
         containerView.backgroundColor = UIColor(red: 0.7, green: 0.8, blue: 0.85, alpha: 1.0)
         containerView.layer.cornerRadius = 8
         containerView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(containerView)
         
-        // Label
         nameLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        nameLabel.textColor = .darkGray
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(nameLabel)
         
-        // Arrow
-        arrowImageView.tintColor = .darkGray
         arrowImageView.contentMode = .scaleAspectFit
         arrowImageView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(arrowImageView)
@@ -503,26 +222,20 @@ class CategoryCell: UITableViewCell {
             arrowImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
             arrowImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
             arrowImageView.widthAnchor.constraint(equalToConstant: 20),
-            arrowImageView.heightAnchor.constraint(equalToConstant: 20),
             
             nameLabel.leadingAnchor.constraint(equalTo: arrowImageView.trailingAnchor, constant: 8),
-            nameLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            nameLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12)
+            nameLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
         ])
     }
     
     func configure(with name: String, isExpanded: Bool) {
         nameLabel.text = name
-        
-        // السهم: لتحت لو مفتوح، لليمين لو مقفول
-        let arrowImage = isExpanded ? UIImage(systemName: "chevron.down") : UIImage(systemName: "chevron.right")
-        arrowImageView.image = arrowImage
+        arrowImageView.image = UIImage(systemName: isExpanded ? "chevron.down" : "chevron.right")
     }
 }
 
-// MARK: - SubCategory Cell
 class SubCategoryCell: UITableViewCell {
-    
+    var onToggleChanged: ((Bool) -> Void)?
     private let containerView = UIView()
     private let nameLabel = UILabel()
     private let toggleSwitch = UISwitch()
@@ -532,15 +245,12 @@ class SubCategoryCell: UITableViewCell {
         setupCell()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     private func setupCell() {
         selectionStyle = .none
         backgroundColor = .clear
         
-        // Container
         containerView.backgroundColor = .white
         containerView.layer.cornerRadius = 8
         containerView.layer.borderWidth = 1
@@ -548,16 +258,12 @@ class SubCategoryCell: UITableViewCell {
         containerView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(containerView)
         
-        // Label
         nameLabel.font = UIFont.systemFont(ofSize: 15)
-        nameLabel.textColor = .darkGray
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(nameLabel)
         
-        // Toggle Switch (العلامة الخضراء)
-        toggleSwitch.isOn = false
-        toggleSwitch.isHidden = true // مخفية في البداية
         toggleSwitch.translatesAutoresizingMaskIntoConstraints = false
+        toggleSwitch.addTarget(self, action: #selector(switchChanged), for: .valueChanged)
         containerView.addSubview(toggleSwitch)
         
         NSLayoutConstraint.activate([
@@ -569,19 +275,42 @@ class SubCategoryCell: UITableViewCell {
             
             nameLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
             nameLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            nameLabel.trailingAnchor.constraint(equalTo: toggleSwitch.leadingAnchor, constant: -8),
             
             toggleSwitch.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12),
             toggleSwitch.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
         ])
     }
     
-    func configure(with name: String, isEditMode: Bool = false) {
-        nameLabel.text = name
-        toggleSwitch.isHidden = !isEditMode // تظهر فقط في وضع التعديل
+    @objc private func switchChanged(_ sender: UISwitch) {
+        onToggleChanged?(sender.isOn)
     }
     
-    func setEditMode(_ isEditMode: Bool) {
+    func configure(with sub: SubCategory, isEditMode: Bool) {
+        nameLabel.text = sub.name
+        toggleSwitch.isOn = sub.isActive
         toggleSwitch.isHidden = !isEditMode
+    }
+}
+
+extension CategoryManagementViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            filteredCategories = []
+        } else {
+            filteredCategories = categories.filter { category in
+                let categoryMatch = category.name.lowercased().contains(searchText.lowercased())
+                
+                let subMatch = category.subCategories.contains { sub in
+                    sub.name.lowercased().contains(searchText.lowercased())
+                }
+                
+                return categoryMatch || subMatch
+            }
+        }
+        tableView.reloadData()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
     }
 }

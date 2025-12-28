@@ -10,12 +10,15 @@ import UIKit
 final class ConfirmDeleteViewController: UIViewController {
 
     var id: String?
-    var onDeleted: (() -> Void)?   // optional: let the list refresh
+    var onDeleted: (() -> Void)?   
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.4)
-
+        view.backgroundColor = .clear
+        let blur = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+        blur.frame = view.bounds
+        blur.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.insertSubview(blur, at: 0)
     }
 
     @IBAction func cancelButtonTapped(_ sender: Any) {
