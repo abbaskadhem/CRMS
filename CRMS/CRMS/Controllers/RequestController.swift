@@ -2,7 +2,7 @@
 //  RequestController.swift
 //  CRMS
 //
-//  Created by BP-36-201-10 on 03/12/2025.
+//  Created by Abbas on 03/12/2025.
 //
 
 import Foundation
@@ -28,9 +28,15 @@ final class RequestController {
 // MARK: - Autonumber Generation
     // Function to get the next autonumber for a given document
     func getNextAutonumber(document: String) async throws -> String {
+        
+        guard await hasInternetConnection() else {
+            throw NetworkError.noInternet
+        }
+        
         // Gets the reference to the counters collection and the specific document in the param
-        let ref = db.collection("counters").document(document)
-
+        
+           let ref = db.collection("counters").document(document)
+        
         // Takes a snapshot of the document to read the last number and format to be implemented. In case of failure, defaults ERR is used to signal that an error occured with this request, allowing to track.
         let snapshot = try await ref.getDocument()
         let last = snapshot.data()?["lastNumber"] as? Int ?? 0
@@ -47,6 +53,11 @@ final class RequestController {
 // MARK: - History Record Creation
     // Function to create a history record for a request. it takes the request ref, action done, and in cases of sent back or reassignment, the reasons for those actions.
     func createHistoryRecord(requestRef: UUID, action: Action, sentBackReason: String?, reassignReason: String?) async throws {
+        
+        guard await hasInternetConnection() else {
+            throw NetworkError.noInternet
+        }
+        
         let userId = try session.requireUserId()
 
         let history = RequestHistory(
@@ -64,10 +75,15 @@ final class RequestController {
             modifiedBy: nil,
             inactive: false
         )
-
-        try db.collection("requestHistories")
-            .document(history.id.uuidString)
-            .setData(from: history)
+        
+        do {
+            try db.collection("requestHistories")
+                .document(history.id.uuidString)
+                .setData(from: history)
+        } catch {
+            throw NetworkError.serverUnavailable
+        }
+       
     }
 
 // MARK: - Submitting a Requets
@@ -79,6 +95,11 @@ final class RequestController {
         description: String,
         images: [String],
     ) async throws {
+        
+        guard await hasInternetConnection() else {
+            throw NetworkError.noInternet
+        }
+        
         let userId = try session.requireUserId()
 
         let request = Request(
@@ -102,15 +123,15 @@ final class RequestController {
             modifiedBy: nil,
             inactive: false
         )
-
+        
         try await createHistoryRecord(requestRef: request.id, action: .submitted, sentBackReason: nil, reassignReason: nil)
-
-        try db.collection("requests")
-            .document(request.id.uuidString)
-            .setData(from: request)
+        
+        do{
+            try db.collection("requests")
+                .document(request.id.uuidString)
+                .setData(from: request)
+        } catch{
+            throw NetworkError.serverUnavailable
+        }
     }
-
 }
-
-
-
