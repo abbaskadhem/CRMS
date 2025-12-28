@@ -162,7 +162,7 @@ class LoginViewController: UIViewController {
                 UserDefaults.standard.set(user, forKey: UserDefaultsKeys.userID)
                 //call checkUserRole Function to navigate to the correct home page
                 self?.checkUserRole(for: user)
-            }            
+            }
         }
     }
 
@@ -268,3 +268,4 @@ class LoginViewController: UIViewController {
     
 
 }
+
