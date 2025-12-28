@@ -21,9 +21,9 @@ class FAQManagementTableViewCell: UITableViewCell {
     }
 
     @IBOutlet weak var questionLabel: UILabel!
-      @IBOutlet weak var answerLabel: UILabel!
+    @IBOutlet weak var answerLabel: UILabel!
 
-      func configure(with item: FAQItem) {
+      func configure(with item: FAQ) {
           questionLabel.text = item.question
           answerLabel.text = item.answer
       }

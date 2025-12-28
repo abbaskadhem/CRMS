@@ -7,39 +7,22 @@
 
 import UIKit
 
-class CancelAddingConfirmationViewController: UIViewController {
+final class CancelAddingConfirmationViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.4)
     }
-    
-    @IBAction func noButtonTapped(_ sender: UIButton) {
-        removeAllConfirmationScreens()
-      }
-      
-      @IBAction func yesButtonTapped(_ sender: UIButton) {
-          removeAllConfirmationScreens()
-      }
-      
 
-    private func removeAllConfirmationScreens() {
-            var targetVC: UIViewController? = self.parent
-            
-            while targetVC != nil {
-                if targetVC is NewFAQViewController {
-                    break
-                }
-                targetVC = targetVC?.parent
-            }
-            
-            guard let newFAQVC = targetVC else { return }
-            
-            for child in newFAQVC.children {
-                child.willMove(toParent: nil)
-                child.view.removeFromSuperview()
-                child.removeFromParent()
-            }
+    // NO = keep adding (close only this popup)
+    @IBAction func noButtonTapped(_ sender: UIButton) {
+        dismiss(animated: true)
+    }
+
+    // YES = cancel adding (close this popup, then close the confirmation behind it)
+    @IBAction func yesButtonTapped(_ sender: UIButton) {
+        dismiss(animated: true) { [weak self] in
+            self?.presentingViewController?.dismiss(animated: true)
         }
+    }
 }

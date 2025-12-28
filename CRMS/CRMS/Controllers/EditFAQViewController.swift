@@ -9,21 +9,43 @@ import UIKit
 
 class EditFAQViewController: UIViewController {
 
+    @IBOutlet weak var questionTextView: InspectableTextView!
+    @IBOutlet weak var answerTextView: InspectableTextView!
+    
+    var id:String?
+    var question:String?
+    var answer:String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        questionTextView.text = question
+        answerTextView.text = answer
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @IBAction func addButtonTapped(_ sender: Any) {
+        showConfirmEditAlert()
     }
-    */
+    
+    @IBAction func cancelButtonTapped(_ sender: Any) {
+        self.navigationController?.popViewController(animated:true)
+    }
+    
+    func showConfirmEditAlert() {
+        print(id ?? "")
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let vc = sb.instantiateViewController(
+            withIdentifier: "ConfirmEditAlertViewController"
+        ) as! ConfirmEditAlertViewController
+        
+        vc.id = self.id
+        vc.question = questionTextView.text
+        vc.answer = answerTextView.text
+
+
+        vc.modalPresentationStyle = .overFullScreen
+        vc.modalTransitionStyle = .crossDissolve
+        present(vc, animated: true)
+
+    }
 
 }

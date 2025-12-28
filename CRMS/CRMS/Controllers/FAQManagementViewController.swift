@@ -11,31 +11,35 @@ class FAQManagementViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
-    let faqList: [FAQItem] = [
-        FAQItem(
-            question: "What is this app for?",
-            answer: "This app allows students, faculty, and staff to report maintenance and repair issues across campus."
-        ),
-        FAQItem(
-            question: "Who can use the app?",
-            answer: "Anyone with a valid university email address can sign up and submit maintenance requests."
-        ),
-        FAQItem(
-            question: "What if I submitted the wrong information?",
-            answer: "You can edit or cancel your request before it's assigned to a technician."
-        ),
-        FAQItem(
-            question: "Will I be notified when the issue is resolved?",
-            answer: "Absolutely. You'll receive a push notification and email once the request is resolved."
-        )
-    ]
+    @IBAction func backButtonTapped(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    var faqList: [FAQ] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         tableView.separatorStyle = .none
+        Task{
+            try await getData()
+        }
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        Task{
+            try await getData()
+        }
+    }
+    
+    func getData() async throws{
+        
+        faqList = try await FaqController.shared.getFaqs()
+        tableView.reloadData()
+    }
+    
 }
+
 extension FAQManagementViewController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -62,10 +66,17 @@ extension FAQManagementViewController: UITableViewDataSource, UITableViewDelegat
         let selectedItem = faqList[indexPath.row]
         print(selectedItem.question)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-         let vc = storyboard.instantiateViewController(
+        let vc = storyboard.instantiateViewController(
              withIdentifier: "FAQDetailsViewController"
+             
          ) as! FAQDetailsViewController
-
+        vc.answer = selectedItem.answer
+        vc.question = selectedItem.question
+        vc.id = selectedItem.id
+        
         self.navigationController?.pushViewController(vc, animated: true)
     }
+    
+    
+    
 }

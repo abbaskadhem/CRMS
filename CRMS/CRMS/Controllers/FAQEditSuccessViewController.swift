@@ -1,14 +1,14 @@
 //
-//  FAQSuccessViewController.swift
+//  FAQEditSuccessViewController.swift
 //  CRMS
 //
-//  Created by Macos on 24/12/2025.
+//  Created by Macos on 28/12/2025.
 //
 
 import UIKit
 
- class FAQSuccessViewController: UIViewController {
-
+class FAQEditSuccessViewController: UIViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -17,4 +17,3 @@ import UIKit
         }
     }
 }
-
