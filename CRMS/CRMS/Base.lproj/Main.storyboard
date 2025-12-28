@@ -19,8 +19,6 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-<<<<<<< HEAD
-=======
             <point key="canvasLocation" x="-373" y="439"/>
         </scene>
         <!--Calender-->
@@ -73,7 +71,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mjk-Qg-HF5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="422" y="12"/>
->>>>>>> 67533e7 (settings UI phase 1)
         </scene>
     </scenes>
     <resources>
