@@ -118,7 +118,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1101.5267175572519" y="3.5211267605633805"/>
-<<<<<<< HEAD
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="svw-jh-Smt">
@@ -137,8 +136,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7Dl-rW-h8N" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="160" y="4"/>
-=======
->>>>>>> c3de36e (UI design done + about app done, fetching logic and subpages navigation left)
         </scene>
     </scenes>
     <resources>
