@@ -1,13 +1,13 @@
 //
-//  AddCategoryViewController.swift
-//  Inventory
+//  AddSubCategoryViewController.swift
+//  CRMS
 //
 //  Created by BP-36-201-11 on 25/12/2025.
 //
 
 import UIKit
 
-class AddCategoryViewController: UIViewController {
+class AddSubCategoryViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,7 +17,7 @@ class AddCategoryViewController: UIViewController {
 
         // Example content
         let label = UILabel()
-        label.text = "Add Category"
+        label.text = "Add Sub-Category"
         label.font = .boldSystemFont(ofSize: 18)
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)

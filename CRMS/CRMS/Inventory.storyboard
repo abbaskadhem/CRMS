@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3C9-6U-hvA">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
@@ -11,7 +11,7 @@
         <!--Add Sub Category View Controller-->
         <scene sceneID="axO-Lj-A40">
             <objects>
-                <viewController storyboardIdentifier="AddSubCategoryViewController" id="P8L-aM-smk" customClass="AddSubCategoryViewController" customModule="Inventory" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddSubCategoryViewController" id="P8L-aM-smk" customClass="AddSubCategoryViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="van-9i-nTS">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="422"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -27,7 +27,7 @@
         <!--Detail View Controller-->
         <scene sceneID="LOt-XX-v16">
             <objects>
-                <viewController storyboardIdentifier="DetailViewController" id="QpD-DH-hu7" customClass="DetailViewController" customModule="Inventory" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DetailViewController" id="QpD-DH-hu7" customClass="DetailViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="A1b-II-W85">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -137,7 +137,7 @@
         <!--Add View Controller-->
         <scene sceneID="Rf2-Wq-iFg">
             <objects>
-                <viewController storyboardIdentifier="AddViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ROf-Ae-ywX" customClass="AddViewController" customModule="Inventory" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ROf-Ae-ywX" customClass="AddViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="fBH-YS-PiN">
                         <rect key="frame" x="0.0" y="0.0" width="395" height="427"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -182,7 +182,7 @@
         <!--Item View Controller-->
         <scene sceneID="wcx-Ql-Bmr">
             <objects>
-                <viewController storyboardIdentifier="ItemViewController" id="Knk-Ah-X6Y" customClass="ItemViewController" customModule="Inventory" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ItemViewController" id="Knk-Ah-X6Y" customClass="ItemViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TfS-Kw-Q3y">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -229,7 +229,7 @@
                                                 <rect key="frame" x="16" y="56" width="361" height="419"/>
                                                 <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <prototypes>
-                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ItemCell" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="4" indentationWidth="0.0" reuseIdentifier="CategoryCell" textLabel="6K6-w5-3td" style="IBUITableViewCellStyleDefault" id="alC-Yj-CcC" customClass="ItemCell" customModule="Inventory" customModuleProvider="target">
+                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ItemCell" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="4" indentationWidth="0.0" reuseIdentifier="CategoryCell" textLabel="6K6-w5-3td" style="IBUITableViewCellStyleDefault" id="alC-Yj-CcC" customClass="ItemCell" customModule="CRMS" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="50" width="361" height="43.666667938232422"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="alC-Yj-CcC" id="sys-V2-Rgb">
@@ -316,7 +316,7 @@
         <!--Navigation Controller-->
         <scene sceneID="kAO-qN-qUx">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="3C9-6U-hvA" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="InventoryViewNav" automaticallyAdjustsScrollViewInsets="NO" id="3C9-6U-hvA" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" id="dUa-Ux-8eb">
                         <imageReference key="image" image="person" catalog="system" renderingMode="hierarchical">
                             <hierarchicalColors>
@@ -403,7 +403,7 @@
                                         <rect key="frame" x="16" y="106.33333333333329" width="329" height="405.66666666666674"/>
                                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <prototypes>
-                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="CategoryCell" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="4" indentationWidth="0.0" reuseIdentifier="CategoryCell" textLabel="FoY-6z-An8" style="IBUITableViewCellStyleDefault" id="d2w-7q-tJN" customClass="CategoryCell" customModule="Inventory" customModuleProvider="target">
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="CategoryCell" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="4" indentationWidth="0.0" reuseIdentifier="CategoryCell" textLabel="FoY-6z-An8" style="IBUITableViewCellStyleDefault" id="d2w-7q-tJN" customClass="CategoryCell" customModule="CRMS" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="50" width="329" height="43.666667938232422"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="d2w-7q-tJN" id="m95-ng-f5c">
@@ -497,7 +497,7 @@
         <!--Add Category View Controller-->
         <scene sceneID="rPZ-hJ-5ts">
             <objects>
-                <viewController storyboardIdentifier="AddCategoryViewController" id="Oah-IT-0bg" customClass="AddCategoryViewController" customModule="Inventory" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddCategoryViewController" id="Oah-IT-0bg" customClass="AddCategoryViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="xPN-hF-q1K">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="422"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
