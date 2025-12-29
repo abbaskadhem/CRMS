@@ -81,6 +81,21 @@ class ItemCell: UITableViewCell {
 
         textLabel?.numberOfLines = 0
         textLabel?.preservesSuperviewLayoutMargins = true
+        
+        let chevronImageView = UIImageView();
+
+        chevronImageView.image = UIImage(systemName: "chevron.right")
+        chevronImageView.tintColor = UIColor(hex: "#53697f")
+        chevronImageView.translatesAutoresizingMaskIntoConstraints = false
+
+        contentView.addSubview(chevronImageView)
+
+        NSLayoutConstraint.activate([
+            chevronImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
+            chevronImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
+            chevronImageView.widthAnchor.constraint(equalToConstant: 14),
+            chevronImageView.heightAnchor.constraint(equalToConstant: 14)
+        ])
     }
 }
 
@@ -90,6 +105,9 @@ class InfoCell: UITableViewCell {
 
     let titleLabel = UILabel()
     let valueLabel = UILabel()
+    let textField = UITextField()
+
+    private var isEditingValue = false
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -103,19 +121,20 @@ class InfoCell: UITableViewCell {
 
     private func setupUI() {
         titleLabel.font = .systemFont(ofSize: 16, weight: .medium)
-        titleLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        titleLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        titleLabel.tintColor = UIColor(hex: "#8aa7bc")
 
         valueLabel.font = .systemFont(ofSize: 16)
         valueLabel.textColor = .darkGray
         valueLabel.textAlignment = .right
-        valueLabel.numberOfLines = 0
 
-        let stack = UIStackView(arrangedSubviews: [titleLabel, valueLabel])
+        textField.font = .systemFont(ofSize: 16)
+        textField.tintColor = UIColor(hex: "#8aa7bc")
+        textField.textAlignment = .right
+        textField.isHidden = true
+
+        let stack = UIStackView(arrangedSubviews: [titleLabel, valueLabel, textField])
         stack.axis = .horizontal
         stack.spacing = 8
-        stack.alignment = .center // ensures vertical alignment
-        stack.distribution = .fill
         stack.translatesAutoresizingMaskIntoConstraints = false
 
         contentView.addSubview(stack)
@@ -127,22 +146,27 @@ class InfoCell: UITableViewCell {
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
         
-        let bottomBorder = UIView()
-        bottomBorder.backgroundColor = UIColor(hex: "#53697f")
-        bottomBorder.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(bottomBorder)
+        
 
-        NSLayoutConstraint.activate([
-            bottomBorder.heightAnchor.constraint(equalToConstant: 0.5),
-            bottomBorder.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            bottomBorder.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            bottomBorder.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
     }
+    
+   
 
     func configure(title: String, value: String) {
         titleLabel.text = title
         valueLabel.text = value
+        textField.text = value
+    }
+
+    func setEditable(_ editable: Bool) {
+        valueLabel.isHidden = editable
+        textField.isHidden = !editable
+        isEditingValue = editable
+    }
+
+    
+    func currentValue() -> String {
+        return isEditingValue ? textField.text ?? "" : valueLabel.text ?? ""
     }
 }
 
@@ -189,4 +213,10 @@ class TextAreaCell: UITableViewCell {
         titleLabel.text = title
         textView.text = text
     }
+    
+    func setEditable(_ editable: Bool) {
+        textView.isEditable = editable
+        textView.backgroundColor = editable ? UIColor.systemGray6 : .clear
+    }
+
 }

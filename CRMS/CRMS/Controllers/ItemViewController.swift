@@ -1,6 +1,6 @@
 //
 //  ItemViewController.swift
-//  CRMS
+//  Inventory
 //
 //  Created by BP-36-201-11 on 24/12/2025.
 //
@@ -47,7 +47,7 @@ class ItemViewController: UIViewController,
         }
     
     @objc private func addButtonTapped() {
-        print("Add button tapped")
+        performSegue(withIdentifier: "ShowAddSegue", sender: self)
     }
     
     
@@ -135,10 +135,13 @@ class ItemViewController: UIViewController,
         return items.count * 2 + 1 // first spacer row
     }
     
+    // cell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row % 2 == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "SpacerCell", for: indexPath)
             cell.backgroundColor = .clear
+            cell.accessoryType = .none
+            cell.isUserInteractionEnabled = false
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: ItemCell.reuseID, for: indexPath) as! ItemCell
@@ -147,6 +150,7 @@ class ItemViewController: UIViewController,
             cell.nameLabel.text = item.name
             cell.descriptionLabel.text = item.description
             cell.backgroundColor = .clear
+            
             
             return cell
         }
@@ -166,10 +170,19 @@ class ItemViewController: UIViewController,
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowDetailSegue",
-           let detailVC = segue.destination as? DetailViewController,
-           let item = sender as? ItemModel {
-            detailVC.item = item
+               let detailVC = segue.destination as? DetailViewController,
+               let item = sender as? ItemModel {
+
+                detailVC.item = item
+                detailVC.delegate = self
+            }
+        if segue.identifier == "ShowAddSegue",
+           let addVC = segue.destination as? AddItemViewController {
+            addVC.delegate = self
+            addVC.categoryID = child?.parentCategoryRef
+            addVC.subcategoryID = child?.id
         }
+
         
         
     }
@@ -185,4 +198,20 @@ class ItemViewController: UIViewController,
          */
         
     
+}
+
+extension ItemViewController: AddItemDelegate {
+    func didCreateItem(_ item: ItemModel) {
+        items.append(item)
+        tableView.reloadData()
+    }
+}
+
+extension ItemViewController: EditItemDelegate {
+    func didEditItem(_ item: ItemModel) {
+        if let index = items.firstIndex(where: { $0.id == item.id }) {
+            items[index] = item
+            tableView.reloadData()
+        }
+    }
 }

@@ -20,14 +20,11 @@ class InventoryViewController: UIViewController,
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        print("LOADED:", type(of: self))
         
         setupTableView()
         loadSampleData()
     }
     
-
-
 
     private func setupTableView() {
         tableView.delegate = self
@@ -151,6 +148,7 @@ class InventoryViewController: UIViewController,
             // Empty spacer cell
                     let cell = tableView.dequeueReusableCell(withIdentifier: "SpacerCell", for: indexPath)
                     cell.backgroundColor = .clear
+            cell.isUserInteractionEnabled = false
             return cell
         }else{
             let cell = tableView.dequeueReusableCell(
@@ -301,11 +299,18 @@ class InventoryViewController: UIViewController,
             itemVC.title = selectedChild?.name
         }
     }
+
+    
+    
+    @IBOutlet weak var addView: UIView!
     
     var overlayView: UIView!
-
+    
+    
+    
+    
     @IBAction func addCategoryTapped(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard = UIStoryboard(name: "Inventory", bundle: nil)
            if let categoryVC = storyboard.instantiateViewController(withIdentifier: "AddViewController") as? AddViewController {
 
                // This enables the "slide up" animation and dimmed background automatically
@@ -321,6 +326,8 @@ class InventoryViewController: UIViewController,
                self.present(categoryVC, animated: true)      // slide-up animation
            }
     }
+    
+ 
 
     
 }

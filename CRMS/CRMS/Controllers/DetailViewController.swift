@@ -1,6 +1,6 @@
 //
 //  DetailViewController.swift
-//  CRMS
+//  Inventory
 //
 //  Created by BP-36-201-11 on 25/12/2025.
 //
@@ -12,14 +12,18 @@ class DetailViewController: UIViewController,
                             UITableViewDelegate{
     var item: ItemModel!
 
+    
     @IBOutlet weak var tableView: UITableView!
     
+    weak var delegate: EditItemDelegate?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.allowsSelection = false
 
+       
         let editButton = UIBarButtonItem(
-            image: UIImage(systemName: "pencil"),
+            image:   UIImage(named: "Edit"),
             style: .plain,
             target: self,
             action: #selector(editItem)
@@ -40,6 +44,7 @@ class DetailViewController: UIViewController,
                tableView.dataSource = self
 
         tableView.register(InfoCell.self, forCellReuseIdentifier: InfoCell.reuseID)
+        
         tableView.register(TextAreaCell.self, forCellReuseIdentifier: TextAreaCell.reuseID)
 
 
@@ -48,11 +53,286 @@ class DetailViewController: UIViewController,
 
           
     }
+    
+    private var isEditingItem = false
+    private var draftItem: ItemModel?
+    private var confirmationOverlay: UIView?
+    private var successOverlay: UIView?
 
+
+
+    
+// make everything editable
     @objc private func editItem() {
-        print("Edit \(item.name)")
+        if isEditingItem {
+            showConfirmationOverlay()
+        } else {
+            isEditingItem = true
+            draftItem = item
+            showEditButtons()
+            tableView.reloadData()
+        }
     }
 
+    //cancel the edit
+    @objc private func cancelEdit() {
+        isEditingItem = false
+        draftItem = nil
+        hideEditButtons()
+        tableView.reloadData()
+    }
+
+    // conformation overlay
+    private func showConfirmationOverlay() {
+        let overlay = UIView(frame: view.bounds)
+        overlay.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+        overlay.alpha = 0
+
+        //background
+        let card = UIView()
+        card.backgroundColor = .white
+        card.layer.cornerRadius = 14
+        card.translatesAutoresizingMaskIntoConstraints = false
+
+        //Title
+        let title = UILabel()
+        title.text = "Confirmation"
+        title.font = .boldSystemFont(ofSize: 20)
+        title.textAlignment = .center
+
+        //message
+        let message = UILabel()
+        message.text = "Are you sure you want to save the edits?"
+        message.font = .systemFont(ofSize: 15)
+        message.textAlignment = .center
+        message.numberOfLines = 0
+
+        //cancel
+        let noButton = UIButton(type: .system)
+        noButton.setTitle("No", for: .normal)
+        noButton.layer.cornerRadius = 8
+        noButton.layer.borderWidth = 1
+        noButton.layer.borderColor = UIColor.systemGray4.cgColor
+        noButton.addTarget(self, action: #selector(cancelSaveTapped), for: .touchUpInside)
+
+        //confirm
+        let yesButton = UIButton(type: .system)
+        yesButton.setTitle("Yes, I'm sure", for: .normal)
+        yesButton.backgroundColor = UIColor(hex: "#53697f")
+        yesButton.setTitleColor(.white, for: .normal)
+        yesButton.layer.cornerRadius = 8
+        yesButton.addTarget(self, action: #selector(confirmSaveTapped), for: .touchUpInside)
+
+        let buttons = UIStackView(arrangedSubviews: [noButton, yesButton])
+        buttons.axis = .horizontal
+        buttons.spacing = 12
+        buttons.distribution = .fillEqually
+
+        let stack = UIStackView(arrangedSubviews: [title, message, buttons])
+        stack.axis = .vertical
+        stack.spacing = 16
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        card.addSubview(stack)
+        overlay.addSubview(card)
+        view.addSubview(overlay)
+
+        NSLayoutConstraint.activate([
+            card.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
+            card.centerYAnchor.constraint(equalTo: overlay.centerYAnchor),
+            card.widthAnchor.constraint(equalToConstant: 280),
+
+            stack.topAnchor.constraint(equalTo: card.topAnchor, constant: 20),
+            stack.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -20),
+            stack.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 20),
+            stack.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -20)
+        ])
+
+        confirmationOverlay = overlay
+
+        UIView.animate(withDuration: 0.25) {
+            overlay.alpha = 1
+        }
+    }
+    
+    //succsess overlay
+    private func showSuccessOverlay() {
+        let overlay = UIView(frame: view.bounds)
+        overlay.backgroundColor = UIColor.black.withAlphaComponent(0.35)
+        overlay.alpha = 0
+
+        let container = UIView()
+        container.backgroundColor = .white
+        container.layer.cornerRadius = 16
+        container.translatesAutoresizingMaskIntoConstraints = false
+
+        let check = UIImageView(image: UIImage(systemName: "checkmark.circle.fill"))
+        check.tintColor = UIColor(hex: "#53697f")
+        check.contentMode = .scaleAspectFit
+        check.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+
+        let label = UILabel()
+        label.text = "Item Details Saved Successfully"
+        label.font = .boldSystemFont(ofSize: 16)
+        label.textAlignment = .center
+        label.numberOfLines = 2
+
+        let stack = UIStackView(arrangedSubviews: [check, label])
+        stack.axis = .vertical
+        stack.spacing = 12
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        container.addSubview(stack)
+        overlay.addSubview(container)
+        view.addSubview(overlay)
+
+        NSLayoutConstraint.activate([
+            container.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
+            container.centerYAnchor.constraint(equalTo: overlay.centerYAnchor),
+            container.widthAnchor.constraint(equalToConstant: 260),
+
+            check.heightAnchor.constraint(equalToConstant: 60),
+
+            stack.topAnchor.constraint(equalTo: container.topAnchor, constant: 24),
+            stack.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -24),
+            stack.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
+            stack.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20)
+        ])
+
+        successOverlay = overlay
+
+        UIView.animate(withDuration: 0.25) {
+            overlay.alpha = 1
+            check.transform = .identity
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            self.dismissSuccessOverlay()
+        }
+    }
+
+    //remove overlay
+    private func dismissSuccessOverlay() {
+        UIView.animate(withDuration: 0.25, animations: {
+            self.successOverlay?.alpha = 0
+        }) { _ in
+            self.successOverlay?.removeFromSuperview()
+            self.successOverlay = nil
+        }
+    }
+
+// In edit mode : save / cancel buttons
+    private func showEditButtons() {
+        let saveButton = UIBarButtonItem(
+            image: UIImage(systemName: "checkmark"),
+            style: .done,
+            target: self,
+            action: #selector(editItem)
+        )
+
+        let cancelButton = UIBarButtonItem(
+            barButtonSystemItem: .cancel,
+            target: self,
+            action: #selector(cancelEdit)
+        )
+
+        navigationItem.rightBarButtonItems = [cancelButton, saveButton]
+    }
+    
+    
+    // to hide edit and delete once inside edit mode
+    private func hideEditButtons() {
+        let editButton = UIBarButtonItem(
+            image: UIImage(named: "Edit"),
+            style: .plain,
+            target: self,
+            action: #selector(editItem)
+        )
+
+        let deleteButton = UIBarButtonItem(
+            image: UIImage(systemName: "trash"),
+            style: .plain,
+            target: self,
+            action: #selector(deleteItem)
+        )
+
+        navigationItem.rightBarButtonItems = [deleteButton, editButton]
+    }
+
+    // conformation cancel
+    @objc private func cancelSaveTapped() {
+        dismissConfirmationOverlay()
+    }
+    
+//conformation save
+    @objc private func confirmSaveTapped() {
+        dismissConfirmationOverlay()
+        commitAndExitEditMode()
+        showSuccessOverlay()
+    }
+
+    //overlay dissmissal
+    private func dismissConfirmationOverlay() {
+        UIView.animate(withDuration: 0.2, animations: {
+            self.confirmationOverlay?.alpha = 0
+        }) { _ in
+            self.confirmationOverlay?.removeFromSuperview()
+            self.confirmationOverlay = nil
+        }
+    }
+
+
+    //saved
+    private func commitAndExitEditMode() {
+        commitChanges()
+        delegate?.didEditItem(item)
+        isEditingItem = false
+        draftItem = nil
+        hideEditButtons()
+        tableView.reloadData()
+    }
+
+    //commit changes once saved
+    private func commitChanges() {
+        guard var draft = draftItem else { return }
+
+        for cell in tableView.visibleCells {
+            if let infoCell = cell as? InfoCell {
+                switch infoCell.titleLabel.text {
+                case "Name":
+                    draft.name = infoCell.currentValue()
+                case "Part Number":
+                    draft.partNo = infoCell.currentValue()
+                case "Unit Cost":
+                    let raw = infoCell.currentValue()
+                        .replacingOccurrences(of: " BHD", with: "")
+                    draft.unitCost = Double(raw)
+
+                case "Vendor":
+                    draft.vendor = infoCell.currentValue()
+                case "Quantity in Stock":
+                    draft.quantity = Int(infoCell.currentValue())
+                default:
+                    break
+                }
+            }
+
+            if let textCell = cell as? TextAreaCell {
+                switch textCell.titleLabel.text {
+                case "Description":
+                    draft.description = textCell.textView.text
+                case "Usage":
+                    draft.usage = textCell.textView.text
+                default:
+                    break
+                }
+            }
+        }
+
+        item = draft
+    }
+
+    //delete the whole item
     @objc private func deleteItem() {
         print("Delete \(item.name)")
     }
@@ -62,6 +342,7 @@ class DetailViewController: UIViewController,
           return 3
       }
     
+//    headers
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 1: return "Details"
@@ -82,6 +363,7 @@ class DetailViewController: UIViewController,
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .boldSystemFont(ofSize: 16)
+        headerView.tintColor = UIColor(hex: "#8aa7bc")
         label.textColor = UIColor(hex: "#53697f") // your text color
         label.text = tableView.dataSource?.tableView?(tableView, titleForHeaderInSection: section) ?? ""
 
@@ -124,29 +406,32 @@ class DetailViewController: UIViewController,
       func tableView(_ tableView: UITableView,
                      cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
+          let source = isEditingItem ? draftItem! : item
+
+
           switch indexPath.section {
 
+
+          
+              
           case 0:
               let cell = tableView.dequeueReusableCell(withIdentifier: InfoCell.reuseID, for: indexPath) as! InfoCell
 
-
               switch indexPath.row {
-              case 0: cell.configure(title: "Name", value: item.name)
-              case 1: cell.configure(title: "Part Number", value: item.partNo ?? "empty")
-              case 2: cell.configure(title: "Unit Cost", value: "\(item.unitCost ?? 0) BHD")
-              case 3: cell.configure(title: "Vendor", value: item.vendor ?? "empty")
-              case 4: cell.configure(title: "Quantity in Stock", value: "\(item.quantity ?? 0)")
+              case 0: cell.configure(title: "Name", value: source?.name ?? "empty")
+              case 1: cell.configure(title: "Part Number", value: source?.partNo ?? "empty")
+              case 2: cell.configure(title: "Unit Cost", value: "\(source?.unitCost ?? 0) BHD")
+              case 3: cell.configure(title: "Vendor", value: source?.vendor ?? "empty")
+              case 4: cell.configure(title: "Quantity in Stock", value: "\(source?.quantity ?? 0)")
               default: break
               }
-              //add bottom borders only
-              cell.titleLabel.textColor = UIColor(hex: "#53697f")
-
-
 
               cell.backgroundColor = .clear
               cell.selectionStyle = .none
-
+              cell.titleLabel.textColor = UIColor(hex: "#53697f")
+              cell.setEditable(isEditingItem)
               return cell
+
 
           case 1:
               let cell = tableView.dequeueReusableCell(
@@ -154,12 +439,16 @@ class DetailViewController: UIViewController,
                   for: indexPath
               ) as! TextAreaCell
 
-              cell.configure(title: "Description", text: item.description ?? "empty")
+              cell.configure(title: "Description", text: source?.description ?? "empty")
+
+              cell.setEditable(isEditingItem)
               cell.titleLabel.textColor = UIColor(hex: "#53697f")
               cell.layer.borderWidth = 0.5
               cell.layer.borderColor = UIColor.black.cgColor
               cell.selectionStyle = .none
               cell.backgroundColor = .clear
+              
+
               return cell
 
           case 2:
@@ -168,12 +457,15 @@ class DetailViewController: UIViewController,
                   for: indexPath
               ) as! TextAreaCell
 
-              cell.configure(title: "Usage", text: item.usage ?? "empty")
+              cell.configure(title: "Usage", text: source?.usage ?? "empty")
+              cell.setEditable(isEditingItem)
               cell.titleLabel.textColor = UIColor(hex: "#53697f")
               cell.layer.borderWidth = 0.5
               cell.layer.borderColor = UIColor.black.cgColor
               cell.selectionStyle = .none
               cell.backgroundColor = .clear
+
+
               return cell
 
           default:
@@ -197,4 +489,8 @@ class DetailViewController: UIViewController,
     }
     */
 
+}
+
+protocol EditItemDelegate: AnyObject {
+    func didEditItem(_ item: ItemModel)
 }

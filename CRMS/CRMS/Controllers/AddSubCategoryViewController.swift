@@ -1,6 +1,6 @@
 //
 //  AddSubCategoryViewController.swift
-//  CRMS
+//  Inventory
 //
 //  Created by BP-36-201-11 on 25/12/2025.
 //
@@ -26,7 +26,7 @@ class AddSubCategoryViewController: UIViewController {
             label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             label.topAnchor.constraint(equalTo: view.topAnchor, constant: 20)
         ])
-print("Popover!!")
+print("Popover AddSubCategoryViewController!!")
     }
     
 

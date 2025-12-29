@@ -9,7 +9,6 @@ import UIKit
 
 class AddViewController: UIViewController {
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -27,12 +26,12 @@ class AddViewController: UIViewController {
                     label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                     label.topAnchor.constraint(equalTo: view.topAnchor, constant: 20)
                 ])
-        print("Popover!!")
+        print("Popover AddViewController!!")
     }
     
     
     @IBAction func addCatTapped(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard = UIStoryboard(name: "Inventory", bundle: nil)
             if let categoryVC = storyboard.instantiateViewController(withIdentifier: "AddCategoryViewController") as? AddCategoryViewController {
                 categoryVC.modalPresentationStyle = .pageSheet // or .popover
                 categoryVC.sheetPresentationController?.detents = [.medium()] // adjust height
@@ -44,14 +43,17 @@ class AddViewController: UIViewController {
     
     
     @IBAction func addSubCatTapped(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard = UIStoryboard(name: "Inventory", bundle: nil)
             if let categoryVC = storyboard.instantiateViewController(withIdentifier: "AddSubCategoryViewController") as? AddSubCategoryViewController {
                 categoryVC.modalPresentationStyle = .pageSheet // or .popover
                 categoryVC.sheetPresentationController?.detents = [.medium()] // adjust height
                 categoryVC.sheetPresentationController?.prefersGrabberVisible = true
                 self.present(categoryVC, animated: true)
             }
+
     }
+    
+
     
     /*
     // MARK: - Navigation
