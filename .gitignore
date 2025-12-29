@@ -30,3 +30,6 @@ GoogleService-Info.plist
 
 # Logs
 *.log
+
+# Claude
+CLAUDE.md
