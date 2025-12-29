@@ -7,6 +7,15 @@
 
 import UIKit
 
+// MARK: - View Model for hierarchical display
+
+/// View model that groups a parent category with its subcategories for UI display
+struct CategoryDisplayModel {
+    let parent: RequestCategory
+    var subcategories: [RequestCategory]
+    var isExpanded: Bool = false
+}
+
 // MARK: - Category Management
 
 final class CategoryManagementViewController: UIViewController {
@@ -18,11 +27,14 @@ final class CategoryManagementViewController: UIViewController {
     @IBAction func backButtonTapped(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
-    var filteredCategories: [Category] = []
+
+    // Display models for hierarchical view
+    var displayModels: [CategoryDisplayModel] = []
+    var filteredDisplayModels: [CategoryDisplayModel] = []
+
     var isSearching: Bool {
         return !searchBar.text!.isEmpty
     }
-    var categories: [Category] = []
     var isEditMode = false
 
     override func viewDidLoad() {
@@ -46,7 +58,15 @@ final class CategoryManagementViewController: UIViewController {
     @MainActor
     private func reloadCategories() async {
         do {
-            categories = try await CategoryController.shared.getAllCategories()
+            let allCategories = try await CategoryController.shared.getAllCategories()
+
+            // Build hierarchical display models from flat data
+            let parents = allCategories.filter { $0.isParent }
+            displayModels = parents.map { parent in
+                let subs = allCategories.filter { $0.parentCategoryRef == parent.id }
+                return CategoryDisplayModel(parent: parent, subcategories: subs, isExpanded: false)
+            }
+
             tableView.reloadData()
         } catch {
             print("❌ reloadCategories failed:", error)
@@ -63,9 +83,10 @@ final class CategoryManagementViewController: UIViewController {
     @IBAction func addSubCategoryTapped(_ sender: UIButton) {
         let actionSheet = UIAlertController(title: "Select Category", message: "Choose a category to add a sub-item to", preferredStyle: .actionSheet)
 
-        for category in categories {
-            let action = UIAlertAction(title: category.name, style: .default) { [weak self] _ in
-                self?.showAddSubPopup(categoryId: category.id)
+        let dataSource = isSearching ? filteredDisplayModels : displayModels
+        for model in dataSource {
+            let action = UIAlertAction(title: model.parent.name, style: .default) { [weak self] _ in
+                self?.showAddSubPopup(parentId: model.parent.id)
             }
             actionSheet.addAction(action)
         }
@@ -79,30 +100,29 @@ final class CategoryManagementViewController: UIViewController {
         present(actionSheet, animated: true)
     }
 
-    private func showAddSubPopup(categoryId: String) {
-            guard let vc = storyboard?.instantiateViewController(withIdentifier: "AddSubCatogryViewController") as? AddSubCatogryViewController else { return }
+    private func showAddSubPopup(parentId: UUID) {
+        guard let vc = storyboard?.instantiateViewController(withIdentifier: "AddSubCatogryViewController") as? AddSubCatogryViewController else { return }
 
-            vc.targetCategoryId = categoryId
+        vc.targetParentId = parentId
 
-            vc.onSubCategoryAdded = { [weak self] in
-                Task {
-                    await self?.reloadCategories()
-
-                    self?.presentSuccessScreen()
-                }
+        vc.onSubCategoryAdded = { [weak self] in
+            Task {
+                await self?.reloadCategories()
+                self?.presentSuccessScreen()
             }
-
-            let popup = DraggablePopupViewController(contentVC: vc, height: 450)
-            present(popup, animated: false) { popup.presentPopup() }
         }
+
+        let popup = DraggablePopupViewController(contentVC: vc, height: 450)
+        present(popup, animated: false) { popup.presentPopup() }
+    }
 
     private func presentSuccessScreen() {
-            if let successVC = storyboard?.instantiateViewController(withIdentifier: "SubCategorySuccess") as? SubCategorySuccess {
-                successVC.modalPresentationStyle = .overFullScreen
-                successVC.modalTransitionStyle = .crossDissolve
-                self.present(successVC, animated: true)
-            }
+        if let successVC = storyboard?.instantiateViewController(withIdentifier: "SubCategorySuccess") as? SubCategorySuccess {
+            successVC.modalPresentationStyle = .overFullScreen
+            successVC.modalTransitionStyle = .crossDissolve
+            self.present(successVC, animated: true)
         }
+    }
 
     @IBAction func addCategoryTapped(_ sender: UIButton) {
         guard let addVC = storyboard?.instantiateViewController(
@@ -128,42 +148,52 @@ final class CategoryManagementViewController: UIViewController {
 extension CategoryManagementViewController: UITableViewDataSource, UITableViewDelegate {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return isSearching ? filteredCategories.count : categories.count
+        return isSearching ? filteredDisplayModels.count : displayModels.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let cat = categories[section]
-        return cat.isExpanded ? (cat.subCategories.count + 1) : 1
+        let dataSource = isSearching ? filteredDisplayModels : displayModels
+        let model = dataSource[section]
+        return model.isExpanded ? (model.subcategories.count + 1) : 1
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let dataSource = isSearching ? filteredCategories : categories
-        let cat = dataSource[indexPath.section]
+        let dataSource = isSearching ? filteredDisplayModels : displayModels
+        let model = dataSource[indexPath.section]
 
         if indexPath.row == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! CategoryCell
-            cell.configure(with: cat.name, isExpanded: cat.isExpanded)
+            cell.configure(with: model.parent.name, isExpanded: model.isExpanded)
             return cell
         }
 
         let cell = tableView.dequeueReusableCell(withIdentifier: "SubCategoryCell", for: indexPath) as! SubCategoryCell
         let idx = indexPath.row - 1
-        let sub = cat.subCategories[idx]
+        let sub = model.subcategories[idx]
 
-        cell.configure(with: sub, isEditMode: isEditMode)
+        // Note: inactive logic is inverted - inactive=false means active
+        cell.configure(with: sub.name, isActive: !sub.inactive, isEditMode: isEditMode)
 
         cell.onToggleChanged = { [weak self] (isOn: Bool) in
             guard let self = self else { return }
 
-            if let originalIndex = self.categories.firstIndex(where: { $0.id == cat.id }) {
-                self.categories[originalIndex].subCategories[idx].isActive = isOn
+            // Update local state
+            if let originalIndex = self.displayModels.firstIndex(where: { $0.parent.id == model.parent.id }) {
+                self.displayModels[originalIndex].subcategories[idx].inactive = !isOn
             }
 
+            // Update Firestore
             Task {
-                try? await CategoryController.shared.updateSubCategories(
-                    categoryId: cat.id,
-                    subCategories: cat.subCategories
-                )
+                do {
+                    let userId = try SessionManager.shared.requireUserId()
+                    try await CategoryController.shared.updateCategoryStatus(
+                        categoryId: sub.id,
+                        inactive: !isOn,
+                        modifiedBy: userId
+                    )
+                } catch {
+                    print("❌ Failed to update subcategory status:", error)
+                }
             }
         }
         return cell
@@ -174,9 +204,9 @@ extension CategoryManagementViewController: UITableViewDataSource, UITableViewDe
         guard indexPath.row == 0 else { return }
 
         if isSearching {
-            filteredCategories[indexPath.section].isExpanded.toggle()
+            filteredDisplayModels[indexPath.section].isExpanded.toggle()
         } else {
-            categories[indexPath.section].isExpanded.toggle()
+            displayModels[indexPath.section].isExpanded.toggle()
         }
         tableView.reloadSections(IndexSet(integer: indexPath.section), with: .automatic)
     }
@@ -287,9 +317,14 @@ class SubCategoryCell: UITableViewCell {
         onToggleChanged?(sender.isOn)
     }
 
-    func configure(with sub: SubCategory, isEditMode: Bool) {
-        nameLabel.text = sub.name
-        toggleSwitch.isOn = sub.isActive
+    /// Configures the cell with subcategory data
+    /// - Parameters:
+    ///   - name: The subcategory name
+    ///   - isActive: Whether the subcategory is active (not inactive)
+    ///   - isEditMode: Whether edit mode is enabled
+    func configure(with name: String, isActive: Bool, isEditMode: Bool) {
+        nameLabel.text = name
+        toggleSwitch.isOn = isActive
         toggleSwitch.isHidden = !isEditMode
     }
 }
@@ -297,12 +332,12 @@ class SubCategoryCell: UITableViewCell {
 extension CategoryManagementViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
-            filteredCategories = []
+            filteredDisplayModels = []
         } else {
-            filteredCategories = categories.filter { category in
-                let categoryMatch = category.name.lowercased().contains(searchText.lowercased())
+            filteredDisplayModels = displayModels.filter { model in
+                let categoryMatch = model.parent.name.lowercased().contains(searchText.lowercased())
 
-                let subMatch = category.subCategories.contains { sub in
+                let subMatch = model.subcategories.contains { sub in
                     sub.name.lowercased().contains(searchText.lowercased())
                 }
 
@@ -368,10 +403,8 @@ final class AddSubCatogryViewController: UIViewController {
     @IBOutlet weak var nameTextView: UITextView!
     @IBOutlet weak var saveButton: UIButton!
 
-    var targetCategoryId: String?
-    var categories: [Category] = []
+    var targetParentId: UUID?
 
-    private var selectedCategoryId: String?
     var onSubCategoryAdded: (() -> Void)?
 
     override func viewDidLoad() {
@@ -385,23 +418,27 @@ final class AddSubCatogryViewController: UIViewController {
 
     @IBAction func saveTapped(_ sender: UIButton) {
         let subName = nameTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
-                guard !subName.isEmpty, let categoryId = targetCategoryId else { return }
+        guard !subName.isEmpty, let parentId = targetParentId else { return }
 
-                sender.isEnabled = false
-                let sub = SubCategory(name: subName, isActive: true)
+        sender.isEnabled = false
 
-                Task {
-                    do {
-                        try await CategoryController.shared.addSubCategory(categoryId: categoryId, subCategory: sub)
-                        await MainActor.run { [weak self] in
-                            self?.onSubCategoryAdded?()
-                            self?.dismissPopup()
-                        }
-                    } catch {
-                        await MainActor.run { sender.isEnabled = true }
-                        print("❌ Backend Error:", error)
-                    }
+        Task {
+            do {
+                let userId = try SessionManager.shared.requireUserId()
+                try await CategoryController.shared.addSubCategory(
+                    name: subName,
+                    parentId: parentId,
+                    createdBy: userId
+                )
+                await MainActor.run { [weak self] in
+                    self?.onSubCategoryAdded?()
+                    self?.dismissPopup()
                 }
+            } catch {
+                await MainActor.run { sender.isEnabled = true }
+                print("❌ Backend Error:", error)
+            }
+        }
     }
 
     private func dismissPopup() {
@@ -442,7 +479,8 @@ class ConfirmAddCategory: UIViewController {
 
         Task {
             do {
-                try await CategoryController.shared.addCategory(name: name)
+                let userId = try SessionManager.shared.requireUserId()
+                try await CategoryController.shared.addCategory(name: name, createdBy: userId)
 
                 await MainActor.run { [weak self] in
                     self?.showSuccessThenCloseAll()
