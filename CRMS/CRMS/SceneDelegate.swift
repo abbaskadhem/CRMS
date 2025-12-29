@@ -13,117 +13,112 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     
-    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        
-        
-        
         guard let windowScene = (scene as? UIWindowScene) else { return }
-         
+        
         window = UIWindow(windowScene: windowScene)
-         
-        //check if there if any stored credentials
-        guard let rememberUser = UserDefaults.standard.bool(forKey: "rememberMeButton"), let currentUser = Auth.auth().currentUser else {
-            let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginViewController") as! LoginViewController
-            self.window?.rootViewController = loginVC
-            self.window?.makeKeyAndVisible()
+        
+        // Check if remember me is enabled and user is logged in
+        let rememberUser = UserDefaults.standard.bool(forKey: "rememberMeButton")
+        guard rememberUser, let currentUser = Auth.auth().currentUser else {
+            let loginVC = UIStoryboard(name: "Main", bundle: nil)
+                .instantiateViewController(identifier: "LoginViewController") as! LoginViewController
+            window?.rootViewController = loginVC
+            window?.makeKeyAndVisible()
             return
         }
-
-        //call check user role if credentials exist 
-        checkUserRole(for: user)
         
+        // Check user role if credentials exist
+        checkUserRole(for: currentUser)
     }
-         
-    //check for role function
-    private func checkUserRole(for user: User) async throws -> String {
-        
-        //check for connectivity
-        guard await hasInternetConnection() else {
-            throw NetworkError.noInternet
-        }
-        
-        let db = Firestore.firestore()
-        let userID = user.uid
-        
-        do {
-            try db.collection("User").document(userID).getDocument {
-                [weak self] document, error in
-                guard let self = self else {
-                    return
-                }
+    
+    // Check for role function (non-async callback version)
+    private func checkUserRole(for user: FirebaseAuth.User) {
+        // Check for connectivity (implement this method or remove)
+        Task {
+            guard await hasInternetConnection() else {
+                showAlert(title: "No Internet", message: "Please check your connection.")
+                fallbackToLogin()
+                return
+            }
+            
+            let db = Firestore.firestore()
+            let userID = user.uid
+            
+            db.collection("User").document(userID).getDocument { [weak self] snapshot, error in
+                guard let self = self else { return }
                 
                 if let error = error {
-                    self?.showAlert(title: "Error", message: error.localizedDescription)
+                    self.showAlert(title: "Error", message: error.localizedDescription)
+                    self.fallbackToLogin()
                     return
                 }
                 
-                //user exist
-                guard let document = document, document.exists else {
+                // User exists
+                guard let snapshot = snapshot, snapshot.exists else {
                     self.showAlert(title: "User Not Found", message: "No user found with this ID.")
-                    let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginViewController") as! LoginViewController
-                    self.window?.rootViewController = loginVC
-                    self.window?.makeKeyAndVisible()
+                    self.fallbackToLogin()
                     return
                 }
                 
-                //fetch role type
-                let role = document.get("type") as? Int ?? -1
-                    
-                var vc : UIViewController?
+                // Fetch role type
+                let role = snapshot.get("type") as? Int ?? -1
+                
                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                    
+                var vc: UIViewController?
+                
                 // Navigate based on user role
-                if role == 1000 { //admin
+                switch role {
+                case 1000: // admin
                     vc = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
-                }
-                else if role == 1002 { //servicer
+                case 1002: // servicer
                     vc = storyboard.instantiateViewController(withIdentifier: "ServicerHomeViewController")
-                }
-                else if role == 1001 { //requester
+                case 1001: // requester
                     vc = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
+                default:
+                    self.showAlert(title: "Invalid Role", message: "Unknown user role.")
+                    self.fallbackToLogin()
+                    return
                 }
-
+                
                 if let vc = vc {
-                    window?.rootViewController = vc
-                    window?.makeKeyAndVisible()
+                    self.window?.rootViewController = vc
+                    self.window?.makeKeyAndVisible()
                 }
             }
         }
-        catch {
-            throw NetworkError.serviceUnavailable
+    }
+    
+    private func fallbackToLogin() {
+        let loginVC = UIStoryboard(name: "Main", bundle: nil)
+            .instantiateViewController(identifier: "LoginViewController") as! LoginViewController
+        window?.rootViewController = loginVC
+        window?.makeKeyAndVisible()
+    }
+    
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        
+        // Safely present from root view controller chain
+        if let presentedVC = window?.rootViewController?.presentedViewController {
+            presentedVC.present(alert, animated: true)
+        } else {
+            window?.rootViewController?.present(alert, animated: true)
         }
     }
-        
-    func sceneDidDisconnect(_ scene: UIScene) {
-        // Called as the scene is being released by the system.
-        // This occurs shortly after the scene enters the background, or when its session is discarded.
-        // Release any resources associated with this scene that can be re-created the next time the scene connects.
-        // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
+    
+    // MARK: - Network Check (implement based on your needs)
+    private func hasInternetConnection() async -> Bool {
+        // Simple Reachability check - implement your preferred method
+        // For now, return true or use NWPathMonitor
+        return true
     }
-        
-    func sceneDidBecomeActive(_ scene: UIScene) {
-        // Called when the scene has moved from an inactive state to an active state.
-        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-    }
-        
-    func sceneWillResignActive(_ scene: UIScene) {
-        // Called when the scene will move from an active state to an inactive state.
-        // This may occur due to temporary interruptions (ex. an incoming phone call).
-    }
-        
-    func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
-        // Use this method to undo the changes made on entering the background.
-    }
-        
-    func sceneDidEnterBackground(_ scene: UIScene) {
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
-    }
-        
+    
+    // MARK: - Scene Lifecycle
+    func sceneDidDisconnect(_ scene: UIScene) {}
+    func sceneDidBecomeActive(_ scene: UIScene) {}
+    func sceneWillResignActive(_ scene: UIScene) {}
+    func sceneWillEnterForeground(_ scene: UIScene) {}
+    func sceneDidEnterBackground(_ scene: UIScene) {}
 }

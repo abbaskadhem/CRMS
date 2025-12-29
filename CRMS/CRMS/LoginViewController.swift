@@ -5,8 +5,6 @@
 //  Created by Hoor Hasan
 //
 
-
-
 import UIKit
 import FirebaseAuth
 import FirebaseStorage
@@ -14,85 +12,52 @@ import FirebaseFirestore
 
 class LoginViewController: UIViewController {
 
-
     //IBOutlets
     @IBOutlet weak var backgroundLogin: UIView!
-    
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
-    
     @IBOutlet weak var forgotPassword: UILabel!
-    
     @IBOutlet weak var rememberMeButton: UIButton!
-    @IBOutlet weak var loginButton : UIButton!
+    @IBOutlet weak var loginButton: UIButton!
 
-    //For navigating to home page
-    var window: UIWindow?
+    // Remove window property - SceneDelegate handles this
     
     //property to disable the login button ONLY if both text fields are empty
-    var isLoginButtonEnabled : Bool {
+    var isLoginButtonEnabled: Bool {
         guard let email = emailTextField.text, let password = passwordTextField.text else {
-            return false // will return false if both not empty
+            return false
         }
         return !email.isEmpty && !password.isEmpty
     }
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //ensuring that the page did load without any issues
         print("login view controller")
-
-        //hiding "back" button in the navigation bar    
         navigationItem.hidesBackButton = true
 
-        //disable login button intially when the page loaded
         loginButton.isEnabled = false
         loginButton.alpha = 0.75
 
-        //listening to text changes for live validation
         emailTextField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
         passwordTextField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
         
-        //making forgot password tappable
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(forgotPasswordTapped))
         forgotPassword.isUserInteractionEnabled = true
         forgotPassword.addGestureRecognizer(tapGesture)
-        
     }
 
-    // Enables / disables login button while user types
     @objc private func textFieldsDidChange(){
-        if isLoginButtonEnabled{
-            loginButton.isEnabled = true
-            loginButton.alpha = 1.0
-        }
-        else {
-            loginButton.isEnabled = false
-            loginButton.alpha = 0.75
-        }
+        loginButton.isEnabled = isLoginButtonEnabled
+        loginButton.alpha = isLoginButtonEnabled ? 1.0 : 0.75
     }
     
-    //Forgot password clickable
     @objc private func forgotPasswordTapped(){
         performSegue(withIdentifier: "ForgotPasswordSegue", sender: nil)
     }
     
-    //cofiguring bottom sheet
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        //forgot password bottom sheet
-        if segue.identifier == "ForgotPasswordSegue" {
-            if let sheet = segue.destination.sheetPresentationController{
-                sheet.detents = [.medium()]
-                sheet.prefersGrabberVisible = true
-                sheet.preferredCornerRadius = 20
-            }
-        }
-        
-        //verifictaion bottom sheet
-        if segue.identifier == "verificationSegue" {
+        if segue.identifier == "ForgotPasswordSegue" || segue.identifier == "verificationSegue" {
             if let sheet = segue.destination.sheetPresentationController {
                 sheet.detents = [.medium()]
                 sheet.prefersGrabberVisible = true
@@ -101,170 +66,110 @@ class LoginViewController: UIViewController {
         }
     }
     
-    
-    //reememberMe Button Action
     @IBAction func rememberMeButtonTapped(_ sender: UIButton){
-        
         rememberMeButton.isSelected.toggle()
-        
     }
     
-    
-    //Login Button Action
     @IBAction func loginButtonTapped(_ sender: UIButton){
-        
-        //email input validation + dispaly alert message if empty using optional unwrap
-        guard let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), 
-        !email.isEmpty else {
+        guard let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !email.isEmpty else {
             showAlert(title: "Missing Email", message: "Please Enter Your Email")
             return
         }
 
-        //password input validation + display alert message if empty using optional unwrap
         guard let password = passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-        !password.isEmpty else {
+              !password.isEmpty else {
             showAlert(title: "Missing Password", message: "Please Enter Your Password")
             return
         }
 
-        //disable button during authentication to prevent mutiple taps
         loginButton.isEnabled = false
-        loginButton.alpha = 0.75 //opacity level
+        loginButton.alpha = 0.75
 
-        //Log in with FireBase Authentication
-        //Authenticate the user
-        Auth.auth().signIn(withEmail: email, password: password){
-            //[weak self] -> to avoid retain cycle
-           [weak self] authResult, error in
-
-           //re-enable the button after authentication
+        Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+            // Re-enable button
             self?.loginButton.isEnabled = true
-            self?.loginButton.alpha = 1.0 //opacity level
+            self?.loginButton.alpha = 1.0
 
-            //handle authentication result
             if let error = error {
-
-                //Login failed -> show error message using localizedDescription from Firebase
                 self?.showAlert(title: "Login Failed", message: error.localizedDescription)
                 return
             }
 
-            //save remember me
+            // Save remember me preference
             if self?.rememberMeButton.isSelected == true {
                 UserDefaults.standard.set(true, forKey: "rememberMeButton")
-            }
-            else {
+            } else {
                 UserDefaults.standard.removeObject(forKey: "rememberMeButton")
             }
             
-            //Login in successful - save user ID to UserDefaults
-            if let user = authResult?.user.uid {
-                UserDefaults.standard.set(user, forKey: UserDefaultsKeys.userID)
-                //call checkUserRole Function to navigate to the correct home page
-                self?.checkUserRole(for: user)
-            }            
+            // Login successful - get user and check role
+            guard let user = authResult?.user else {
+                self?.showAlert(title: "Error", message: "Failed to get user data")
+                return
+            }
+            
+            UserDefaults.standard.set(user.uid, forKey: "userID") // ✅ Fixed: store uid as String
+            self?.checkUserRole(for: user) // ✅ Fixed: pass FirebaseAuth.User
         }
     }
 
-    //check for role function
-    private func checkUserRole(for user: User) async throws -> String {
-        
-        //check for connectivity
-        guard await hasInternetConnection() else {
-            throw NetworkError.noInternet
-        }
-        
+    // ✅ Fixed: Now takes FirebaseAuth.User, uses callback pattern (no async)
+    private func checkUserRole(for user: FirebaseAuth.User) {
         let db = Firestore.firestore()
-        let userID = user.uid
+        let userID = user.uid // ✅ Fixed: use uid (String)
         
-        do {
-            try db.collection("User").document(userID).getDocument {
-                [weak self] document, error in
-                guard let self = self else {
-                    return
-                }
-                
-                if let error = error {
-                    self?.showAlert(title: "Error", message: error.localizedDescription)
-                    return
-                }
-                
-                //user exist
-                guard let document = document, document.exists else {
-                    self.showAlert(title: "User Not Found", message: "No user found with this ID.")
-                    let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginViewController") as! LoginViewController
-                    self.window?.rootViewController = loginVC
-                    self.window?.makeKeyAndVisible()
-                    return
-                }
-                
-                //fetch role type
-                let role = document.get("type") as? Int ?? -1
-                    
-                var vc : UIViewController?
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                    
-                // Navigate based on user role
-                if role == 1000 { //admin
-                    vc = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
-                }
-                else if role == 1002 { //servicer
-                    vc = storyboard.instantiateViewController(withIdentifier: "ServicerHomeViewController")
-                }
-                else if role == 1001 { //requester
-                    vc = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
-                }
-
-                if let vc = vc {
-                    window?.rootViewController = vc
-                    window?.makeKeyAndVisible()
+        db.collection("User").document(userID).getDocument { [weak self] snapshot, error in
+            guard let self = self else { return }
+            
+            if let error = error {
+                self.showAlert(title: "Error", message: error.localizedDescription)
+                return
+            }
+            
+            guard let snapshot = snapshot, snapshot.exists else {
+                self.showAlert(title: "User Not Found", message: "No user found with this ID.")
+                return
+            }
+            
+            let role = snapshot.get("type") as? Int ?? -1
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            var vc: UIViewController?
+            
+            switch role {
+            case 1000: // admin
+                vc = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
+            case 1002: // servicer
+                vc = storyboard.instantiateViewController(withIdentifier: "ServicerHomeViewController")
+            case 1001: // requester
+                vc = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
+            default:
+                self.showAlert(title: "Invalid Role", message: "Unknown user role.")
+                return
+            }
+            
+            if let vc = vc {
+                // Navigate using navigation controller or present modally
+                if let navController = self.navigationController {
+                    navController.pushViewController(vc, animated: true)
+                } else {
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true)
                 }
             }
         }
-        catch {
-            throw NetworkError.serviceUnavailable
-        }
-        
     }
 
-    //this method is for rounding the bottom edge of the view
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
-        //rounding the view bottom edge to raduis 200
         backgroundLogin.layer.cornerRadius = 200
-
-        //specify which corner (botton left & right)
-        backgroundLogin.layer.maskedCorners=[.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-
-        //Ensure that any subviews are clipped to the rounded corners.
+        backgroundLogin.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         backgroundLogin.layer.masksToBounds = true
     }
 
-    //helper method for alert messages 
-    func showAlert (title: String, message: String){
-
-        // Create an alert controller with a specified title and message.
+    private func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-
-        // Create an action for the alert, which will be a button labeled "OK".
         alert.addAction(UIAlertAction(title: "OK", style: .default))
-
-        // Present the alert on the screen.
         present(alert, animated: true)
     }
-    
-    
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-    
-
 }
