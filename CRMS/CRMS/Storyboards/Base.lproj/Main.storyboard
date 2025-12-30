@@ -322,7 +322,7 @@ Login to start your journey! </string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gWL-4E-uv8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1762.5954198473282" y="3.5211267605633805"/>
+            <point key="canvasLocation" x="1738" y="4"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="W1F-rT-kNo">
