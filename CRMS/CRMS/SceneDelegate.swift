@@ -63,18 +63,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 
                 // Fetch role type
                 let role = snapshot.get("type") as? Int ?? -1
-                
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+
+                // TODO: Create separate storyboards/tab bar controllers for Servicer and Requester roles
+                // Currently all roles use Admin.storyboard as a temporary solution
+                let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
                 var vc: UIViewController?
-                
+
                 // Navigate based on user role
                 switch role {
                 case 1000: // admin
-                    vc = storyboard.instantiateViewController(withIdentifier: "AdminHomeViewController")
+                    vc = adminStoryboard.instantiateInitialViewController()
                 case 1002: // servicer
-                    vc = storyboard.instantiateViewController(withIdentifier: "ServicerHomeViewController")
+                    vc = adminStoryboard.instantiateInitialViewController()
                 case 1001: // requester
-                    vc = storyboard.instantiateViewController(withIdentifier: "RequesterHomeViewController")
+                    vc = adminStoryboard.instantiateInitialViewController()
                 default:
                     self.showAlert(title: "Invalid Role", message: "Unknown user role.")
                     self.fallbackToLogin()

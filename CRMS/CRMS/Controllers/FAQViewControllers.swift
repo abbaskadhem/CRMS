@@ -82,7 +82,6 @@ extension FAQManagementViewController: UITableViewDataSource, UITableViewDelegat
         vc.answer = selectedItem.answer
         vc.question = selectedItem.question
         vc.id = selectedItem.id
-
         self.navigationController?.pushViewController(vc, animated: true)
     }
 
@@ -95,7 +94,7 @@ class FAQDetailsViewController: UIViewController {
     @IBOutlet weak var answerLabel: UILabel!
     @IBOutlet weak var questionLabel: UILabel!
 
-    var id: String?
+    var id: UUID?
     var question: String?
     var answer: String?
     override func viewDidLoad() {
@@ -130,10 +129,9 @@ class FAQDetailsViewController: UIViewController {
         showConfirmDelete()
     }
 
-    func handleDelete()async throws{
-        do{
-            try await FaqController.shared.deleteFaq(withId: id ?? "")
-        }
+    func handleDelete() async throws {
+        guard let id = id else { return }
+        try await FaqController.shared.deleteFaq(withId: id)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -219,9 +217,9 @@ class EditFAQViewController: UIViewController {
     @IBOutlet weak var questionTextView: InspectableTextView!
     @IBOutlet weak var answerTextView: InspectableTextView!
 
-    var id:String?
-    var question:String?
-    var answer:String?
+    var id: UUID?
+    var question: String?
+    var answer: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -302,7 +300,7 @@ final class FAQConfirmationViewController: UIViewController {
     }
 
     private func createFAQ() async throws {
-        let newFaq = FAQ(id:"",question: question ?? "", answer: answer ?? "" )
+        let newFaq = FAQ(id:UUID(),question: question ?? "", answer: answer ?? "" )
         try await FaqController.shared.addFaq(newFaq)
     }
 
@@ -333,7 +331,7 @@ final class FAQConfirmationViewController: UIViewController {
 
 final class ConfirmEditAlertViewController: UIViewController {
 
-    var id: String?
+    var id: UUID?
     var question: String?
     var answer: String?
 
@@ -349,7 +347,7 @@ final class ConfirmEditAlertViewController: UIViewController {
     @IBAction func saveButton(_ sender: UIButton) {
         sender.isEnabled = false
 
-        guard let id = id, !id.isEmpty else {
+        guard let id = id else {
             sender.isEnabled = true
             return
         }
@@ -400,7 +398,7 @@ final class ConfirmEditAlertViewController: UIViewController {
 
 final class ConfirmDeleteViewController: UIViewController {
 
-    var id: String?
+    var id: UUID?
     var onDeleted: (() -> Void)?
 
     override func viewDidLoad() {
@@ -421,7 +419,7 @@ final class ConfirmDeleteViewController: UIViewController {
         print("confirm")
         sender.isEnabled = false
 
-        guard let id = id, !id.isEmpty else {
+        guard let id = id else {
             print("❌ Cannot delete: FAQ id is missing")
             sender.isEnabled = true
             return
