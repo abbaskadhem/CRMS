@@ -35,7 +35,7 @@ final class RequestController {
         
         // Gets the reference to the counters collection and the specific document in the param
         
-           let ref = db.collection("counters").document(document)
+           let ref = db.collection("Counters").document(document)
         
         // Takes a snapshot of the document to read the last number and format to be implemented. In case of failure, defaults ERR is used to signal that an error occured with this request, allowing to track.
         let snapshot = try await ref.getDocument()
