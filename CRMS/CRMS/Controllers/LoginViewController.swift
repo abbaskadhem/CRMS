@@ -109,15 +109,15 @@ class LoginViewController: UIViewController {
                 return
             }
             
-            UserDefaults.standard.set(user.uid, forKey: "userID") // ✅ Fixed: store uid as String
-            self?.checkUserRole(for: user) // ✅ Fixed: pass FirebaseAuth.User
+            UserDefaults.standard.set(user.uid, forKey: "userID")
+            self?.checkUserRole(for: user)
         }
     }
 
-    // ✅ Fixed: Now takes FirebaseAuth.User, uses callback pattern (no async)
+    
     private func checkUserRole(for user: FirebaseAuth.User) {
         let db = Firestore.firestore()
-        let userID = user.uid // ✅ Fixed: use uid (String)
+        let userID = user.uid
         
         db.collection("User").document(userID).getDocument { [weak self] snapshot, error in
             guard let self = self else { return }
