@@ -29,8 +29,7 @@ final class LocationController {
                   let id = UUID(uuidString: idString),
                   let buildingNo = data["buildingNo"] as? String,
                   let createdOnTimestamp = data["createdOn"] as? Timestamp,
-                  let createdByString = data["createdBy"] as? String,
-                  let createdBy = UUID(uuidString: createdByString),
+                  let createdBy = data["createdBy"] as? String,
                   let inactive = data["inactive"] as? Bool,
                   !inactive // Only return active buildings
             else { return nil }
@@ -40,10 +39,7 @@ final class LocationController {
                 modifiedOn = modifiedTimestamp.dateValue()
             }
 
-            var modifiedBy: UUID? = nil
-            if let modifiedByString = data["modifiedBy"] as? String {
-                modifiedBy = UUID(uuidString: modifiedByString)
-            }
+            let modifiedBy = data["modifiedBy"] as? String
 
             return Building(
                 id: id,
@@ -76,8 +72,7 @@ final class LocationController {
                   let buildingRefString = data["buildingRef"] as? String,
                   let buildingRef = UUID(uuidString: buildingRefString),
                   let createdOnTimestamp = data["createdOn"] as? Timestamp,
-                  let createdByString = data["createdBy"] as? String,
-                  let createdBy = UUID(uuidString: createdByString),
+                  let createdBy = data["createdBy"] as? String,
                   let inactive = data["inactive"] as? Bool,
                   !inactive, // Only return active rooms
                   buildingRef == buildingId // Filter by building
@@ -88,10 +83,7 @@ final class LocationController {
                 modifiedOn = modifiedTimestamp.dateValue()
             }
 
-            var modifiedBy: UUID? = nil
-            if let modifiedByString = data["modifiedBy"] as? String {
-                modifiedBy = UUID(uuidString: modifiedByString)
-            }
+            let modifiedBy = data["modifiedBy"] as? String
 
             return Room(
                 id: id,

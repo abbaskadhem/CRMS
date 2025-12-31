@@ -8,15 +8,15 @@
 import Foundation
 
 struct ItemCategoryModel: Codable, Identifiable {
-var id: UUID // UUID
-var name: String // Name
-var isParent: Bool // Is Parent
-var parentCategoryRef: UUID? // Parent Category Ref.
+    var id: UUID                  // UUID
+    var name: String              // Name
+    var isParent: Bool            // Is Parent
+    var parentCategoryRef: UUID?  // Parent Category Ref.
 
-// Default Common Fields
-var createdOn: Date // Created on
-var createdBy: UUID // Created by
-var modifiedOn: Date? // Modified on
-var modifiedBy: UUID? // Modified by
-var inactive: Bool // Inactive
+    // Default Common Fields
+    var createdOn: Date           // Created on
+    var createdBy: String         // Created by (Firebase Auth UID)
+    var modifiedOn: Date?         // Modified on
+    var modifiedBy: String?       // Modified by (Firebase Auth UID)
+    var inactive: Bool            // Inactive
 }

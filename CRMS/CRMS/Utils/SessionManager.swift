@@ -24,11 +24,27 @@ final class SessionManager {
 
     private init() {}
 
-    var currentUserId: UUID? {
-        UUID(uuidString: Auth.auth().currentUser?.uid ?? "")
+    /// The current Firebase Auth user ID
+    var currentUserId: String? {
+        Auth.auth().currentUser?.uid
     }
 
-    func requireUserId() throws -> UUID {
+    /// The current Firebase Auth user email
+    var currentUserEmail: String? {
+        Auth.auth().currentUser?.email
+    }
+
+    /// The current Firebase Auth user display name
+    var currentUserDisplayName: String? {
+        Auth.auth().currentUser?.displayName
+    }
+
+    /// Clears the current user session (signs out of Firebase Auth)
+    func clearSession() throws {
+        try Auth.auth().signOut()
+    }
+
+    func requireUserId() throws -> String {
         guard let id = currentUserId else {
             throw SessionError.notLoggedIn
         }
