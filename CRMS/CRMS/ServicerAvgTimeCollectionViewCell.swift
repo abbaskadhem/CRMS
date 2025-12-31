@@ -18,7 +18,7 @@ class ServicerAvgTimeCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
         
         //rounding cell corners
-        self.contentView.layer.cornerRadius = 20
+        self.contentView.layer.cornerRadius = 10
         self.contentView.layer.masksToBounds = true
 
         //changing cell border color

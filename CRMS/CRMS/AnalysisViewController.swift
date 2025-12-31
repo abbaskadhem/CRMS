@@ -27,6 +27,7 @@ class AnalysisViewController: UIViewController {
         
         super.viewDidLoad()
         title = "Analytics"
+        print("loaed", String(describing: type(of: self)))
         
         //show first segement by default
         analyticsSegment.selectedSegmentIndex = 0
