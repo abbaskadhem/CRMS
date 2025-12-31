@@ -24,6 +24,15 @@
                                     <segue destination="iMn-O3-tJW" kind="show" id="wBx-9Z-byR"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wux-uM-NCk">
+                                <rect key="frame" x="166" y="481" width="62" height="39"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Notif"/>
+                                <connections>
+                                    <segue destination="pNM-xc-DR2" kind="show" id="CeZ-4n-mbG"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -65,6 +74,16 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fea-QN-EBl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1647" y="-2"/>
+        </scene>
+        <!--Notifications-->
+        <scene sceneID="KGs-gb-l8G">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Notifications" id="pNM-xc-DR2" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="9zp-uU-RWF"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WWa-KF-EYY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1638" y="85"/>
         </scene>
     </scenes>
     <resources>

@@ -22,19 +22,18 @@ enum SubType: Int, Codable {
 
 // MARK: - User
 struct User: Codable, Identifiable {
-    var id: UUID                 // UUID
+    var id: String                 // UUID
     var userNo: String           // User No.
     var fullName: String         // Full Name
     var type: UserType           // Type (Admin/Requester/Servicer)
-    var subtype: SubType?         // Subtype (optional)
+    var subtype: SubType?        // Subtype (optional)
     var email: String            // Email
-    var hashedPassword: String   // Hashed Password
 
     // Default Common Fields
     var createdOn: Date          // Created on
-    var createdBy: UUID          // Created by
+    var createdBy: String          // Created by
     var modifiedOn: Date?        // Modified on
-    var modifiedBy: UUID?        // Modified by
+    var modifiedBy: String?        // Modified by
     var inactive: Bool           // Inactive
 }
 
