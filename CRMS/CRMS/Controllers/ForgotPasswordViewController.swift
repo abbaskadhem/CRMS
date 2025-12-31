@@ -7,7 +7,7 @@
 
 import UIKit
 import FirebaseAuth
-import FirebaseStorage
+import FirebaseFirestore
 
 class ForgotPasswordViewController: UIViewController {
 
@@ -126,7 +126,7 @@ class ForgotPasswordViewController: UIViewController {
 
             if let snapshot = snapshot, !snapshot.documents.isEmpty {
                 // Email exists, send reset link
-                self.sendPasswordReset(email: email)
+                self.sendPasswordReset(email)
             } 
             else {
                 self.showAlert(title: "Email Not Found", message: "No account found with this email")

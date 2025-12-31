@@ -15,8 +15,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="light mode logo" translatesAutoresizingMaskIntoConstraints="NO" id="sE6-Qq-GEA">
-                                <rect key="frame" x="46" y="305" width="300" height="157"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="lauchScreen Logo" translatesAutoresizingMaskIntoConstraints="NO" id="u6J-hh-yMh">
+                                <rect key="frame" x="47" y="330" width="307" height="169"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
@@ -30,6 +30,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="light mode logo" width="5524" height="3070"/>
+        <image name="lauchScreen Logo" width="600" height="334"/>
     </resources>
 </document>

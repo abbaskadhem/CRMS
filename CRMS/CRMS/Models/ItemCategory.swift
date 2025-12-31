@@ -20,6 +20,3 @@ var modifiedOn: Date? // Modified on
 var modifiedBy: UUID? // Modified by
 var inactive: Bool // Inactive
 }
-
-
-
