@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - FAQ
 struct FAQ: Codable, Identifiable {
-    var id: String           // UUID
+    var id: UUID           // UUID
     var question: String     // Question
     var answer: String       // Answer
 

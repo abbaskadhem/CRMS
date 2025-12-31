@@ -13,14 +13,14 @@ class FaqController {
     
     func getFaqs() async throws -> [FAQ] {
         let faqsRef = try await Firestore.firestore().collection("Faq").getDocuments()
-        
+
         let fetchedFaqs = faqsRef.documents.compactMap { document -> FAQ? in
             let data = document.data()
             let question = data["question"] as? String ?? ""
             let answer = data["answer"] as? String ?? ""
-            let id = document.documentID
-            return FAQ(id: id, question: question , answer: answer)
-            
+            // Convert String document ID to UUID
+            guard let id = UUID(uuidString: document.documentID) else { return nil }
+            return FAQ(id: id, question: question, answer: answer)
         }
         return fetchedFaqs
     }
@@ -29,20 +29,20 @@ class FaqController {
         var data: [String: Any] = [:]
         data["question"] = faq.question
         data["answer"] = faq.answer
-        
-        
-        try await Firestore.firestore().collection("Faq").document().setData(data)
+
+        // Use UUID string as document ID
+        try await Firestore.firestore().collection("Faq").document(faq.id.uuidString).setData(data)
     }
-    
-    func deleteFaq(withId id: String) async throws {
-        try await Firestore.firestore().collection("Faq").document(id).delete()
+
+    func deleteFaq(withId id: UUID) async throws {
+        try await Firestore.firestore().collection("Faq").document(id.uuidString).delete()
     }
-    
-    func editFaq( faq: FAQ) async throws {
+
+    func editFaq(faq: FAQ) async throws {
         var data: [String: Any] = [:]
         data["question"] = faq.question
         data["answer"] = faq.answer
-        
-        try await Firestore.firestore().collection("Faq").document(faq.id).updateData(data)
+
+        try await Firestore.firestore().collection("Faq").document(faq.id.uuidString).updateData(data)
     }
 }
