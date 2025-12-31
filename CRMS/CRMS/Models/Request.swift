@@ -36,34 +36,34 @@ enum Action: Int, Codable {
 struct Request: Codable, Identifiable {
     var id: UUID                     // UUID
     var requestNo: String            // Request No.
-    var requesterRef: UUID           // Requester Ref.
+    var requesterRef: String         // Requester Ref. (Firebase Auth UID)
     var requestCategoryRef: UUID     // Request Category Ref.
     var requestSubcategoryRef: UUID  // Request Subcategory Ref.
     var buildingRef: UUID            // Building Ref.
     var roomRef: UUID                // Room Ref.
     var description: String          // Description
     var images: [String]?            // Images (URLs or paths)
-    var priority: Priority?           // Priority
+    var priority: Priority?          // Priority
     var status: Status               // Status
-    var servicerRef: UUID?           // Servicer Ref. (optional)
+    var servicerRef: String?         // Servicer Ref. (Firebase Auth UID, optional)
     var estimatedStartDate: Date?    // Estimated start date the servicer schedueles
     var estimatedEndDate: Date?      // Estimated end date the servicer schedueles
     var actualStartDate: Date?       // Actual Start Date (when servicer clicks start, this is set)
     var actualEndDate: Date?         // Actual End Date (when servicer clicks complete, this is set)
-    var ownerId: UUID                // Owner ID
+    var ownerId: String              // Owner ID (Firebase Auth UID)
 
     // Default Common Fields
     var createdOn: Date              // Created on
-    var createdBy: UUID              // Created by
+    var createdBy: String            // Created by (Firebase Auth UID)
     var modifiedOn: Date?            // Modified on
-    var modifiedBy: UUID?            // Modified by
+    var modifiedBy: String?          // Modified by (Firebase Auth UID)
     var inactive: Bool               // Inactive
 }
 
 // MARK: - RequestHistory
 struct RequestHistory: Codable, Identifiable {
     var id: UUID                 // UUID
-    var historyNo: String         // Record No.
+    var historyNo: String        // Record No.
     var requestRef: UUID         // Request Ref.
     var action: Action           // Action
     var sentBackReason: String?  // Sent back reason (optional)
@@ -71,26 +71,26 @@ struct RequestHistory: Codable, Identifiable {
 
     // Default Common Fields
     var createdOn: Date          // Created on
-    var createdBy: UUID          // Created by
+    var createdBy: String        // Created by (Firebase Auth UID)
     var modifiedOn: Date?        // Modified on
-    var modifiedBy: UUID?        // Modified by
+    var modifiedBy: String?      // Modified by (Firebase Auth UID)
     var inactive: Bool           // Inactive
 }
 
 // MARK: - RequestFeedback
 struct RequestFeedback: Codable, Identifiable {
     var id: UUID                 // UUID
-    var feedbackNo: String         // Record No.
+    var feedbackNo: String       // Record No.
     var requestRef: UUID         // Request Ref.
-    var requesterRef: UUID       // Requester Ref.
-    var servicerRef: UUID        // Servicer Ref.
+    var requesterRef: String     // Requester Ref. (Firebase Auth UID)
+    var servicerRef: String      // Servicer Ref. (Firebase Auth UID)
     var starRating: Int          // Stars
     var feedbackText: String     // Feedback text
 
     // Default Common Fields
     var createdOn: Date          // Created on
-    var createdBy: UUID          // Created by
+    var createdBy: String        // Created by (Firebase Auth UID)
     var modifiedOn: Date?        // Modified on
-    var modifiedBy: UUID?        // Modified by
+    var modifiedBy: String?      // Modified by (Firebase Auth UID)
     var inactive: Bool           // Inactive
 }

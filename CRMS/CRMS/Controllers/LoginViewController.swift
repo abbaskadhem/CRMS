@@ -117,40 +117,41 @@ class LoginViewController: UIViewController {
     
     private func checkUserRole(for user: FirebaseAuth.User) {
         let db = Firestore.firestore()
-        let userID = user.uid
-        
-        db.collection("User").document(userID).getDocument { [weak self] snapshot, error in
+
+        // Look up user document by Firebase Auth UID
+        db.collection("User").document(user.uid).getDocument { [weak self] snapshot, error in
             guard let self = self else { return }
-            
+
             if let error = error {
                 self.showAlert(title: "Error", message: error.localizedDescription)
                 return
             }
-            
-            guard let snapshot = snapshot, snapshot.exists else {
-                self.showAlert(title: "User Not Found", message: "No user found with this ID.")
+
+            guard let snapshot = snapshot, snapshot.exists, let data = snapshot.data() else {
+                self.showAlert(title: "User Not Found", message: "No user profile found. Please contact support.")
                 return
             }
-            
-            let role = snapshot.get("type") as? Int ?? -1
 
-            // TODO: Create separate storyboards/tab bar controllers for Servicer and Requester roles
-            // Currently all roles use Admin.storyboard as a temporary solution
-            let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
+            let role = data["type"] as? Int ?? -1
+
             var vc: UIViewController?
 
             switch role {
-            case 1000: // admin
+            case UserType.admin.rawValue:
+                let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
                 vc = adminStoryboard.instantiateInitialViewController()
-            case 1002: // servicer
+            case UserType.servicer.rawValue:
+                // TODO: Create separate Servicer storyboard
+                let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
                 vc = adminStoryboard.instantiateInitialViewController()
-            case 1001: // requester
-                vc = adminStoryboard.instantiateInitialViewController()
+            case UserType.requester.rawValue:
+                let requesterStoryboard = UIStoryboard(name: "Requester", bundle: nil)
+                vc = requesterStoryboard.instantiateInitialViewController()
             default:
                 self.showAlert(title: "Invalid Role", message: "Unknown user role.")
                 return
             }
-            
+
             if let vc = vc {
                 // Navigate using navigation controller or present modally
                 if let navController = self.navigationController {
