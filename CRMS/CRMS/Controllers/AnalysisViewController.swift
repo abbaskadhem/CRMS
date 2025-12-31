@@ -183,13 +183,20 @@ class AnalysisViewController: UIViewController {
 
                     //draw footer
                     drawPDFFooter()
-
-                    
                 }
+                print("PDF URL: " ,fileURL)
+                print("PDF Exists: ", FileManager.default.fileExists(atPath: fileURL.path))
 
             }
 
             showAlert(title: "PDF Saved", message: "Performance Analysis Report has been saved to Files.")
+            
+            //share pdf screen
+            let vc = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+            vc.popoverPresentationController?.sourceView=self.view
+            present(vc, animated: true)
+            
+            
         }
         catch {
             //show error
