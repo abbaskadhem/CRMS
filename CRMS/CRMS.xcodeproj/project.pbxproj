@@ -31,6 +31,8 @@
 		D3A110412ED6EBDA006D6692 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = D3A110402ED6EBDA006D6692 /* FirebaseRemoteConfig */; };
 		D3A110432ED6EBDA006D6692 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = D3A110422ED6EBDA006D6692 /* FirebaseStorage */; };
 		D3A110452ED6EBDA006D6692 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = D3A110442ED6EBDA006D6692 /* FirebaseStorageCombine-Community */; };
+		D56914902F050D02001F3A06 /* CalendarKit in Frameworks */ = {isa = PBXBuildFile; productRef = D569148F2F050D02001F3A06 /* CalendarKit */; };
+		D56916172F0529CA001F3A06 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = D56916162F0529CA001F3A06 /* FSCalendar */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,10 +66,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				D3A110232ED6EBDA006D6692 /* FirebaseAppDistribution-Beta in Frameworks */,
+				D56916172F0529CA001F3A06 /* FSCalendar in Frameworks */,
 				D3A1102F2ED6EBDA006D6692 /* FirebaseFirestore in Frameworks */,
 				D3A110272ED6EBDA006D6692 /* FirebaseAuthCombine-Community in Frameworks */,
 				D3A110392ED6EBDA006D6692 /* FirebaseInstallations in Frameworks */,
 				D3A110192ED6EBDA006D6692 /* FirebaseAILogic in Frameworks */,
+				D56914902F050D02001F3A06 /* CalendarKit in Frameworks */,
 				D3A1101F2ED6EBDA006D6692 /* FirebaseAnalyticsIdentitySupport in Frameworks */,
 				D3A110372ED6EBDA006D6692 /* FirebaseInAppMessaging-Beta in Frameworks */,
 				D3A110172ED6EBDA006D6692 /* FirebaseAI in Frameworks */,
@@ -145,6 +149,8 @@
 				D3A110402ED6EBDA006D6692 /* FirebaseRemoteConfig */,
 				D3A110422ED6EBDA006D6692 /* FirebaseStorage */,
 				D3A110442ED6EBDA006D6692 /* FirebaseStorageCombine-Community */,
+				D569148F2F050D02001F3A06 /* CalendarKit */,
+				D56916162F0529CA001F3A06 /* FSCalendar */,
 			);
 			productName = CRMS;
 			productReference = D402B5ED2EF0414F0022E1E2 /* CRMS.app */;
@@ -176,6 +182,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				D3A110152ED6EA41006D6692 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				D569148E2F050D02001F3A06 /* XCRemoteSwiftPackageReference "CalendarKit" */,
+				D56916152F0529CA001F3A06 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D3A10FF22ED6E96D006D6692;
@@ -413,6 +421,22 @@
 				minimumVersion = 12.6.0;
 			};
 		};
+		D569148E2F050D02001F3A06 /* XCRemoteSwiftPackageReference "CalendarKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/richardtop/CalendarKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.11;
+			};
+		};
+		D56916152F0529CA001F3A06 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/WenchaoD/FSCalendar";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.4;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -535,6 +559,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D3A110152ED6EA41006D6692 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageCombine-Community";
+		};
+		D569148F2F050D02001F3A06 /* CalendarKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D569148E2F050D02001F3A06 /* XCRemoteSwiftPackageReference "CalendarKit" */;
+			productName = CalendarKit;
+		};
+		D56916162F0529CA001F3A06 /* FSCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D56916152F0529CA001F3A06 /* XCRemoteSwiftPackageReference "FSCalendar" */;
+			productName = FSCalendar;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

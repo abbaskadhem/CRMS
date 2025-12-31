@@ -49,12 +49,22 @@
         <!--Settings-->
         <scene sceneID="AHw-hz-oir">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xx1-rg-mOa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <viewControllerPlaceholder storyboardName="Settings" id="5Y3-dg-nCb" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Item" id="fJ7-2D-b9O"/>
                 </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="xx1-rg-mOa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="8459" y="435"/>
+        </scene>
+        <!--Calender-->
+        <scene sceneID="CMP-IY-62Y">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Calender" id="1yg-Rb-LMM" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="D2z-e2-ebm"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="azx-zX-vWg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="9045" y="435"/>
         </scene>
         <!--Admin Tab Bar Controller-->
         <scene sceneID="Id8-ox-IYF">
@@ -71,6 +81,7 @@
                         <segue destination="C7z-uq-GrW" kind="relationship" relationship="viewControllers" id="bds-Ph-hWn"/>
                         <segue destination="5Y3-dg-nCb" kind="relationship" relationship="viewControllers" id="R2I-fu-hT6"/>
                         <segue destination="rbi-zL-Y2a" kind="relationship" relationship="viewControllers" id="9bu-n6-20B"/>
+                        <segue destination="1yg-Rb-LMM" kind="relationship" relationship="viewControllers" id="roA-XN-VoF"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TFx-a5-1f3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
