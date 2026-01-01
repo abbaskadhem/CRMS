@@ -15,9 +15,9 @@ struct RequestCategory: Codable, Identifiable {
 
     // Default Common Fields
     var createdOn: Date              // Created on
-    var createdBy: UUID              // Created by
+    var createdBy: String            // Created by (Firebase Auth UID)
     var modifiedOn: Date?            // Modified on
-    var modifiedBy: UUID?            // Modified by
+    var modifiedBy: String?          // Modified by (Firebase Auth UID)
     var inactive: Bool               // Inactive
 }
 
