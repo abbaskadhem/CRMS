@@ -81,6 +81,8 @@ final class AdminRequestsViewController: UIViewController {
                     self.activityIndicator.stopAnimating()
                 }
             } catch {
+                // Print full error to console (includes Firestore index creation link)
+                print("🔴 Firestore Error: \(error)")
                 await MainActor.run {
                     self.activityIndicator.stopAnimating()
                     self.showAlert(title: "Error", message: error.localizedDescription)
