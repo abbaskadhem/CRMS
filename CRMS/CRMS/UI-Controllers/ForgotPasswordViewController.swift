@@ -7,7 +7,10 @@
 
 import UIKit
 import FirebaseAuth
+<<<<<<< HEAD
 import FirebaseFirestore
+=======
+>>>>>>> 9ce382c224ca5fee9546a17acf27b8c007c0f3de
 
 class ForgotPasswordViewController: UIViewController {
 
@@ -102,21 +105,20 @@ class ForgotPasswordViewController: UIViewController {
          
     }
 
+    /// Validates email and sends password reset link if email exists in database
     private func sendLink(){
-        //email input validation
+        // Email input validation
         guard let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
             !email.isEmpty else {
             showAlert(title: "Missing Email", message: "Please Enter Your Email Address")
             return
         }
 
-        //disable button during request
+        // Disable button during request
         sendButton.isEnabled = false
         sendButton.alpha = 0.75
-        
-        //checking if the email is correctly and in the db
-        let db = Firestore.firestore()
 
+<<<<<<< HEAD
         db.collection("User").whereField("email", isEqualTo: email).getDocuments { snapshot, error in
             if let error = error {
                 self.showAlert(title: "Error", message: error.localizedDescription)
@@ -130,6 +132,29 @@ class ForgotPasswordViewController: UIViewController {
             } 
             else {
                 self.showAlert(title: "Email Not Found", message: "No account found with this email")
+=======
+        // Check if email exists in the database using SessionManager
+        Task {
+            do {
+                let exists = try await SessionManager.shared.emailExists(email)
+
+                await MainActor.run {
+                    if exists {
+                        // Email exists, send reset link
+                        self.sendPasswordReset(email)
+                    } else {
+                        self.showAlert(title: "Email Not Found", message: "No account found with this email")
+                        self.sendButton.isEnabled = true
+                        self.sendButton.alpha = 1.0
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    self.showAlert(title: "Error", message: error.localizedDescription)
+                    self.sendButton.isEnabled = true
+                    self.sendButton.alpha = 1.0
+                }
+>>>>>>> 9ce382c224ca5fee9546a17acf27b8c007c0f3de
             }
         }
     }
