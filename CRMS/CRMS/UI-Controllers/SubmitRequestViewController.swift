@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import FirebaseStorage
 
 final class SubmitRequestViewController: UIViewController {
 
@@ -417,15 +416,14 @@ final class SubmitRequestViewController: UIViewController {
 
         Task {
             do {
-                // Upload images first if any
+                // Upload images first if any using RequestController
                 var imageURLs: [String] = []
                 if !selectedImages.isEmpty {
-                    imageURLs = try await uploadImages()
+                    imageURLs = try await RequestController.shared.uploadImages(selectedImages)
                 }
 
-                // Submit request
-                let requestController = RequestController()
-                try await requestController.submitRequest(
+                // Submit request using shared RequestController
+                try await RequestController.shared.submitRequest(
                     requestCategoryRef: mainCategory.id,
                     requestSubcategoryRef: subCategory.id,
                     buildingRef: building.id,
@@ -452,50 +450,6 @@ final class SubmitRequestViewController: UIViewController {
 
     @objc private func dismissKeyboard() {
         view.endEditing(true)
-    }
-
-    private func uploadImages() async throws -> [String] {
-        var urls: [String] = []
-        let storage = Storage.storage()
-
-        for (index, image) in selectedImages.enumerated() {
-            guard let imageData = image.jpegData(compressionQuality: 0.7) else { continue }
-
-            let imageName = "\(UUID().uuidString)_\(index).jpg"
-            let storageRef = storage.reference().child("request_images/\(imageName)")
-
-            // Create metadata
-            let metadata = StorageMetadata()
-            metadata.contentType = "image/jpeg"
-
-            // Upload using completion handler converted to async
-            let url = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
-                storageRef.putData(imageData, metadata: metadata) { metadata, error in
-                    if let error = error {
-                        continuation.resume(throwing: error)
-                        return
-                    }
-
-                    // Get download URL after successful upload
-                    storageRef.downloadURL { url, error in
-                        if let error = error {
-                            continuation.resume(throwing: error)
-                            return
-                        }
-
-                        if let downloadURL = url {
-                            continuation.resume(returning: downloadURL.absoluteString)
-                        } else {
-                            continuation.resume(throwing: NSError(domain: "UploadError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to get download URL"]))
-                        }
-                    }
-                }
-            }
-
-            urls.append(url)
-        }
-
-        return urls
     }
 
     // MARK: - Alerts
