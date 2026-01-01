@@ -7,20 +7,26 @@
 
 import Foundation
 import FirebaseAuth
+import FirebaseFirestore
 
 enum SessionError: LocalizedError {
     case notLoggedIn
+    case userDataNotFound
 
     var errorDescription: String? {
         switch self {
         case .notLoggedIn:
             return "No user is currently logged in."
+        case .userDataNotFound:
+            return "User data not found in database."
         }
     }
 }
 
 final class SessionManager {
     static let shared = SessionManager()
+    
+    private let db = Firestore.firestore()
 
     private init() {}
 
@@ -49,5 +55,18 @@ final class SessionManager {
             throw SessionError.notLoggedIn
         }
         return id
+    }
+    
+    /// Returns the user type (1000, 1001, or 1002)
+    func getUserType() async throws -> Int {
+        let userId = try requireUserId()
+        
+        let document = try await db.collection("User").document(userId).getDocument()
+        
+        guard let type = document.data()?["type"] as? Int else {
+            throw SessionError.userDataNotFound
+        }
+        
+        return type
     }
 }
