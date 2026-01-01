@@ -135,7 +135,7 @@ class EscalationContainerViewController: UIViewController {
         dataSet.valueFont = .systemFont(ofSize: 10, weight: .medium)
         dataSet.yValuePosition = .outsideSlice
         dataSet.xValuePosition = .outsideSlice
-        dataSet.valueLinePart1Length = 0.2
+        dataSet.valueLinePart1Length = 0.3
         dataSet.valueLinePart2Length = 0.2
         dataSet.valueLinePart1OffsetPercentage = 1.2
         dataSet.valueTextColor = AppColors.primary

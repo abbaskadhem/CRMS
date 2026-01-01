@@ -46,13 +46,13 @@ class CategoryContainerViewController: UIViewController {
             for doc in requestSnap.documents {
 
                 //reading category reference from request
-                if let catRef = doc["categoryRef"] as? String {
+                if let catRef = doc["requestCategoryRef"] as? String {
                     //increasing the count for this category
                     categoryCount[catRef, default: 0] += 1
                 }
 
                 //reading sub-category reference from request
-                if let subRef = doc["subCategoryRef"] as? String {
+                if let subRef = doc["requestSubcategoryRef"] as? String {
                     //increasing the count for this sub-category
                     subCategoryCount[subRef, default: 0] += 1
                 }
@@ -93,9 +93,9 @@ class CategoryContainerViewController: UIViewController {
             //updating the UI on main thread
             await MainActor.run {
                 //category bar chart
-                showBarChart (data: topCategories, container: categoryview, title:"Top 5 Categories")
+                showBarChart (data: topCategories, container: categoryview)
                 //subcategory bar chart
-                showBarChart (data: topSubCategories, container: subcategoryview, title:"Top 5 Sub-Categories")
+                showBarChart (data: topSubCategories, container: subcategoryview)
             }
         }
         catch {
@@ -103,7 +103,7 @@ class CategoryContainerViewController: UIViewController {
         }
     }
 
-    private func showBarChart(data: [(name: String, count: Int)], container: UIView, title: String) {
+    private func showBarChart(data: [(name: String, count: Int)], container: UIView) {
         //removing any existing charts from the container
         container.subviews.forEach { $0.removeFromSuperview() }
 
@@ -111,30 +111,45 @@ class CategoryContainerViewController: UIViewController {
         chart.frame = container.bounds // Match chart size to container view
         chart.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
-        //styling the chart 
-        chart.chartDescription.enabled = true //showing the title
-        chart.chartDescription.text = title //title text
-        chart.chartDescription.font = .systemFont(ofSize: 16, weight: .bold)
-        chart.chartDescription.textColor = AppColors.primary
-
-        // Convert data into bar chart entries
+        //entries
         let entries = data.enumerated().map {
             BarChartDataEntry( x: Double($0.offset), y: Double($0.element.count))
         }
 
         //creating the dataset from entries
-        let dataSet = BarChartDataSet(entries: entries)
-
+        let dataSet = BarChartDataSet(entries: entries, label: "")
         // Set bar color
-        dataSet.colors = [ AppColors.secondary]
-
-        //attaching data to chart 
-        chart.data = BarChartData(arrayLiteral: dataSet, dataSet)
-
-        chart.xAxis.valueFormatter = IndexAxisValueFormatter(values: data.map { $0.name }) //setting X-axis labels to category names
-        chart.xAxis.granularity = 1 //ensuring one label per bar
-        chart.xAxis.labelRotationAngle = -30 //rotating labels so they don’t overlap
+        dataSet.colors = [AppColors.secondary]
+        dataSet.highlightEnabled = false
+         
+        //attaching data to chart
+        let barData = BarChartData(dataSet: dataSet)
+        barData.barWidth = 0.25
+        chart.data = barData
+        
+        //styling the chart
+        chart.chartDescription.enabled = false //showing the title
+        /*chart.chartDescription.text = title //title text
+        chart.chartDescription.font = .systemFont(ofSize: 16, weight: .bold)
+        chart.chartDescription.textColor = AppColors.primary
+        chart.chartDescription.textAlign = .center
+        chart.chartDescription.yOffset = -50*/
+        
+        chart.legend.enabled = false //remove legend
+        
+        //removing grid
+        chart.xAxis.drawGridLinesEnabled = false
+        chart.leftAxis.drawGridLinesEnabled = false
+        
         chart.rightAxis.enabled = false //hiding right Y-axis
+        chart.xAxis.labelPosition = .bottom
+        chart.xAxis.granularity = 1 //ensuring one label per bar
+        chart.xAxis.valueFormatter = IndexAxisValueFormatter(values: data.map { $0.name }) //setting X-axis labels to category names
+        chart.xAxis.labelRotationAngle = 0 //rotating labels so they don’t overlap
+       
+        chart.fitBars = true
+        chart.setExtraOffsets(left: 4, top: 28, right: 4, bottom: 4)
+        
         chart.animate(yAxisDuration: 1.0) //animating chart loading
 
         //adding chart to the container view
