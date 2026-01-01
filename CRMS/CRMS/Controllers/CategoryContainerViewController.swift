@@ -105,7 +105,7 @@ class CategoryContainerViewController: UIViewController {
 
     private func showBarChart(data: [(name: String, count: Int)], container: UIView) {
         //removing any existing charts from the container
-        container.subviews.forEach { $0.removeFromSuperview() }
+        container.subviews.forEach{ $0.removeFromSuperview() }
 
         let chart = BarChartView()
         chart.frame = container.bounds // Match chart size to container view
