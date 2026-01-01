@@ -118,7 +118,7 @@ class AnalysisViewController: UIViewController {
                 if let root = c { self.reloadNestedLists(in: root) }
             }
 
-            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
+            RunLoop.current.run(until: Date().addingTimeInterval(0.10))
 
             // Proceed with PDF generation
             self.createAndSavePDF()

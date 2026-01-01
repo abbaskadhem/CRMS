@@ -153,7 +153,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1CQ-ss-QR5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="8739.6946564885493" y="617.6056338028169"/>
+            <point key="canvasLocation" x="8735" y="582"/>
         </scene>
         <!--RequestAnalysis-->
         <scene sceneID="PXb-qB-6P8">
@@ -607,7 +607,6 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <viewLayoutGuide key="safeArea" id="BXD-pj-iub"/>
                                         <color key="backgroundColor" red="0.96078431369999995" green="0.94117647059999998" blue="0.92156862750000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <constraints>
                                             <constraint firstItem="axl-LA-QH0" firstAttribute="top" secondItem="khg-mt-CdP" secondAttribute="bottom" constant="15" id="3YA-Ml-dpr"/>
@@ -651,7 +650,7 @@
                     <size key="freeformSize" width="361" height="501"/>
                     <connections>
                         <outlet property="categoryview" destination="axl-LA-QH0" id="hRl-0E-JYK"/>
-                        <outlet property="subcategoryview" destination="HgO-Ao-Go9" id="H0K-Vz-HRY"/>
+                        <outlet property="subcategoryview" destination="HgO-Ao-Go9" id="RQw-LJ-X8a"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f6H-zm-dIB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
