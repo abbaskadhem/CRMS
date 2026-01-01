@@ -36,6 +36,16 @@
             </objects>
             <point key="canvasLocation" x="6905" y="435"/>
         </scene>
+        <!--AboutApp-->
+        <scene sceneID="YVc-VW-miL">
+            <objects>
+                <viewControllerPlaceholder storyboardName="AboutApp" id="zPe-q7-B4L" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="If6-lW-tim"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hRc-iU-gbA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="7319" y="437"/>
+        </scene>
         <!--Analysis-->
         <scene sceneID="SJy-pi-wIm">
             <objects>
@@ -47,14 +57,14 @@
             <point key="canvasLocation" x="7702" y="435"/>
         </scene>
         <!--Settings-->
-        <scene sceneID="AHw-hz-oir">
+        <scene sceneID="vJp-rK-h52">
             <objects>
-                <viewControllerPlaceholder storyboardName="Settings" id="5Y3-dg-nCb" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="fJ7-2D-b9O"/>
+                <viewControllerPlaceholder storyboardName="Settings" id="wzd-te-TtN" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" selectedImage="gearshape" catalog="system" id="Vgc-Tf-w6O"/>
                 </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="xx1-rg-mOa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="e3j-LU-RUg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="8459" y="435"/>
+            <point key="canvasLocation" x="8372" y="435"/>
         </scene>
         <!--Admin Tab Bar Controller-->
         <scene sceneID="Id8-ox-IYF">
@@ -69,8 +79,9 @@
                         <segue destination="2nl-7N-HF2" kind="relationship" relationship="viewControllers" id="f58-x9-LZ4"/>
                         <segue destination="R5R-fr-1fj" kind="relationship" relationship="viewControllers" id="L1I-zo-IjQ"/>
                         <segue destination="C7z-uq-GrW" kind="relationship" relationship="viewControllers" id="bds-Ph-hWn"/>
-                        <segue destination="5Y3-dg-nCb" kind="relationship" relationship="viewControllers" id="R2I-fu-hT6"/>
                         <segue destination="rbi-zL-Y2a" kind="relationship" relationship="viewControllers" id="9bu-n6-20B"/>
+                        <segue destination="wzd-te-TtN" kind="relationship" relationship="viewControllers" id="2Wc-Gz-YMe"/>
+                        <segue destination="zPe-q7-B4L" kind="relationship" relationship="viewControllers" id="jff-Ap-Yiz"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TFx-a5-1f3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -78,4 +89,7 @@
             <point key="canvasLocation" x="6905" y="12"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="gearshape" catalog="system" width="128" height="123"/>
+    </resources>
 </document>
