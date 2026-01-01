@@ -23,10 +23,18 @@ class AnalysisViewController: UIViewController {
 
     private let logo = UIImage(named: "Light mode logo, compressed & cropped")
     
+     //pdf constants
+    private let pageBounds = CGRect(x: 0, y: 0, width: 595, height: 842) //A4
+    private let leftPadding: CGFloat = 20
+    private let startY: CGFloat = 90
+    private let contentWidth: CGFloat = 555  //595 - 40
+    private let footerSpace: CGFloat = 40
+
     override func viewDidLoad() {
         
         super.viewDidLoad()
         title = "Analytics"
+        print("loaed", String(describing: type(of: self)))
         
         //show first segement by default
         analyticsSegment.selectedSegmentIndex = 0
@@ -92,109 +100,92 @@ class AnalysisViewController: UIViewController {
     //pdf generating
     @objc private func generatePDF(){
         //ask for user confirmation to generate the pdf
-        showConfirmationAlert(title: "Save PDF", message: "Do you want to save the analytics as a PDF?") { 
-            [weak self] in
-            
-            guard let self = self else {
-                return
+        showConfirmationAlert(title: "Save PDF", message: "Do you want to save the analytics as a PDF?") { [weak self] in
+
+            guard let self = self else { 
+                return 
             }
-            
-            //ensuring all collection/ scroll views are shown
-            self.requestAnalysis.setNeedsLayout()
-            self.requestAnalysis.layoutIfNeeded()
-            
-            self.timeAnalysis.setNeedsLayout()
-            self.timeAnalysis.layoutIfNeeded()
-            
-            self.escalationAnalysis.setNeedsLayout()
-            self.escalationAnalysis.layoutIfNeeded()
-            
-            self.categoryAnalysis.setNeedsLayout()
-            self.categoryAnalysis.layoutIfNeeded()
-            
-            // If any container has a UICollectionView inside, reload it
-            if let collectionView = self.requestAnalysis.subviews.compactMap({ $0 as? UICollectionView }).first {
-                collectionView.reloadData()
-                collectionView.layoutIfNeeded()
+
+            //ensuring layout is updated
+            self.view.layoutIfNeeded()
+
+            //force layout + reload any nested lists for all containers
+            let containers = [self.requestAnalysis, self.timeAnalysis, self.escalationAnalysis, self.categoryAnalysis]
+
+            for c in containers {
+                c?.setNeedsLayout()
+                c?.layoutIfNeeded()
+                if let root = c { self.reloadNestedLists(in: root) }
             }
-            
-            if let collectionView = self.timeAnalysis.subviews.compactMap({ $0 as? UICollectionView }).first {
-                collectionView.reloadData()
-                collectionView.layoutIfNeeded()
-            }
-            
-            if let collectionView = self.escalationAnalysis.subviews.compactMap({ $0 as? UICollectionView }).first {
-                collectionView.reloadData()
-                collectionView.layoutIfNeeded()
-            }
-            
-            if let collectionView = self.categoryAnalysis.subviews.compactMap({ $0 as? UICollectionView }).first {
-                collectionView.reloadData()
-                collectionView.layoutIfNeeded()
-            }
+
+            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
 
             // Proceed with PDF generation
             self.createAndSavePDF()
         }
-
-
     }
 
     private func createAndSavePDF(){
+        //pdf file name
+        let fileName = "Performance_Analysis_Report.pdf"
 
-        //pdf file name 
-        let fileName = "Performance Analysis Report.pdf"
-
-        //save location
-        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(fileName)
-
-        //A4 size
-        let pageBounds = CGRect(x: 0, y: 0, width: 595, height: 842)
+        //save location (inside app sandbox)
+        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent(fileName)
 
         //create a pdf render
         let render = UIGraphicsPDFRenderer(bounds: pageBounds)
 
         do {
-            try render.writePDF(to: fileURL) {
-                context in 
-                //use all the views 
-                let analysisViews = [requestAnalysis, timeAnalysis, escalationAnalysis, categoryAnalysis]
+            try render.writePDF(to: fileURL) { context in
+
+                //use all the views
+                let analysisViews = [self.requestAnalysis, self.timeAnalysis, self.escalationAnalysis, self.categoryAnalysis]
 
                 //loop through all views so each analysis will be in one page indivisually
                 for view in analysisViews {
 
-                    guard let view = view else {
-                        continue
-                    }
+                    guard let view = view else { continue }
+
+                    //storing original visibility
+                    let wasHidden = view.isHidden
+                    let oldAlpha = view.alpha
 
                     //ensure that the view is visible
                     view.isHidden = false
                     view.alpha = 1.0
+                    view.layoutIfNeeded()
 
                     //start new page
                     context.beginPage()
 
                     //draw header
-                    drawPDFHeader()
+                    self.drawPDFHeader()
 
-                    //draw analysis content
-                    drawViewContent(view)
+                    //draw analysis content (container + full inner scroll content)
+                    self.drawViewContent(view)
 
                     //draw footer
-                    drawPDFFooter()
+                    self.drawPDFFooter()
 
-                    
+                    //restore original visibility state
+                    view.isHidden = wasHidden
+                    view.alpha = oldAlpha
                 }
 
+                print("PDF URL: ", fileURL)
+                print("PDF Exists: ", FileManager.default.fileExists(atPath: fileURL.path))
             }
 
-            showAlert(title: "PDF Saved", message: "Performance Analysis Report has been saved to Files.")
-        }
-        catch {
+            //share pdf screen (use Save to Files to actually see it in Files app)
+            let vc = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+            vc.popoverPresentationController?.sourceView = self.view
+            present(vc, animated: true)
+
+        } catch {
             //show error
             showAlert(title: "Error", message: "Failed to generate the PDF.")
         }
-
     }
 
     //pdf header
@@ -205,7 +196,7 @@ class AnalysisViewController: UIViewController {
         logo?.draw(in: logoRect)
 
         //title 
-        let title = "Performance Analyisi Report"
+        let title = "Performance Analysis Report"
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 18)
         ]
@@ -234,60 +225,118 @@ class AnalysisViewController: UIViewController {
         ]
         
         //draw footer
-        footerText.draw(at: CGPoint(x: 20, y: 820), withAttributes: attributes)
+        footerText.draw(at: CGPoint(x: 20, y: pageBounds.height - 22), withAttributes: attributes)
     }
 
-    //draw view content + 
-    private func drawViewContent(_ view: UIView){
+    //draw container content 
+    private func drawViewContent(_ containerView: UIView){
 
-        let context = UIGraphicsGetCurrentContext()
+        //get current context
+        guard let context = UIGraphicsGetCurrentContext() else { 
+            return 
+        }
 
-        //starting below the header
-        let startY: CGFloat = 90
-        let pdfWidth: CGFloat = 555
+        //max height to draw (space for footer)
+        let maxDrawableHeight = pageBounds.height - startY - footerSpace
 
-        //save original frame 
-        let originalFrame = view.frame
+        //save original container frame
+        let originalContainerFrame = containerView.frame
 
-        //if view is scrollable (UIScrollView, UICollectionView, UITableView)
-        if let scrollView = view as? UIScrollView {
+        //find all nested scroll views inside this container
+        let scrolls = findAllScrollContainers(in: containerView)
+
+        //save + expand all scrolls so the container renders full content
+        var savedStates: [(scroll: UIScrollView, offset: CGPoint, frame: CGRect)] = []
+
+        for s in scrolls {
 
             // Save original state
-            let originalOffset = scrollView.contentOffset
-            let originalSize = scrollView.frame
-            
+            savedStates.append((s, s.contentOffset, s.frame))
+
+            //make sure contentSize is updated
+            reloadNestedLists(in: s)
+            s.layoutIfNeeded()
+
             // Expand scroll view to full content size
-            scrollView.contentOffset = .zero
-            scrollView.frame = CGRect(x: 0, y: 0, width: pdfWidth, height: scrollView.contentSize.height)
-            
-            scrollView.layoutIfNeeded()
-            
-            // Draw full content
-            context?.translateBy(x: 20, y: startY)
-            scrollView.layer.render(in: context!)
-            context?.translateBy(x: -20, y: -startY)
-            
-            // Restore original state
-            scrollView.contentOffset = originalOffset
-            scrollView.frame = originalSize
+            let fullHeight = max(s.contentSize.height, s.bounds.height)
+            s.contentOffset = .zero
 
+            //keep original x/y but expand height
+            s.frame = CGRect(x: s.frame.origin.x, y: s.frame.origin.y, width: s.frame.width, height: fullHeight)
+            s.layoutIfNeeded()
         }
-        //normal view
-        else {
-            let height = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-            
-            view.frame = CGRect(x: 0, y: 0, width: pdfWidth, height: height)
-        
-            view.layoutIfNeeded()
-            
-            context?.translateBy(x: 20, y: startY)
-            view.layer.render(in: context!)
-            context?.translateBy(x: -20, y: -startY)
-        }
-        
-        //Restore Frame
-        view.frame = originalFrame
 
+        //calculate container height properly with fixed width
+        let targetSize = CGSize(width: contentWidth, height: UIView.layoutFittingCompressedSize.height)
+        let fittedHeight = containerView.systemLayoutSizeFitting(
+            targetSize,
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        ).height
+
+        //set container to the fitted size (so labels + full scroll content is included)
+        containerView.frame = CGRect(x: 0, y: 0, width: contentWidth, height: fittedHeight)
+        containerView.layoutIfNeeded()
+
+        //scale down if too tall
+        let scale = min(1.0, maxDrawableHeight / max(fittedHeight, 1))
+
+        //draw full container
+        context.saveGState()
+        context.translateBy(x: leftPadding, y: startY)
+        context.scaleBy(x: scale, y: scale)
+        containerView.layer.render(in: context)
+        context.restoreGState()
+
+        //restore scroll states
+        for item in savedStates {
+            item.scroll.contentOffset = item.offset
+            item.scroll.frame = item.frame
+            item.scroll.layoutIfNeeded()
+        }
+
+        //restore container frame
+        containerView.frame = originalContainerFrame
+        containerView.layoutIfNeeded()
+    }
+
+    //find all scroll views inside container
+    private func findAllScrollContainers(in root: UIView) -> [UIScrollView] {
+
+        var result: [UIScrollView] = []
+
+        func walk(_ v: UIView) {
+            if let s = v as? UIScrollView {
+                result.append(s)
+            }
+            for sub in v.subviews {
+                walk(sub)
+            }
+        }
+
+        walk(root)
+        return result
+    }
+
+    //reload any nested lists (collection/table) inside a view
+    private func reloadNestedLists(in root: UIView) {
+
+        //reload collection views
+        if let c = root as? UICollectionView {
+            c.reloadData()
+            c.layoutIfNeeded()
+        }
+
+        //reload table views
+        if let t = root as? UITableView {
+            t.reloadData()
+            t.layoutIfNeeded()
+        }
+
+        //recurse
+        for sub in root.subviews {
+            reloadNestedLists(in: sub)
+        }
     }
 
     //helper method for confirmation messages

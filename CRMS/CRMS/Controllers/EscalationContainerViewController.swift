@@ -137,9 +137,13 @@ class EscalationContainerViewController: UIViewController {
         dataSet.xValuePosition = .outsideSlice
         dataSet.valueLinePart1Length = 0
         dataSet.valueLinePart2Length = 0
+        dataSet.label = "" //removing the word dataset
         
         chart.data = PieChartData(dataSet: dataSet)
-        chart.holeRadiusPercent = 0.75 //doughnut chart
+        //doughnut chart
+        chart.drawHoleEnabled = true
+        chart.holeRadiusPercent = 0.75
+        chart.holeColor = UIColor(red: 245/255 , green: 239/255, blue: 235/255, alpha: 1.0)
         chart.animate(yAxisDuration: 1.0) //animated on load
         
 
@@ -151,10 +155,10 @@ class EscalationContainerViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        view1.layer.cornerRadius = 20
+        view1.layer.cornerRadius = 10
         view1.layer.masksToBounds = true
 
-        view2.layer.cornerRadius = 20
+        view2.layer.cornerRadius = 10
         view2.layer.masksToBounds = true
     }
     

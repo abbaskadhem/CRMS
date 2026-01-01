@@ -98,7 +98,7 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
 
                 // Calculate overall average in days
                 let overallAvg = results.map { $0.1 }.reduce(0, +) / Double(max(results.count, 1))
-                self.avgTime.text = "Overall Avg: \(String(format: "%.2f", overallAvg)) Days"
+                self.avgTime.text = "Average Time to solve a Request \(String(format: "%.2f", overallAvg)) Days"
                 self.collectionView.reloadData()
             }
             
@@ -129,10 +129,10 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        view1.layer.cornerRadius = 20
+        view1.layer.cornerRadius = 10
         view1.layer.masksToBounds = true
 
-        view2.layer.cornerRadius = 20
+        view2.layer.cornerRadius = 10
         view2.layer.masksToBounds = true
     }
 

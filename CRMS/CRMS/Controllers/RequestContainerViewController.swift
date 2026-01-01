@@ -15,10 +15,11 @@ class RequestContainerViewController: UIViewController {
     
     //IBOutlets
     
-    @IBOutlet weak var cmpLabel: UILabel!
-    @IBOutlet weak var inProLabel: UILabel!
-    @IBOutlet weak var onHolLabel: UILabel!
-    @IBOutlet weak var cancelledLabel: UILabel!
+    
+    @IBOutlet weak var comView: UIView!
+    @IBOutlet weak var inPView: UIView!
+    @IBOutlet weak var oHView: UIView!
+    @IBOutlet weak var cView: UIView!
     
     @IBOutlet weak var totalNum: UILabel!
     @IBOutlet weak var completedNum: UILabel!
@@ -32,16 +33,6 @@ class RequestContainerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //rounding the labels
-        cmpLabel.layer.cornerRadius = 10
-        cmpLabel.layer.masksToBounds = true
-        inProLabel.layer.cornerRadius = 10
-        inProLabel.layer.masksToBounds = true
-        onHolLabel.layer.cornerRadius = 10
-        onHolLabel.layer.masksToBounds = true
-        cancelledLabel.layer.cornerRadius = 10
-        cancelledLabel.layer.masksToBounds = true
 
         Task {
            try? await fetchRequests()
@@ -123,7 +114,8 @@ class RequestContainerViewController: UIViewController {
         let chart = PieChartView()
         chart.frame = pieChart.bounds
         chart.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
+        chart.legend.enabled = false //removing labels under the chart
+        
         //preparing data entries
         let entries = [
             PieChartDataEntry(value: Double(completed), label: "Completed"),
@@ -165,9 +157,13 @@ class RequestContainerViewController: UIViewController {
         dataSet.xValuePosition = .outsideSlice
         dataSet.valueLinePart1Length = 0
         dataSet.valueLinePart2Length = 0
+        dataSet.label = "" //removing the word dataset
         
         chart.data = PieChartData(dataSet: dataSet)
-        chart.holeRadiusPercent = 0.75 //doughnut chart
+        //doughnut chart
+        chart.drawHoleEnabled = true
+        chart.holeRadiusPercent = 0.75
+        chart.holeColor = UIColor(red: 245/255 , green: 239/255, blue: 235/255, alpha: 1.0)
         chart.animate(yAxisDuration: 1.0) //animated on load
         
 
@@ -187,6 +183,22 @@ class RequestContainerViewController: UIViewController {
 
         // Present the alert on the screen.
         present(alert, animated: true)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        comView.layer.cornerRadius = 10
+        comView.layer.masksToBounds = true
+        
+        inPView.layer.cornerRadius = 10
+        inPView.layer.masksToBounds = true
+        
+        oHView.layer.cornerRadius = 10
+        oHView.layer.masksToBounds = true
+        
+        cView.layer.cornerRadius = 10
+        cView.layer.masksToBounds = true
     }
     
     /*
