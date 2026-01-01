@@ -60,13 +60,24 @@ final class SessionManager {
     /// Returns the user type (1000, 1001, or 1002)
     func getUserType() async throws -> Int {
         let userId = try requireUserId()
-        
+
         let document = try await db.collection("User").document(userId).getDocument()
-        
+
         guard let type = document.data()?["type"] as? Int else {
             throw SessionError.userDataNotFound
         }
-        
+
         return type
+    }
+
+    /// Checks if an email exists in the User collection
+    /// - Parameter email: The email address to check
+    /// - Returns: True if the email exists, false otherwise
+    func emailExists(_ email: String) async throws -> Bool {
+        let snapshot = try await db.collection("User")
+            .whereField("email", isEqualTo: email)
+            .getDocuments()
+
+        return !snapshot.documents.isEmpty
     }
 }
