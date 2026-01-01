@@ -9,31 +9,46 @@ import UIKit
 
 class NotificationsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    var currentUser: User?
-    
-    private var isAdmin: Bool {
-        currentUser?.type == .admin
+    var user : User?
+    func loadUser() async {
+        do {
+            let currentUser = try await SessionManager.shared.getCurrentUser()
+            user = currentUser
+            print(currentUser.fullName)
+        } catch {
+            print(error)
+        }
     }
 
-    
-    private let notificationService = NotificationService()
+    private var isAdmin: Bool {
+        user?.type == .admin
+    }
 
+    private let notificationService = NotificationService()
     private var notifications: [NotificationModel] = []
     private var visibleNotifications: [NotificationModel] = []
 
-    
-    
     @IBOutlet weak var tableView: UITableView!
-    
-    
-    
-    
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        Task {
+                await loadUser()
+                guard let user else { return }
 
-        loadTestUser(uid: "ADM-301225")
+                configureUI()
+
+                notificationService.startListening { [weak self] notifications in
+                    guard let self else { return }
+
+                    DispatchQueue.main.async {
+                        self.notifications = notifications
+                        self.applyVisibilityFilter()
+                    }
+                }
+            }
     }
 
     
@@ -69,7 +84,7 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
     }
     
     private func applyVisibilityFilter() {
-        guard let currentUser else {
+        guard let user else {
             visibleNotifications = []
             tableView.reloadData()
             return
@@ -79,22 +94,17 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
             switch notification.type {
 
             case .announcement:
-                // Global announcement
-                if notification.toWho.isEmpty {
-                    return true
-                }
-
                 // Admin sees announcements he created
-                if isAdmin && notification.createdBy == currentUser.id {
+                if isAdmin && notification.createdBy == user.id {
                     return true
                 }
 
                 // Targeted announcement
-                return notification.toWho.contains(currentUser.id)
+                return notification.toWho.contains(user.id)
 
             case .notification:
                 // Notifications are always strictly targeted
-                return notification.toWho.contains(currentUser.id)
+                return notification.toWho.contains(user.id)
             }
         }
 
@@ -145,52 +155,26 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
     }
     
     
-    private func loadTestUser(uid: String) {
-        Firestore.firestore()
-            .collection("User")
-            .document(uid)
-            .getDocument { [weak self] snapshot, error in
-
-                guard let self else { return }
-
-                if let error {
-                    print("❌ Failed to fetch user:", error)
-                    return
-                }
-
-                guard
-                    let snapshot,
-                    let user = User(document: snapshot)
-                else {
-                    print("❌ Invalid user document")
-                    return
-                }
-
-                DispatchQueue.main.async {
-                    self.currentUser = user
-                    self.configureUI()
-
-                    self.notificationService.startListening { [weak self] notifications in
-                        guard let self else { return }
-
-                        DispatchQueue.main.async {
-                            self.notifications = notifications
-                            self.applyVisibilityFilter()
-                        }
-                    }
-                }
-
-            }
+    @IBAction func createBtnTapped(_ sender: Any) {
+  
+        performSegue(withIdentifier: "ShowCreateSegue", sender: self)
+        
     }
+    
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowNotifDetailSegue",
            let notifVC = segue.destination as? NotifDetailViewController {
-            notifVC.currentUser = currentUser
+            notifVC.currentUser = user
             notifVC.notification = selectedNotif
             notifVC.title = selectedNotif?.title
         }
+        
+        if segue.identifier == "ShowCreateSegue",
+               let vc = segue.destination as? NotifCreateViewController {
+                vc.currentUser = user
+            }
     }
 }
 
@@ -200,91 +184,57 @@ extension NotificationModel {
 
     init?(document: QueryDocumentSnapshot) {
         let data = document.data()
-
-        guard
-            let title = data["title"] as? String,
-            let typeRaw = data["type"] as? Int,
-            let description = data["description"] as? String,
-            let type = NotiType(rawValue: typeRaw),
-            let toWhoStrings = data["toWho"] as? [String],
-            let createdByString = data["createdBy"] as? String,
-            let createdOnTimestamp = data["createdOn"] as? Timestamp,
-            let modifiedOnTimestamp = data["modifiedOn"] as? Timestamp,
-            let modifiedByString = data["modifiedBy"] as? String,
-            let inactive = data["inactive"] as? Bool,
-            let requestRef =  data["requestRef"] as? String
-        else {
-            print("Notif nill")
+        
+        guard let title = data["title"] as? String else {
+            print("❌ title missing or not String")
             return nil
         }
 
-        self.id = document.documentID
+        guard let typeRaw = data["type"] as? Int else {
+            print("❌ type missing or not Int")
+            return nil
+        }
 
+        guard let type = NotiType(rawValue: typeRaw) else {
+            print("❌ invalid NotiType raw value:", typeRaw)
+            return nil
+        }
+
+        guard let description = data["description"] as? String else {
+            print("❌ description missing or not String")
+            return nil
+        }
+
+        let toWhoStrings = data["toWho"] as? [String] ?? []
+
+        guard let createdByString = data["createdBy"] as? String else {
+            print("❌ createdBy missing or not String")
+            return nil
+        }
+
+        let createdOn: Date? = (data["createdOn"] as? Timestamp)?.dateValue()
+
+        let modifiedOn: Date? = (data["modifiedOn"] as? Timestamp)?.dateValue()
+
+        let modifiedByString: String? = data["modifiedBy"] as? String
+
+        guard let inactive = data["inactive"] as? Bool else {
+            print("❌ inactive missing or not Bool")
+            return nil
+        }
+
+        let requestRef = data["requestRef"] as? String
+        
+        self.id = document.documentID
         self.title = title
         self.description = description
-
-        
         self.toWho = toWhoStrings
-
         self.type = type
         self.requestRef = requestRef
-
-        self.createdOn = createdOnTimestamp.dateValue()
+        self.createdOn = createdOn!
         self.createdBy = createdByString
-
-
-        self.modifiedOn = modifiedOnTimestamp.dateValue()
+        self.modifiedOn = modifiedOn
         self.modifiedBy = modifiedByString
-        self.inactive = inactive
-    }
-}
-
-extension User {
-
-    init?(document: DocumentSnapshot) {
-        let data = document.data()
-
-        guard
-            let data,
-            let userNo = data["userNo"] as? String,
-            let fullName = data["fullName"] as? String,
-            let typeRaw = data["type"] as? Int,
-            let email = data["email"] as? String,
-            let createdOnTimestamp = data["createdOn"] as? Timestamp,
-            let createdByString = data["createdBy"] as? String,
-            let inactive = data["inactive"] as? Bool
-        else {
-            return nil
-        }
-
-
-        self.id = document.documentID
-
-
-        self.userNo = userNo
-        self.fullName = fullName
-        
-        let type = UserType(rawValue: typeRaw)!
-        self.type = type
-
-        // Subtype is optional
-        if self.type == .admin {
-            self.subtype = nil
-        } else if let subtypeRaw = data["subtype"] as? Int,
-                  let subtype = SubType(rawValue: subtypeRaw) {
-            self.subtype = subtype
-        } else {
-            self.subtype = nil
-        }
-
-        
-        self.email = email
-        self.createdOn = createdOnTimestamp.dateValue()
-        self.createdBy = createdByString
-        
-       
-        self.modifiedOn = nil
-        self.modifiedBy = nil
         self.inactive = inactive
     }
 }

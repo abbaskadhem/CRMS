@@ -21,6 +21,7 @@ enum SubType: Int, Codable {
 }
 
 // MARK: - User
+/// User document in Firestore. The document ID is the Firebase Auth UID.
 struct User: Codable, Identifiable {
     var id: String                 // UUID
     var userNo: String           // User No.
@@ -28,7 +29,6 @@ struct User: Codable, Identifiable {
     var type: UserType           // Type (Admin/Requester/Servicer)
     var subtype: SubType?        // Subtype (optional)
     var email: String            // Email
-
     // Default Common Fields
     var createdOn: Date          // Created on
     var createdBy: String          // Created by
@@ -36,5 +36,3 @@ struct User: Codable, Identifiable {
     var modifiedBy: String?        // Modified by
     var inactive: Bool           // Inactive
 }
-
-

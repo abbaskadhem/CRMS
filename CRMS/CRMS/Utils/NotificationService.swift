@@ -40,3 +40,4 @@ final class NotificationService {
         listener = nil
     }
 }
+

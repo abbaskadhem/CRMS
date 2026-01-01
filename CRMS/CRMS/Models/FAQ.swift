@@ -14,9 +14,9 @@ struct FAQ: Codable, Identifiable {
     var answer: String       // Answer
 
     // Default Common Fields
-    var createdOn: Date      // Created on
-    var createdBy: UUID      // Created by
+    var createdOn: Date?     // Created on
+    var createdBy: String?   // Created by (Firebase Auth UID)
     var modifiedOn: Date?    // Modified on
-    var modifiedBy: UUID?    // Modified by
-    var inactive: Bool       // Inactive
+    var modifiedBy: String?  // Modified by (Firebase Auth UID)
+    var inactive: Bool?      // Inactive
 }

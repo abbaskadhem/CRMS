@@ -118,7 +118,7 @@ class DetailViewController: UIViewController,
         //confirm
         let yesButton = UIButton(type: .system)
         yesButton.setTitle("Yes, I'm sure", for: .normal)
-        yesButton.backgroundColor = UIColor(hex: "#53697f")
+        yesButton.backgroundColor = AppColors.primary
         yesButton.setTitleColor(.white, for: .normal)
         yesButton.layer.cornerRadius = 8
         yesButton.addTarget(self, action: #selector(confirmSaveTapped), for: .touchUpInside)
@@ -167,7 +167,7 @@ class DetailViewController: UIViewController,
         container.translatesAutoresizingMaskIntoConstraints = false
 
         let check = UIImageView(image: UIImage(systemName: "checkmark.circle.fill"))
-        check.tintColor = UIColor(hex: "#53697f")
+        check.tintColor = AppColors.primary
         check.contentMode = .scaleAspectFit
         check.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
 
@@ -363,8 +363,8 @@ class DetailViewController: UIViewController,
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .boldSystemFont(ofSize: 16)
-        headerView.tintColor = UIColor(hex: "#8aa7bc")
-        label.textColor = UIColor(hex: "#53697f") // your text color
+        headerView.tintColor = AppColors.secondary
+        label.textColor = AppColors.text // your text color
         label.text = tableView.dataSource?.tableView?(tableView, titleForHeaderInSection: section) ?? ""
 
         headerView.addSubview(label)
@@ -379,7 +379,7 @@ class DetailViewController: UIViewController,
         // Add bottom border
         let bottomBorder = UIView()
         bottomBorder.translatesAutoresizingMaskIntoConstraints = false
-        bottomBorder.backgroundColor = UIColor(hex: "#53697f") // border color
+        bottomBorder.backgroundColor = AppColors.primary // border color
         headerView.addSubview(bottomBorder)
 
         NSLayoutConstraint.activate([
@@ -428,7 +428,7 @@ class DetailViewController: UIViewController,
 
               cell.backgroundColor = .clear
               cell.selectionStyle = .none
-              cell.titleLabel.textColor = UIColor(hex: "#53697f")
+              cell.titleLabel.textColor = AppColors.primary
               cell.setEditable(isEditingItem)
               return cell
 
@@ -442,7 +442,7 @@ class DetailViewController: UIViewController,
               cell.configure(title: "Description", text: source?.description ?? "empty")
 
               cell.setEditable(isEditingItem)
-              cell.titleLabel.textColor = UIColor(hex: "#53697f")
+              cell.titleLabel.textColor = AppColors.primary
               cell.layer.borderWidth = 0.5
               cell.layer.borderColor = UIColor.black.cgColor
               cell.selectionStyle = .none
@@ -459,7 +459,7 @@ class DetailViewController: UIViewController,
 
               cell.configure(title: "Usage", text: source?.usage ?? "empty")
               cell.setEditable(isEditingItem)
-              cell.titleLabel.textColor = UIColor(hex: "#53697f")
+              cell.titleLabel.textColor = AppColors.primary
               cell.layer.borderWidth = 0.5
               cell.layer.borderColor = UIColor.black.cgColor
               cell.selectionStyle = .none

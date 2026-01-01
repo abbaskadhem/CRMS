@@ -16,8 +16,10 @@ class AddItemViewController: UIViewController,
     
     weak var delegate: AddItemDelegate?
     
-    var categoryID: UUID?
-    var subcategoryID: UUID?
+    var currentUserID = SessionManager.shared.currentUserId!
+    
+    var categoryID: String?
+    var subcategoryID: String?
 
      override func viewDidLoad() {
          super.viewDidLoad()
@@ -112,7 +114,7 @@ class AddItemViewController: UIViewController,
          //confirm
          let yesButton = UIButton(type: .system)
          yesButton.setTitle("Yes, I'm sure", for: .normal)
-         yesButton.backgroundColor = UIColor(hex: "#53697f")
+         yesButton.backgroundColor = AppColors.primary
          yesButton.setTitleColor(.white, for: .normal)
          yesButton.layer.cornerRadius = 8
          yesButton.addTarget(self, action: #selector(confirmSaveTapped), for: .touchUpInside)
@@ -161,7 +163,7 @@ class AddItemViewController: UIViewController,
          container.translatesAutoresizingMaskIntoConstraints = false
 
          let check = UIImageView(image: UIImage(systemName: "checkmark.circle.fill"))
-         check.tintColor = UIColor(hex: "#53697f")
+         check.tintColor = AppColors.primary
          check.contentMode = .scaleAspectFit
          check.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
 
@@ -266,7 +268,7 @@ class AddItemViewController: UIViewController,
 
 
         let newItem = ItemModel(
-            id: UUID(),
+            id: UUID().uuidString,
             name: nameCell.currentValue(),
             partNo: partNoCell.currentValue(),
             unitCost: Double(unitCostCell.currentValue()),
@@ -277,7 +279,7 @@ class AddItemViewController: UIViewController,
             description: descriptionCell.textView.text,
             usage: usageCell.textView.text,
             createdOn: Date(),
-            createdBy: UUID(),
+            createdBy: currentUserID,
             modifiedOn: nil,
             modifiedBy: nil,
             inactive: false
@@ -317,8 +319,8 @@ class AddItemViewController: UIViewController,
          let label = UILabel()
          label.translatesAutoresizingMaskIntoConstraints = false
          label.font = .boldSystemFont(ofSize: 16)
-         headerView.tintColor = UIColor(hex: "#8aa7bc")
-         label.textColor = UIColor(hex: "#53697f") // your text color
+         headerView.tintColor = AppColors.secondary
+         label.textColor = AppColors.primary // your text color
          label.text = tableView.dataSource?.tableView?(tableView, titleForHeaderInSection: section) ?? ""
 
          headerView.addSubview(label)
@@ -333,7 +335,7 @@ class AddItemViewController: UIViewController,
          // Add bottom border
          let bottomBorder = UIView()
          bottomBorder.translatesAutoresizingMaskIntoConstraints = false
-         bottomBorder.backgroundColor = UIColor(hex: "#53697f") // border color
+         bottomBorder.backgroundColor = AppColors.primary// border color
          headerView.addSubview(bottomBorder)
 
          NSLayoutConstraint.activate([
@@ -404,7 +406,7 @@ class AddItemViewController: UIViewController,
                ) as! TextAreaCell
 
                cell.configure(title: "Description", text: "")
-               cell.titleLabel.textColor = UIColor(hex: "#53697f")
+               cell.titleLabel.textColor = AppColors.primary
                cell.layer.borderWidth = 0.5
                cell.layer.borderColor = UIColor.black.cgColor
                cell.selectionStyle = .none
@@ -420,7 +422,7 @@ class AddItemViewController: UIViewController,
                ) as! TextAreaCell
 
                cell.configure(title: "Usage", text: "")
-               cell.titleLabel.textColor = UIColor(hex: "#53697f")
+               cell.titleLabel.textColor = AppColors.primary
                cell.layer.borderWidth = 0.5
                cell.layer.borderColor = UIColor.black.cgColor
                cell.selectionStyle = .none

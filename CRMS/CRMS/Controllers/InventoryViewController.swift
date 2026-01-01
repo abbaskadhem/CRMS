@@ -152,7 +152,7 @@ class InventoryViewController: UIViewController,
             return cell
         }else{
             let cell = tableView.dequeueReusableCell(
-                withIdentifier: CategoryCell.reuseID,
+                withIdentifier: "CategoryCell",
                 for: indexPath
             ) as! CategoryCell
             
@@ -162,9 +162,6 @@ class InventoryViewController: UIViewController,
             
             cell.textLabel?.text = child.name
             
-            
-            
-            print(type(of: cell))
             return cell
         }
 
@@ -179,7 +176,7 @@ class InventoryViewController: UIViewController,
         let parent = parentCategories[section]
 
         let headerView = UIView()
-        headerView.backgroundColor = UIColor(hex: "#8aa7bc")
+        headerView.backgroundColor = AppColors.secondary
         headerView.layer.cornerRadius = 8
         headerView.clipsToBounds = true
         headerView.tag = section
@@ -187,7 +184,7 @@ class InventoryViewController: UIViewController,
         // Title
         let titleLabel = UILabel()
         titleLabel.text = parent.name
-        titleLabel.textColor = UIColor(hex: "#0f1929")
+        titleLabel.textColor = AppColors.text
         titleLabel.font = .boldSystemFont(ofSize: 16)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 

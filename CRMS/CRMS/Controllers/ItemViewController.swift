@@ -30,20 +30,20 @@ class ItemViewController: UIViewController,
                 action: #selector(addButtonTapped)
             )
         
-        navigationItem.rightBarButtonItem?.tintColor = UIColor(hex: "#53697f")
-        navigationController?.navigationBar.tintColor = UIColor(hex: "#53697f")
+        navigationItem.rightBarButtonItem?.tintColor = AppColors.primary
+        navigationController?.navigationBar.tintColor = AppColors.primary
 
         setupTableView()
         
-        allItems = loadSampleItems()
+//        allItems = loadSampleItems()
         
-            // Filter items
-            if let childID = child?.id {
-                items = allItems.filter { $0.itemSubcategoryRef == childID }
-                print(items)
-            }else{
-                print("no items found!")
-            }
+//            // Filter items
+//            if let childID = child?.id {
+//                items = allItems.filter { $0.itemSubcategoryRef == childID }
+//                print(items)
+//            }else{
+//                print("no items found!")
+//            }
         }
     
     @objc private func addButtonTapped() {
@@ -60,75 +60,6 @@ class ItemViewController: UIViewController,
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 80
 
-    }
-    
-    
-    private func loadSampleItems() -> [ItemModel] {
-        // IDs must match your category IDs
-        let hardwareID = UUID(uuidString: "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA")!
-        let licensedID = UUID(uuidString: "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB")!
-
-        let electricalID = UUID(uuidString: "11111111-1111-1111-1111-111111111111")!
-        let networkingID = UUID(uuidString: "22222222-2222-2222-2222-222222222222")!
-        let hvacID = UUID(uuidString: "33333333-3333-3333-3333-333333333333")!
-
-        let items: [ItemModel] = [
-            // Hardware Items
-            ItemModel(
-                id: UUID(),
-                name: "Resistor Pack",
-                partNo: "R-100",
-                unitCost: 0.25,
-                vendor: "ElectroGoods",
-                itemCategoryRef: hardwareID,
-                itemSubcategoryRef: electricalID,
-                quantity: 100,
-                description: "Assorted resistor pack",
-                usage: "Circuit prototyping",
-                createdOn: Date(),
-                createdBy: UUID(),
-                modifiedOn: nil,
-                modifiedBy: nil,
-                inactive: false
-            ),
-            ItemModel(
-                id: UUID(),
-                name: "Ethernet Cable",
-                partNo: "NET-50",
-                unitCost: 5.0,
-                vendor: "NetSupplies",
-                itemCategoryRef: hardwareID,
-                itemSubcategoryRef: networkingID,
-                quantity: 50,
-                description: "Cat6 Ethernet cable, 5m",
-                usage: "Networking setups",
-                createdOn: Date(),
-                createdBy: UUID(),
-                modifiedOn: nil,
-                modifiedBy: nil,
-                inactive: false
-            ),
-            
-            // Licensed Items
-            ItemModel(
-                id: UUID(),
-                name: "HVAC Control Software",
-                partNo: "HVAC-SW1",
-                unitCost: 299.0,
-                vendor: "HVAC Corp",
-                itemCategoryRef: licensedID,
-                itemSubcategoryRef: hvacID,
-                quantity: 10,
-                description: "Software license for HVAC system control",
-                usage: "HVAC system management",
-                createdOn: Date(),
-                createdBy: UUID(),
-                modifiedOn: nil,
-                modifiedBy: nil,
-                inactive: false
-            )
-        ]
-        return items
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -179,8 +110,8 @@ class ItemViewController: UIViewController,
         if segue.identifier == "ShowAddSegue",
            let addVC = segue.destination as? AddItemViewController {
             addVC.delegate = self
-            addVC.categoryID = child?.parentCategoryRef
-            addVC.subcategoryID = child?.id
+//            addVC.categoryID = child?.parentCategoryRef
+//            addVC.subcategoryID = child?.id
         }
 
         
