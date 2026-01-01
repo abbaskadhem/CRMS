@@ -100,36 +100,242 @@ class AnalysisViewController: UIViewController {
     //pdf generating
     @objc private func generatePDF(){
         //ask for user confirmation to generate the pdf
-        showConfirmationAlert(title: "Save PDF", message: "Do you want to save the analytics as a PDF?") { 
-            [weak self] in
+        showConfirmationAlert(title: "Save PDF", message: "Do you want to save the analytics as a PDF?") { [weak self] in
 
             guard let self = self else { 
                 return 
             }
 
             //ensuring layout is updated
-            self.timeAnalysis.reloadData()
-            self.timeAnalysis.layoutIfNeeded()
+            self.view.layoutIfNeeded()
 
-            self.categoryAnalysis1.layoutIfNeeded() //scrollView
-            self.categoryAnalysis2.layoutIfNeeded() //containerView
+            //force layout + reload any nested lists for all containers
+            let containers = [self.requestAnalysis, self.timeAnalysis, self.escalationAnalysis, self.categoryAnalysis]
 
-            do {
-                let url = try PDFExporter.exportSegmentsToPDF(
-                segmentViews: [requestsContainer, timeContainer, escalationContainer, categoriesContainer],
-                segmentNames: ["Requests", "Time", "Escalation", "Categories"],
-                logo: UIImage(named: "Light mode logo, compressed & cropped"),
-                fileName: "Performance_Analysis_Report.pdf"
-                )
-
-                //share view
-                let share = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-                present(share, animated: true)
-
-            } 
-            catch {
-                print("PDF export failed:", error)
+            for c in containers {
+                c?.setNeedsLayout()
+                c?.layoutIfNeeded()
+                if let root = c { self.reloadNestedLists(in: root) }
             }
+
+            RunLoop.current.run(until: Date().addingTimeInterval(0.10))
+
+            // Proceed with PDF generation
+            self.createAndSavePDF()
+        }
+    }
+
+    private func createAndSavePDF(){
+        //pdf file name
+        let fileName = "Performance_Analysis_Report.pdf"
+
+        //save location (inside app sandbox)
+        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent(fileName)
+
+        //create a pdf render
+        let render = UIGraphicsPDFRenderer(bounds: pageBounds)
+
+        do {
+            try render.writePDF(to: fileURL) { context in
+
+                //use all the views
+                let analysisViews = [self.requestAnalysis, self.timeAnalysis, self.escalationAnalysis, self.categoryAnalysis]
+
+                //loop through all views so each analysis will be in one page indivisually
+                for view in analysisViews {
+
+                    guard let view = view else { continue }
+
+                    //storing original visibility
+                    let wasHidden = view.isHidden
+                    let oldAlpha = view.alpha
+
+                    //ensure that the view is visible
+                    view.isHidden = false
+                    view.alpha = 1.0
+                    view.layoutIfNeeded()
+
+                    //start new page
+                    context.beginPage()
+
+                    //draw header
+                    self.drawPDFHeader()
+
+                    //draw analysis content (container + full inner scroll content)
+                    self.drawViewContent(view)
+
+                    //draw footer
+                    self.drawPDFFooter()
+
+                    //restore original visibility state
+                    view.isHidden = wasHidden
+                    view.alpha = oldAlpha
+                }
+
+                print("PDF URL: ", fileURL)
+                print("PDF Exists: ", FileManager.default.fileExists(atPath: fileURL.path))
+            }
+
+            //share pdf screen (use Save to Files to actually see it in Files app)
+            let vc = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+            vc.popoverPresentationController?.sourceView = self.view
+            present(vc, animated: true)
+
+        } catch {
+            //show error
+            showAlert(title: "Error", message: "Failed to generate the PDF.")
+        }
+    }
+
+    //pdf header
+    private func drawPDFHeader(){
+
+        //Draw the logo
+        let logoRect = CGRect(x: 20, y: 20, width: 70, height: 40)
+        logo?.draw(in: logoRect)
+
+        //title 
+        let title = "Performance Analysis Report"
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.boldSystemFont(ofSize: 18)
+        ]
+
+        //draw title
+        title.draw(at: CGPoint(x: 95, y: 30), withAttributes: attributes)
+
+        // Divider line
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: 20, y: 70))
+        path.addLine(to: CGPoint(x: 575, y: 70))
+        path.lineWidth = 1
+        path.stroke()
+    }
+
+    //pdf footer
+    private func drawPDFFooter(){
+
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        
+        let footerText = "Generated on \(formatter.string(from: Date()))"
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 10),
+            .foregroundColor: UIColor.gray
+        ]
+        
+        //draw footer
+        footerText.draw(at: CGPoint(x: 20, y: pageBounds.height - 22), withAttributes: attributes)
+    }
+
+    //draw container content 
+    private func drawViewContent(_ containerView: UIView){
+
+        //get current context
+        guard let context = UIGraphicsGetCurrentContext() else { 
+            return 
+        }
+
+        //max height to draw (space for footer)
+        let maxDrawableHeight = pageBounds.height - startY - footerSpace
+
+        //save original container frame
+        let originalContainerFrame = containerView.frame
+
+        //find all nested scroll views inside this container
+        let scrolls = findAllScrollContainers(in: containerView)
+
+        //save + expand all scrolls so the container renders full content
+        var savedStates: [(scroll: UIScrollView, offset: CGPoint, frame: CGRect)] = []
+
+        for s in scrolls {
+
+            // Save original state
+            savedStates.append((s, s.contentOffset, s.frame))
+
+            //make sure contentSize is updated
+            reloadNestedLists(in: s)
+            s.layoutIfNeeded()
+
+            // Expand scroll view to full content size
+            let fullHeight = max(s.contentSize.height, s.bounds.height)
+            s.contentOffset = .zero
+
+            //keep original x/y but expand height
+            s.frame = CGRect(x: s.frame.origin.x, y: s.frame.origin.y, width: s.frame.width, height: fullHeight)
+            s.layoutIfNeeded()
+        }
+
+        //calculate container height properly with fixed width
+        let targetSize = CGSize(width: contentWidth, height: UIView.layoutFittingCompressedSize.height)
+        let fittedHeight = containerView.systemLayoutSizeFitting(
+            targetSize,
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        ).height
+
+        //set container to the fitted size (so labels + full scroll content is included)
+        containerView.frame = CGRect(x: 0, y: 0, width: contentWidth, height: fittedHeight)
+        containerView.layoutIfNeeded()
+
+        //scale down if too tall
+        let scale = min(1.0, maxDrawableHeight / max(fittedHeight, 1))
+
+        //draw full container
+        context.saveGState()
+        context.translateBy(x: leftPadding, y: startY)
+        context.scaleBy(x: scale, y: scale)
+        containerView.layer.render(in: context)
+        context.restoreGState()
+
+        //restore scroll states
+        for item in savedStates {
+            item.scroll.contentOffset = item.offset
+            item.scroll.frame = item.frame
+            item.scroll.layoutIfNeeded()
+        }
+
+        //restore container frame
+        containerView.frame = originalContainerFrame
+        containerView.layoutIfNeeded()
+    }
+
+    //find all scroll views inside container
+    private func findAllScrollContainers(in root: UIView) -> [UIScrollView] {
+
+        var result: [UIScrollView] = []
+
+        func walk(_ v: UIView) {
+            if let s = v as? UIScrollView {
+                result.append(s)
+            }
+            for sub in v.subviews {
+                walk(sub)
+            }
+        }
+
+        walk(root)
+        return result
+    }
+
+    //reload any nested lists (collection/table) inside a view
+    private func reloadNestedLists(in root: UIView) {
+
+        //reload collection views
+        if let c = root as? UICollectionView {
+            c.reloadData()
+            c.layoutIfNeeded()
+        }
+
+        //reload table views
+        if let t = root as? UITableView {
+            t.reloadData()
+            t.layoutIfNeeded()
+        }
+
+        //recurse
+        for sub in root.subviews {
+            reloadNestedLists(in: sub)
         }
     }
 
