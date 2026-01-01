@@ -18,6 +18,9 @@ class AnalysisViewController: UIViewController {
     @IBOutlet weak var timeAnalysis: UIView!
     @IBOutlet weak var escalationAnalysis: UIView!
     @IBOutlet weak var categoryAnalysis: UIView!
+
+    @IBOutlet weak var categoryAnalysis1: UIView! //scroll view
+    @IBOutlet weak var categoryAnalysis2: UIView! //content view
     
     @IBOutlet weak var savePDF: UIImageView!
 
