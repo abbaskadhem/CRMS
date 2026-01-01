@@ -28,4 +28,13 @@ struct AppColors {
     static let inputBorder = UIColor(white: 0.85, alpha: 1)
     static let placeholder = UIColor.lightGray
     static let error = UIColor.systemRed
+
+    // Status colors
+    static let statusSubmitted = UIColor(red: 242/255, green: 219/255, blue: 139/255, alpha: 1)  // #F2DB8B
+    static let statusAssigned = UIColor(red: 242/255, green: 219/255, blue: 139/255, alpha: 1)   // #F2DB8B
+    static let statusInProgress = UIColor(red: 242/255, green: 219/255, blue: 139/255, alpha: 1) // #F2DB8B
+    static let statusOnHold = UIColor(red: 83/255, green: 105/255, blue: 127/255, alpha: 1)      // #53697F
+    static let statusDelayed = UIColor(red: 83/255, green: 105/255, blue: 127/255, alpha: 1)     // #53697F
+    static let statusCancelled = UIColor(red: 214/255, green: 150/255, blue: 145/255, alpha: 1)  // #D69691
+    static let statusCompleted = UIColor(red: 146/255, green: 217/255, blue: 153/255, alpha: 1)  // #92D999
 }

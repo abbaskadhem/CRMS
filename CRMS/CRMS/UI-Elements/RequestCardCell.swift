@@ -205,19 +205,19 @@ final class RequestCardCell: UITableViewCell {
     private func statusColor(for status: Status) -> UIColor {
         switch status {
         case .submitted:
-            return UIColor.systemYellow
+            return AppColors.statusSubmitted
         case .assigned:
-            return UIColor.systemBlue
+            return AppColors.statusAssigned
         case .inProgress:
-            return UIColor.systemBlue
+            return AppColors.statusInProgress
         case .onHold:
-            return UIColor.systemGray
+            return AppColors.statusOnHold
         case .cancelled:
-            return UIColor.systemRed
+            return AppColors.statusCancelled
         case .delayed:
-            return UIColor.systemOrange
+            return AppColors.statusDelayed
         case .completed:
-            return UIColor.systemGreen
+            return AppColors.statusCompleted
         }
     }
 
