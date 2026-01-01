@@ -572,7 +572,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="361" height="501"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" misplaced="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UR5-J4-Iwp">
-                                        <rect key="frame" x="0.0" y="449" width="361" height="950"/>
+                                        <rect key="frame" x="0.0" y="1" width="361" height="950"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="axl-LA-QH0">
                                                 <rect key="frame" x="12" y="68" width="337" height="365"/>
