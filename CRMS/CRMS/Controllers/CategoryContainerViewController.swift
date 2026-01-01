@@ -115,7 +115,7 @@ class CategoryContainerViewController: UIViewController {
         chart.chartDescription.enabled = true //showing the title
         chart.chartDescription.text = title //title text
         chart.chartDescription.font = .systemFont(ofSize: 16, weight: .bold)
-        chart.chartDescription.textColor = UIColor(red: 83/255 , green: 105/255, blue: 127/255, alpha: 1.0)
+        chart.chartDescription.textColor = AppColors.primary
 
         // Convert data into bar chart entries
         let entries = data.enumerated().map {
@@ -126,9 +126,7 @@ class CategoryContainerViewController: UIViewController {
         let dataSet = BarChartDataSet(entries: entries)
 
         // Set bar color
-        dataSet.colors = [
-            UIColor(red: 138/255, green: 167/255, blue: 188/255, alpha: 1.0)
-        ]
+        dataSet.colors = [ AppColors.secondary]
 
         //attaching data to chart 
         chart.data = BarChartData(arrayLiteral: dataSet, dataSet)

@@ -112,7 +112,7 @@ class EscalationContainerViewController: UIViewController {
         dataSet.sliceSpace = 2 
         //chart colors
         dataSet.colors = [
-            UIColor(red: 83/255 , green: 105/255, blue: 127/255, alpha: 1.0), // escalated
+            AppColors.primary, // escalated
             UIColor(red: 217/255 , green: 217/255, blue: 217/255, alpha: 1.0), // non escalated
         ]
         
@@ -127,23 +127,30 @@ class EscalationContainerViewController: UIViewController {
         )
 
         //attaching dataset to chart
-        chart.usePercentValuesEnabled = true //make the values visible
         dataSet.valueFont = .systemFont(ofSize: 10, weight: .medium)
-        dataSet.valueTextColor = UIColor(red: 15/255 , green: 125/255, blue: 41/255, alpha: 1.0)
-        dataSet.entryLabelColor = UIColor(red: 15/255 , green: 125/255, blue: 41/255, alpha: 1.0)
+        dataSet.entryLabelColor = AppColors.text
         
         //the persantage will be outside the slice
+        chart.usePercentValuesEnabled = true //make the values visible
+        dataSet.valueFont = .systemFont(ofSize: 10, weight: .medium)
         dataSet.yValuePosition = .outsideSlice
         dataSet.xValuePosition = .outsideSlice
-        dataSet.valueLinePart1Length = 0
-        dataSet.valueLinePart2Length = 0
+        dataSet.valueLinePart1Length = 0.2
+        dataSet.valueLinePart2Length = 0.2
+        dataSet.valueLinePart1OffsetPercentage = 1.2
+        dataSet.valueTextColor = AppColors.primary
+        dataSet.valueLineWidth = 0
+        dataSet.valueLineColor = .clear
         dataSet.label = "" //removing the word dataset
+        
         
         chart.data = PieChartData(dataSet: dataSet)
         //doughnut chart
         chart.drawHoleEnabled = true
         chart.holeRadiusPercent = 0.75
-        chart.holeColor = UIColor(red: 245/255 , green: 239/255, blue: 235/255, alpha: 1.0)
+        chart.holeColor = AppColors.background
+        
+        
         chart.animate(yAxisDuration: 1.0) //animated on load
         
 

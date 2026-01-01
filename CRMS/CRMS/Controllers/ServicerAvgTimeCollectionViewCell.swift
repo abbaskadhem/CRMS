@@ -23,7 +23,7 @@ class ServicerAvgTimeCollectionViewCell: UICollectionViewCell {
         
         //changing cell border color
         self.contentView.layer.borderWidth = 1
-        self.contentView.layer.borderColor = UIColor(red: 122/255, green: 167/255, blue: 188/255, alpha: 1.0).cgColor
+        self.contentView.layer.borderColor = AppColors.primary.cgColor
         
         /*
          GColor is a Core Graphics representation of a color.
