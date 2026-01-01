@@ -192,7 +192,7 @@ class AnalysisViewController: UIViewController {
     private func drawPDFHeader(){
 
         //Draw the logo
-        let logoRect = CGRect(x: 20, y: 20, width: 40, height: 40)
+        let logoRect = CGRect(x: 20, y: 20, width: 70, height: 40)
         logo?.draw(in: logoRect)
 
         //title 
@@ -202,7 +202,7 @@ class AnalysisViewController: UIViewController {
         ]
 
         //draw title
-        title.draw(at: CGPoint(x: 70, y: 30), withAttributes: attributes)
+        title.draw(at: CGPoint(x: 95, y: 30), withAttributes: attributes)
 
         // Divider line
         let path = UIBezierPath()
