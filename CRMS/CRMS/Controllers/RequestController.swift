@@ -142,78 +142,98 @@ final class RequestController {
         }
     }
 
-// MARK: - Fetch All Requests (Admin)
-    func getAllRequests() async throws -> [Request] {
-        guard await hasInternetConnection() else {
-            throw NetworkError.noInternet
+    // MARK: - Fetch All Requests (Filtered by User Type)
+        func getAllRequests() async throws -> [Request] {
+            guard await hasInternetConnection() else {
+                throw NetworkError.noInternet
+            }
+
+            let userId = try SessionManager.shared.requireUserId()
+            let userType = try await SessionManager.shared.getUserType()
+            
+            var query = db.collection("Request")
+                .whereField("inactive", isEqualTo: false)
+            
+            // Apply user type filtering
+            switch userType {
+            case 1000: // Admin - no additional filter, get all requests
+                break
+                
+            case 1001: // Requester - filter by requesterRef
+                query = query.whereField("requesterRef", isEqualTo: userId)
+                
+            case 1002: // Servicer - filter by servicerRef
+                query = query.whereField("servicerRef", isEqualTo: userId)
+                
+            default:
+                throw SessionError.userDataNotFound
+            }
+            
+            let snapshot = try await query
+                .order(by: "createdOn", descending: true)
+                .getDocuments()
+
+            return snapshot.documents.compactMap { doc -> Request? in
+                let data = doc.data()
+
+                guard let idString = data["id"] as? String,
+                      let id = UUID(uuidString: idString),
+                      let requestNo = data["requestNo"] as? String,
+                      let requesterRef = data["requesterRef"] as? String,
+                      let requestCategoryRefString = data["requestCategoryRef"] as? String,
+                      let requestCategoryRef = UUID(uuidString: requestCategoryRefString),
+                      let requestSubcategoryRefString = data["requestSubcategoryRef"] as? String,
+                      let requestSubcategoryRef = UUID(uuidString: requestSubcategoryRefString),
+                      let buildingRefString = data["buildingRef"] as? String,
+                      let buildingRef = UUID(uuidString: buildingRefString),
+                      let roomRefString = data["roomRef"] as? String,
+                      let roomRef = UUID(uuidString: roomRefString),
+                      let description = data["description"] as? String,
+                      let statusRaw = data["status"] as? Int,
+                      let status = Status(rawValue: statusRaw),
+                      let ownerId = data["ownerId"] as? String,
+                      let createdOn = (data["createdOn"] as? Timestamp)?.dateValue(),
+                      let createdBy = data["createdBy"] as? String,
+                      let inactive = data["inactive"] as? Bool
+                else { return nil }
+
+                let images = data["images"] as? [String]
+                let priorityRaw = data["priority"] as? Int
+                let priority = priorityRaw.flatMap { Priority(rawValue: $0) }
+                let servicerRef = data["servicerRef"] as? String
+                let estimatedStartDate = (data["estimatedStartDate"] as? Timestamp)?.dateValue()
+                let estimatedEndDate = (data["estimatedEndDate"] as? Timestamp)?.dateValue()
+                let actualStartDate = (data["actualStartDate"] as? Timestamp)?.dateValue()
+                let actualEndDate = (data["actualEndDate"] as? Timestamp)?.dateValue()
+                let modifiedOn = (data["modifiedOn"] as? Timestamp)?.dateValue()
+                let modifiedBy = data["modifiedBy"] as? String
+
+                return Request(
+                    id: id,
+                    requestNo: requestNo,
+                    requesterRef: requesterRef,
+                    requestCategoryRef: requestCategoryRef,
+                    requestSubcategoryRef: requestSubcategoryRef,
+                    buildingRef: buildingRef,
+                    roomRef: roomRef,
+                    description: description,
+                    images: images,
+                    priority: priority,
+                    status: status,
+                    servicerRef: servicerRef,
+                    estimatedStartDate: estimatedStartDate,
+                    estimatedEndDate: estimatedEndDate,
+                    actualStartDate: actualStartDate,
+                    actualEndDate: actualEndDate,
+                    ownerId: ownerId,
+                    createdOn: createdOn,
+                    createdBy: createdBy,
+                    modifiedOn: modifiedOn,
+                    modifiedBy: modifiedBy,
+                    inactive: inactive
+                )
+            }
         }
-
-        let snapshot = try await db.collection("Request")
-            .whereField("inactive", isEqualTo: false)
-            .order(by: "createdOn", descending: true)
-            .getDocuments()
-
-        return snapshot.documents.compactMap { doc -> Request? in
-            let data = doc.data()
-
-            guard let idString = data["id"] as? String,
-                  let id = UUID(uuidString: idString),
-                  let requestNo = data["requestNo"] as? String,
-                  let requesterRef = data["requesterRef"] as? String,
-                  let requestCategoryRefString = data["requestCategoryRef"] as? String,
-                  let requestCategoryRef = UUID(uuidString: requestCategoryRefString),
-                  let requestSubcategoryRefString = data["requestSubcategoryRef"] as? String,
-                  let requestSubcategoryRef = UUID(uuidString: requestSubcategoryRefString),
-                  let buildingRefString = data["buildingRef"] as? String,
-                  let buildingRef = UUID(uuidString: buildingRefString),
-                  let roomRefString = data["roomRef"] as? String,
-                  let roomRef = UUID(uuidString: roomRefString),
-                  let description = data["description"] as? String,
-                  let statusRaw = data["status"] as? Int,
-                  let status = Status(rawValue: statusRaw),
-                  let ownerId = data["ownerId"] as? String,
-                  let createdOn = (data["createdOn"] as? Timestamp)?.dateValue(),
-                  let createdBy = data["createdBy"] as? String,
-                  let inactive = data["inactive"] as? Bool
-            else { return nil }
-
-            let images = data["images"] as? [String]
-            let priorityRaw = data["priority"] as? Int
-            let priority = priorityRaw.flatMap { Priority(rawValue: $0) }
-            let servicerRef = data["servicerRef"] as? String
-            let estimatedStartDate = (data["estimatedStartDate"] as? Timestamp)?.dateValue()
-            let estimatedEndDate = (data["estimatedEndDate"] as? Timestamp)?.dateValue()
-            let actualStartDate = (data["actualStartDate"] as? Timestamp)?.dateValue()
-            let actualEndDate = (data["actualEndDate"] as? Timestamp)?.dateValue()
-            let modifiedOn = (data["modifiedOn"] as? Timestamp)?.dateValue()
-            let modifiedBy = data["modifiedBy"] as? String
-
-            return Request(
-                id: id,
-                requestNo: requestNo,
-                requesterRef: requesterRef,
-                requestCategoryRef: requestCategoryRef,
-                requestSubcategoryRef: requestSubcategoryRef,
-                buildingRef: buildingRef,
-                roomRef: roomRef,
-                description: description,
-                images: images,
-                priority: priority,
-                status: status,
-                servicerRef: servicerRef,
-                estimatedStartDate: estimatedStartDate,
-                estimatedEndDate: estimatedEndDate,
-                actualStartDate: actualStartDate,
-                actualEndDate: actualEndDate,
-                ownerId: ownerId,
-                createdOn: createdOn,
-                createdBy: createdBy,
-                modifiedOn: modifiedOn,
-                modifiedBy: modifiedBy,
-                inactive: inactive
-            )
-        }
-    }
 
 // MARK: - Load Reference Data
     private func loadReferenceData() async throws {
