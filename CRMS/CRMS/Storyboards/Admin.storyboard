@@ -29,7 +29,7 @@
         <!--Requests-->
         <scene sceneID="RK1-zB-hd2">
             <objects>
-                <viewControllerPlaceholder storyboardName="Requests" id="rbi-zL-Y2a" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardName="AdminRequests" id="rbi-zL-Y2a" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Item" id="i1t-mn-MEA"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rxv-h7-Pe7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
