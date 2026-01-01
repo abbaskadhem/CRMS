@@ -30,7 +30,6 @@ class RequestContainerViewController: UIViewController {
     @IBOutlet weak var pieChart: UIView!
     
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -157,13 +156,23 @@ class RequestContainerViewController: UIViewController {
         dataSet.xValuePosition = .outsideSlice
         dataSet.valueLinePart1Length = 0
         dataSet.valueLinePart2Length = 0
+        dataSet.valueLinePart1OffsetPercentage = 12
+        dataSet.valueTextColor = UIColor(red: 83/255 , green: 105/255, blue: 127/255, alpha: 1.0)
+        dataSet.valueLineWidth = 0
+        dataSet.valueLineColor = .clear
         dataSet.label = "" //removing the word dataset
         
         chart.data = PieChartData(dataSet: dataSet)
+        
         //doughnut chart
         chart.drawHoleEnabled = true
         chart.holeRadiusPercent = 0.75
         chart.holeColor = UIColor(red: 245/255 , green: 239/255, blue: 235/255, alpha: 1.0)
+        
+        //write inside the hole
+        chart.drawCenterTextEnabled = true
+        
+        
         chart.animate(yAxisDuration: 1.0) //animated on load
         
 

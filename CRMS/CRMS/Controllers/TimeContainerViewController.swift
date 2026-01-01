@@ -26,6 +26,7 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
 
         collectionView.dataSource = self
         collectionView.delegate = self
+        
         // Cell is registered as prototype in storyboard, no need to register here
         
         Task {
@@ -69,14 +70,15 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
                     let startDate = startTimestamp.dateValue()
                     let endDate = endTimestamp.dateValue()
 
-                    let daysInt = Calendar.current
-                        .dateComponents([.day], from: startDate, to: endDate)
-                        .day ?? 0
-
-                    days = Double(daysInt)
+                    let seconds = endDate.timeIntervalSince(startDate)
+                    
+                    days = seconds / 86400.0
                 }
                 
-                serTimes[serId, default: []].append(days)
+                if days > 0 {
+                    serTimes[serId, default: []].append(days)
+                }
+                
             }
 
             var results: [(String, Double)] = []
@@ -87,7 +89,7 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
 
                 //fetch names
                 let serDoc = try await db.collection("User").document(serId).getDocument()
-                let name = serDoc.get("name") as? String ?? "Unkown"
+                let name = serDoc.get("fullName") as? String ?? "Unkown"
 
                 //append names and avg days to the results array
                 results.append((name, avgDays))
@@ -122,7 +124,7 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
     }
     
     func collectionView (_ collectionView: UICollectionView,layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: 27) //full width , height 27pt
+        return CGSize(width: collectionView.frame.width, height: 35) //full width , height 27pt
     }
     
     //this method is for rounding the corners of the view
