@@ -1,188 +1,356 @@
-//
-//  CalendarViewController.swift
-//  CRMS
-//
-//  Created by Maryam Abdulla
-//
-
 import UIKit
 import FSCalendar
+import FirebaseFirestore
+import FirebaseAuth
+
 
 class CalendarViewController: UIViewController,
                               FSCalendarDelegate,
                               FSCalendarDataSource,
                               UITableViewDelegate,
                               UITableViewDataSource {
+    
+  
 
     // MARK: - Outlets
-    @IBOutlet weak var calendarContainerView: UIView!
+    @IBOutlet weak var calendarView: UIView!
     @IBOutlet weak var selectedDateLabel: UILabel!
     @IBOutlet weak var tasksTableView: UITableView!
 
-    // MARK: - Properties
+    // MARK: - FSCalendar
+    private let fsCalendar = FSCalendar()
 
-    private var calendar: FSCalendar!
-    private var tasksForSelectedDate: [String] = []
+    private let selectedDateContainer = UIView()
+    // MARK: - Header controls
+    private let monthLabel = UILabel()
+    private let prevButton = UIButton(type: .system)
+    private let nextButton = UIButton(type: .system)
+    private let headerStack = UIStackView()
 
+    // MARK: - Data
+    private var requests: [Request] = []
+    //private let db = Firestore.firestore()
+
+    private func loadDummyRequests(for date: Date) {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+
+        // Only show cards if selected date is 30 Dec 2025
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let testDate = formatter.date(from: "2025-12-30")!
+
+        guard calendar.isDate(startOfDay, inSameDayAs: testDate) else {
+            requests = []
+            requests.append(contentsOf: requests)
+            tasksTableView.reloadData()
+            return
+        }
+
+        requests = [
+            Request(
+                id: UUID(),
+                requestNo: "REQ-00030",
+                requesterRef: UUID(),
+                requestCategoryRef: UUID(),
+                requestSubcategoryRef: UUID(),
+                buildingRef: UUID(),
+                roomRef: UUID(),
+                description: "Air conditioner leaking water",
+                images: nil,
+                priority: .high,
+                status: .inProgress,
+                servicerRef: UUID(),
+                estimatedStartDate: nil,
+                estimatedEndDate: nil,
+                actualStartDate: nil,
+                actualEndDate: nil,
+                ownerId: UUID(),
+                createdOn: testDate,
+                createdBy: UUID(),
+                modifiedOn: nil,
+                modifiedBy: nil,
+                inactive: false
+            ),
+
+            Request(
+                id: UUID(),
+                requestNo: "REQ-00031",
+                requesterRef: UUID(),
+                requestCategoryRef: UUID(),
+                requestSubcategoryRef: UUID(),
+                buildingRef: UUID(),
+                roomRef: UUID(),
+                description: "Projector not powering on",
+                images: nil,
+                priority: .moderate,
+                status: .completed,
+                servicerRef: UUID(),
+                estimatedStartDate: nil,
+                estimatedEndDate: nil,
+                actualStartDate: nil,
+                actualEndDate: nil,
+                ownerId: UUID(),
+                createdOn: testDate,
+                createdBy: UUID(),
+                modifiedOn: nil,
+                modifiedBy: nil,
+                inactive: false
+            )
+        ]
+
+        tasksTableView.reloadData()
+    }
+    // MARK: - Formatters
     private let dateFormatter: DateFormatter = {
         let df = DateFormatter()
-        df.dateFormat = "dd/MM/yyyy"
+        df.dateFormat = "d/MM/yyyy"
         return df
     }()
 
-    private let primaryColor = UIColor(hex: "#53697F")
-    private let dateLabelColor = UIColor(hex: "#8AA7BC")
+    private let monthFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.dateFormat = "MMMM yyyy"
+        return df
+    }()
 
     // MARK: - Lifecycle
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupSelectedDateLabel()
         setupCalendar()
+        setupCalendarHeader()
+        setupSelectedDateLabel()
         setupTableView()
+        updateMonthLabel()
+        tasksTableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 16, right: 0)
+        
+    }
+
+    // MARK: - Calendar Setup (UIView + FSCalendar)
+    private func setupCalendar() {
+
+        fsCalendar.translatesAutoresizingMaskIntoConstraints = false
+        calendarView.addSubview(fsCalendar)
+
+        NSLayoutConstraint.activate([
+            fsCalendar.topAnchor.constraint(equalTo: calendarView.topAnchor),
+            fsCalendar.bottomAnchor.constraint(equalTo: calendarView.bottomAnchor),
+            fsCalendar.leadingAnchor.constraint(equalTo: calendarView.leadingAnchor),
+            fsCalendar.trailingAnchor.constraint(equalTo: calendarView.trailingAnchor)
+        ])
+
+        fsCalendar.delegate = self
+        fsCalendar.dataSource = self
+
+        fsCalendar.scope = .month
+        fsCalendar.scrollDirection = .horizontal
+        fsCalendar.scrollEnabled = true
+        fsCalendar.swipeToChooseGesture.isEnabled = true
+        
+        calendarView.backgroundColor = .clear
+        fsCalendar.backgroundColor = .clear
+        fsCalendar.calendarWeekdayView.backgroundColor = .clear
+        fsCalendar.calendarHeaderView.backgroundColor = .clear
+        fsCalendar.appearance.headerDateFormat = ""
+
+        fsCalendar.appearance.weekdayTextColor =
+            UIColor(red: 83/255, green: 105/255, blue: 127/255, alpha: 1)
+
+        fsCalendar.appearance.titleDefaultColor =
+            UIColor(red: 83/255, green: 105/255, blue: 127/255, alpha: 1)
+
+        fsCalendar.appearance.todayColor = .clear
+        fsCalendar.appearance.titleTodayColor =
+            fsCalendar.appearance.titleDefaultColor
+
+        fsCalendar.appearance.selectionColor = .systemGray4
+        fsCalendar.appearance.titleSelectionColor =
+            UIColor(red: 83/255, green: 105/255, blue: 127/255, alpha: 1)
+        
+        fsCalendar.headerHeight = 0
+        fsCalendar.weekdayHeight = 30
+    }
+
+    // MARK: - Calendar Header
+    private func setupCalendarHeader() {
+
+        monthLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+        monthLabel.textColor =
+            UIColor(red: 83/255, green: 105/255, blue: 127/255, alpha: 1)
+
+        prevButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        nextButton.setImage(UIImage(systemName: "chevron.right"), for: .normal)
+
+        prevButton.addTarget(self, action: #selector(previousMonth), for: .touchUpInside)
+        nextButton.addTarget(self, action: #selector(nextMonth), for: .touchUpInside)
+
+        let headerColor = UIColor(
+            red: 83/255,
+            green: 105/255,
+            blue: 127/255,
+            alpha: 1
+        )
+        monthLabel.tintColor = headerColor
+        prevButton.tintColor = headerColor
+        nextButton.tintColor = headerColor
+        
+        headerStack.axis = .horizontal
+        headerStack.alignment = .center
+        headerStack.distribution = .equalSpacing
+
+        headerStack.addArrangedSubview(prevButton)
+        headerStack.addArrangedSubview(monthLabel)
+        headerStack.addArrangedSubview(nextButton)
+
+        headerStack.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(headerStack)
+
+        NSLayoutConstraint.activate([
+            headerStack.bottomAnchor.constraint(equalTo: calendarView.topAnchor, constant: -8),
+            headerStack.leadingAnchor.constraint(equalTo: calendarView.leadingAnchor, constant: 8),
+            headerStack.trailingAnchor.constraint(equalTo: calendarView.trailingAnchor, constant: -8),
+            headerStack.heightAnchor.constraint(equalToConstant: 30)
+        ])
+    }
+
+    @objc private func previousMonth() {
+        let prev = Calendar.current.date(byAdding: .month, value: -1, to: fsCalendar.currentPage)!
+        fsCalendar.setCurrentPage(prev, animated: true)
+        updateMonthLabel()
+    }
+
+    @objc private func nextMonth() {
+        let next = Calendar.current.date(byAdding: .month, value: 1, to: fsCalendar.currentPage)!
+        fsCalendar.setCurrentPage(next, animated: true)
+        updateMonthLabel()
+    }
+
+    private func updateMonthLabel() {
+        monthLabel.text = monthFormatter.string(from: fsCalendar.currentPage)
+    }
+
+    func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
+        updateMonthLabel()
     }
 
     // MARK: - Selected Date Label
-
     private func setupSelectedDateLabel() {
+
+        // Container (pill)
+        selectedDateContainer.backgroundColor = UIColor(
+            red: 138/255,
+            green: 167/255,
+            blue: 188/255,
+            alpha: 1
+        )
+        selectedDateContainer.layer.cornerRadius = 14
+        selectedDateContainer.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(selectedDateContainer)
+
+        // Label
         selectedDateLabel.text = "Select a date"
-        selectedDateLabel.textAlignment = .left
+        selectedDateLabel.font = .systemFont(ofSize: 14, weight: .medium)
         selectedDateLabel.textColor = .white
-        selectedDateLabel.backgroundColor = dateLabelColor
-        selectedDateLabel.layer.cornerRadius = 10
-        selectedDateLabel.clipsToBounds = true
+        selectedDateLabel.textAlignment = .left
+        selectedDateLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        // Make it compact like a button
-        selectedDateLabel.setContentHuggingPriority(.required, for: .horizontal)
-        selectedDateLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        selectedDateContainer.addSubview(selectedDateLabel)
 
-        selectedDateLabel.textInsets(top: 6, left: 12, bottom: 6, right: 12)
-    }
-
-    // MARK: - Calendar Setup
-
-    private func setupCalendar() {
-        calendar = FSCalendar()
-        calendar.translatesAutoresizingMaskIntoConstraints = false
-
-        calendar.delegate = self
-        calendar.dataSource = self
-
-        // Interaction
-        calendar.scope = .month
-        calendar.scrollDirection = .horizontal
-        calendar.scrollEnabled = true
-        calendar.pagingEnabled = true
-
-        // Appearance
-        calendar.backgroundColor = .clear
-
-        calendar.appearance.headerDateFormat = "MMMM yyyy"
-        calendar.appearance.headerTitleColor = primaryColor
-        calendar.appearance.weekdayTextColor = primaryColor
-        calendar.appearance.titleDefaultColor = primaryColor
-        calendar.appearance.titleSelectionColor = primaryColor
-
-        // Restore default TODAY look
-        calendar.appearance.todayColor = UIColor.systemGray5
-        calendar.appearance.todaySelectionColor = UIColor.systemGray4
-
-        // Selected date highlight (rounded)
-        calendar.appearance.selectionColor = UIColor.systemGray4
-
-        calendar.appearance.titleFont = .systemFont(ofSize: 15, weight: .medium)
-        calendar.appearance.headerTitleFont = .systemFont(ofSize: 18, weight: .semibold)
-
-        calendarContainerView.addSubview(calendar)
-
+        // Constraints (pill size + left padding)
         NSLayoutConstraint.activate([
-            calendar.topAnchor.constraint(equalTo: calendarContainerView.topAnchor),
-            calendar.bottomAnchor.constraint(equalTo: calendarContainerView.bottomAnchor),
-            calendar.leadingAnchor.constraint(equalTo: calendarContainerView.leadingAnchor),
-            calendar.trailingAnchor.constraint(equalTo: calendarContainerView.trailingAnchor)
+            selectedDateContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            selectedDateContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            selectedDateContainer.topAnchor.constraint(equalTo: tasksTableView.topAnchor, constant: -44),
+            selectedDateContainer.heightAnchor.constraint(equalToConstant: 32),
+
+            selectedDateLabel.leadingAnchor.constraint(equalTo: selectedDateContainer.leadingAnchor, constant: 12),
+            selectedDateLabel.trailingAnchor.constraint(equalTo: selectedDateContainer.trailingAnchor, constant: -12),
+            selectedDateLabel.centerYAnchor.constraint(equalTo: selectedDateContainer.centerYAnchor)
         ])
     }
 
     // MARK: - TableView Setup
-
     private func setupTableView() {
         tasksTableView.delegate = self
         tasksTableView.dataSource = self
         tasksTableView.separatorStyle = .none
         tasksTableView.backgroundColor = .clear
-        tasksTableView.rowHeight = 60
+        tasksTableView.isScrollEnabled = true
+        tasksTableView.alwaysBounceVertical = true
+
+        tasksTableView.register(
+            TaskCardCell.self,
+            forCellReuseIdentifier: TaskCardCell.identifier
+        )
     }
 
-    // MARK: - FSCalendar Delegate
-
+    // MARK: - Calendar Selection
     func calendar(_ calendar: FSCalendar,
                   didSelect date: Date,
                   at monthPosition: FSCalendarMonthPosition) {
 
         selectedDateLabel.text = dateFormatter.string(from: date)
-
-        // Temporary mock tasks (Firebase later)
-        tasksForSelectedDate = [
-            "Fix AC in Room 204",
-            "Check projector",
-            "Replace light bulb"
-        ]
-
-        tasksTableView.reloadData()
+        loadDummyRequests(for: date)
+        //fetchRequests(for: date)
     }
+    //db
+    /**private func fetchRequests(for date: Date) {
+a
+        Task {
+            guard await hasInternetConnection() else {
+                print("No internet connection")
+                return
+            }
 
+            guard let currentUserId = getCurrentUserId() else {
+                print("No logged-in user")
+                return
+            }
+
+            let calendar = Calendar.current
+            let startOfDay = calendar.startOfDay(for: date)
+            let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+
+            do {
+                let snapshot = try await db.collection("requests")
+                    .whereField("servicerRef", isEqualTo: currentUserId)
+                    .whereField("createdOn", isGreaterThanOrEqualTo: startOfDay)
+                    .whereField("createdOn", isLessThan: endOfDay)
+                    .getDocuments()
+
+                self.requests = snapshot.documents.compactMap {
+                    try? $0.data(as: Request.self)
+                }
+
+                print("Fetched requests:", self.requests.count)
+
+                DispatchQueue.main.async {
+                    self.tasksTableView.reloadData()
+                }
+
+            } catch {
+                print("Server unavailable:", error.localizedDescription)
+            }
+        }
+    }
+**/
     // MARK: - TableView DataSource
-
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
-        return tasksForSelectedDate.count
+        return requests.count
     }
 
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         let cell = tableView.dequeueReusableCell(
-            withIdentifier: "TaskCell",
+            withIdentifier: TaskCardCell.identifier,
             for: indexPath
-        )
+        ) as! TaskCardCell
 
-        cell.textLabel?.text = tasksForSelectedDate[indexPath.row]
-        cell.textLabel?.textColor = .label
-        cell.backgroundColor = UIColor(named: "primcolorsec")
-        cell.layer.cornerRadius = 12
-        cell.clipsToBounds = true
-        cell.selectionStyle = .none
-
+        cell.configure(with: requests[indexPath.row])
         return cell
-    }
-}
-
-// MARK: - UILabel Padding Helper
-
-extension UILabel {
-    func textInsets(top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) {
-        let inset = UIEdgeInsets(top: top, left: left, bottom: bottom, right: right)
-        //let label = PaddingLabel()
-        //label.insets = inset
-    }
-}
-
-// MARK: - UIColor HEX Helper
-
-extension UIColor {
-    convenience init(hex: String) {
-        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-        hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
-
-        var rgb: UInt64 = 0
-        Scanner(string: hexSanitized).scanHexInt64(&rgb)
-
-        self.init(
-            red: CGFloat((rgb & 0xFF0000) >> 16) / 255,
-            green: CGFloat((rgb & 0x00FF00) >> 8) / 255,
-            blue: CGFloat(rgb & 0x0000FF) / 255,
-            alpha: 1
-        )
     }
 }
