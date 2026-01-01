@@ -26,7 +26,7 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
 
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(UINib(nibName: "ServicerAvgTimeCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "techCell")
+        // Cell is registered as prototype in storyboard, no need to register here
         
         Task {
             try? await fetchServicerAvgTime()
