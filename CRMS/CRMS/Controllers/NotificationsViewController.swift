@@ -10,6 +10,8 @@ import UIKit
 class NotificationsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     var user : User?
+
+    
     func loadUser() async {
         do {
             let currentUser = try await SessionManager.shared.getCurrentUser()
@@ -30,33 +32,44 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
 
     @IBOutlet weak var tableView: UITableView!
     
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        Task {
-                await loadUser()
-                guard let user else { return }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 
-                configureUI()
+        notificationService.startListening { [weak self] notifications in
+            guard let self else { return }
 
-                notificationService.startListening { [weak self] notifications in
-                    guard let self else { return }
-
-                    DispatchQueue.main.async {
-                        self.notifications = notifications
-                        self.applyVisibilityFilter()
-                    }
-                }
+            DispatchQueue.main.async {
+                self.notifications = notifications
+                self.applyVisibilityFilter()
             }
+        }
     }
 
-    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+           Task {
+               await loadUser()
+               guard user != nil else { return }
+               
+               
+               configureUI()
+               
+               notificationService.startListening { [weak self] notifications in
+                   guard let self else { return }
+
+                   DispatchQueue.main.async {
+                       self.notifications = notifications
+                       self.applyVisibilityFilter()
+                   }
+               }
+           }
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         notificationService.stopListening()
     }
-
     
     private func configureUI() {
 

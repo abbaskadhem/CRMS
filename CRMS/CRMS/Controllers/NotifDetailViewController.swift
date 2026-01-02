@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class NotifDetailViewController: UIViewController {
 
@@ -55,21 +56,51 @@ class NotifDetailViewController: UIViewController {
     @objc func clickedEdit() {
         //go to edit page
         print("edit clicked")
+        
+        performSegue(withIdentifier: "ShowEditSegue", sender: self)
     }
     
     @objc func clickedDelete() {
         //delete the notif
-        print("delete clicked")
+        let alert = UIAlertController(
+               title: "Delete Announcement?",
+               message: "This action cannot be undone.",
+               preferredStyle: .alert
+           )
+
+           alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+           alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+               guard let id = self.notification?.id else { return }
+
+               do {
+                    Firestore.firestore()
+                       .collection("Notification")
+                       .document(id)
+                       .updateData(["inactive": true]) { error in
+                           if error == nil {
+                               self.navigationController?.popViewController(animated: true)
+                           }
+                       }
+               }
+               
+           })
+
+           present(alert, animated: true)
     }
 
     /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
+    
     */
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowEditSegue",
+               let vc = segue.destination as? NotifCreateViewController {
+                vc.notif = notification
+            vc.currentUser = currentUser
+            }
+    }
 }

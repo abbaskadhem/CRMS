@@ -16,18 +16,19 @@ class NotifCreateViewController: UIViewController {
     var isStaffSelected = false
     
     var currentUser : User?
+    var notif : NotificationModel?
     
     @IBOutlet weak var titleInput: UITextField!
-    
-    
     @IBOutlet weak var detail: UITextView!
-    
-    
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configUI()
+        if notif != nil {
+            titleInput.text = notif?.title
+            detail.text = notif?.description
+        }
         print("NotifCreate")
     }
     
@@ -112,6 +113,14 @@ class NotifCreateViewController: UIViewController {
                         .collection("Notification")
                         .addDocument(data: data)
                     print("Created notification")
+                    
+                    //send announcement to all users
+                    showAnnouncementBanner(title: title, message: description)
+                    
+                    //send push notif
+                    
+                    
+                    
                     //go back to list
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         self.navigationController?.popViewController(animated: true)
@@ -126,11 +135,68 @@ class NotifCreateViewController: UIViewController {
     }
     
     
-    
     @IBAction func cancelBtnTapped(_ sender: Any) {
+        let alert = UIAlertController(
+               title: "Discard Announcement?",
+               message: "Any changes you made will be lost.",
+               preferredStyle: .alert
+           )
+
+           alert.addAction(UIAlertAction(title: "Keep Editing", style: .cancel))
+           alert.addAction(UIAlertAction(title: "Discard", style: .destructive) { _ in
+               self.navigationController?.popViewController(animated: true)
+           })
+
+           present(alert, animated: true)
     }
     
-    
+    func showAnnouncementBanner(title: String, message: String) {
+        let banner = UIView()
+        banner.backgroundColor = AppColors.secondary
+        banner.layer.cornerRadius = 12
+        banner.alpha = 0
+
+        let label = UILabel()
+        label.text = "\(title)\n\(message)"
+        label.numberOfLines = 2
+        label.textColor = .white
+
+        banner.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        banner.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: banner.topAnchor, constant: 12),
+            label.bottomAnchor.constraint(equalTo: banner.bottomAnchor, constant: -12),
+            label.leadingAnchor.constraint(equalTo: banner.leadingAnchor, constant: 12),
+            label.trailingAnchor.constraint(equalTo: banner.trailingAnchor, constant: -12),
+        ])
+
+        guard
+            let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+            let window = scene.windows.first(where: { $0.isKeyWindow })
+        else { return }
+        window.addSubview(banner)
+
+        NSLayoutConstraint.activate([
+            banner.topAnchor.constraint(equalTo: window.safeAreaLayoutGuide.topAnchor, constant: 12),
+            banner.leadingAnchor.constraint(equalTo: window.leadingAnchor, constant: 12),
+            banner.trailingAnchor.constraint(equalTo: window.trailingAnchor, constant: -12)
+        ])
+
+        UIView.animate(withDuration: 0.2) {
+            banner.alpha = 1
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            UIView.animate(withDuration: 0.2, animations: {
+                banner.alpha = 0
+            }) { _ in
+                banner.removeFromSuperview()
+            }
+        }
+    }
+
 
     /*
     // MARK: - Navigation

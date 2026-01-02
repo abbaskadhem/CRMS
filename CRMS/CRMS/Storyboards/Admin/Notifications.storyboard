@@ -261,6 +261,7 @@
                         <outlet property="deleteBtn" destination="vFF-dC-cDV" id="0u7-Sb-XpR"/>
                         <outlet property="detail" destination="dhA-Zl-AhI" id="PPS-LP-7tD"/>
                         <outlet property="editBtn" destination="pvL-uE-1uB" id="Seh-bR-Lfm"/>
+                        <segue destination="Ubm-wf-P1y" kind="show" identifier="ShowEditSegue" id="iES-Za-qkq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f2j-Xk-j3e" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -491,6 +492,9 @@
             <point key="canvasLocation" x="1739.6946564885495" y="576.76056338028172"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="iES-Za-qkq"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="Light mode logo, compressed &amp; cropped" width="5524" height="3070"/>
         <image name="bell.badge" catalog="system" width="117" height="128"/>
