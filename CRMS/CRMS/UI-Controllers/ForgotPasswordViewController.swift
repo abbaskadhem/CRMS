@@ -7,10 +7,6 @@
 
 import UIKit
 import FirebaseAuth
-<<<<<<< HEAD
-import FirebaseFirestore
-=======
->>>>>>> 9ce382c224ca5fee9546a17acf27b8c007c0f3de
 
 class ForgotPasswordViewController: UIViewController {
 
@@ -118,21 +114,6 @@ class ForgotPasswordViewController: UIViewController {
         sendButton.isEnabled = false
         sendButton.alpha = 0.75
 
-<<<<<<< HEAD
-        db.collection("User").whereField("email", isEqualTo: email).getDocuments { snapshot, error in
-            if let error = error {
-                self.showAlert(title: "Error", message: error.localizedDescription)
-                return
-            }
-            
-
-            if let snapshot = snapshot, !snapshot.documents.isEmpty {
-                // Email exists, send reset link
-                self.sendPasswordReset(email)
-            } 
-            else {
-                self.showAlert(title: "Email Not Found", message: "No account found with this email")
-=======
         // Check if email exists in the database using SessionManager
         Task {
             do {
@@ -154,7 +135,6 @@ class ForgotPasswordViewController: UIViewController {
                     self.sendButton.isEnabled = true
                     self.sendButton.alpha = 1.0
                 }
->>>>>>> 9ce382c224ca5fee9546a17acf27b8c007c0f3de
             }
         }
     }
