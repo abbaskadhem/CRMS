@@ -29,8 +29,7 @@ final class CategoryController {
                   let name = data["name"] as? String,
                   let isParent = data["isParent"] as? Bool,
                   let createdOnTimestamp = data["createdOn"] as? Timestamp,
-                  let createdByString = data["createdBy"] as? String,
-                  let createdBy = UUID(uuidString: createdByString),
+                  let createdBy = data["createdBy"] as? String,
                   let inactive = data["inactive"] as? Bool
             else { return nil }
 
@@ -46,10 +45,7 @@ final class CategoryController {
                 modifiedOn = modifiedTimestamp.dateValue()
             }
 
-            var modifiedBy: UUID? = nil
-            if let modifiedByString = data["modifiedBy"] as? String {
-                modifiedBy = UUID(uuidString: modifiedByString)
-            }
+            let modifiedBy = data["modifiedBy"] as? String
 
             return RequestCategory(
                 id: id,
@@ -82,8 +78,8 @@ final class CategoryController {
     /// Adds a new parent category
     /// - Parameters:
     ///   - name: The name of the category
-    ///   - createdBy: The UUID of the user creating this category
-    func addCategory(name: String, createdBy: UUID) async throws {
+    ///   - createdBy: The Firebase Auth UID of the user creating this category
+    func addCategory(name: String, createdBy: String) async throws {
         let db = Firestore.firestore()
         let newId = UUID()
 
@@ -93,7 +89,7 @@ final class CategoryController {
             "isParent": true,
             "parentCategoryRef": NSNull(),
             "createdOn": Timestamp(date: Date()),
-            "createdBy": createdBy.uuidString,
+            "createdBy": createdBy,
             "modifiedOn": NSNull(),
             "modifiedBy": NSNull(),
             "inactive": false
@@ -104,8 +100,8 @@ final class CategoryController {
     /// - Parameters:
     ///   - name: The name of the subcategory
     ///   - parentId: The UUID of the parent category
-    ///   - createdBy: The UUID of the user creating this subcategory
-    func addSubCategory(name: String, parentId: UUID, createdBy: UUID) async throws {
+    ///   - createdBy: The Firebase Auth UID of the user creating this subcategory
+    func addSubCategory(name: String, parentId: UUID, createdBy: String) async throws {
         let db = Firestore.firestore()
         let newId = UUID()
 
@@ -115,7 +111,7 @@ final class CategoryController {
             "isParent": false,
             "parentCategoryRef": parentId.uuidString,
             "createdOn": Timestamp(date: Date()),
-            "createdBy": createdBy.uuidString,
+            "createdBy": createdBy,
             "modifiedOn": NSNull(),
             "modifiedBy": NSNull(),
             "inactive": false
@@ -128,15 +124,15 @@ final class CategoryController {
     /// - Parameters:
     ///   - categoryId: The UUID of the category to update
     ///   - inactive: The new inactive status (true = inactive, false = active)
-    ///   - modifiedBy: The UUID of the user making the change
-    func updateCategoryStatus(categoryId: UUID, inactive: Bool, modifiedBy: UUID) async throws {
+    ///   - modifiedBy: The Firebase Auth UID of the user making the change
+    func updateCategoryStatus(categoryId: UUID, inactive: Bool, modifiedBy: String) async throws {
         let db = Firestore.firestore()
         let ref = db.collection(collectionName).document(categoryId.uuidString)
 
         try await ref.updateData([
             "inactive": inactive,
             "modifiedOn": Timestamp(date: Date()),
-            "modifiedBy": modifiedBy.uuidString
+            "modifiedBy": modifiedBy
         ])
     }
 
@@ -144,15 +140,15 @@ final class CategoryController {
     /// - Parameters:
     ///   - categoryId: The UUID of the category to update
     ///   - name: The new name
-    ///   - modifiedBy: The UUID of the user making the change
-    func updateCategoryName(categoryId: UUID, name: String, modifiedBy: UUID) async throws {
+    ///   - modifiedBy: The Firebase Auth UID of the user making the change
+    func updateCategoryName(categoryId: UUID, name: String, modifiedBy: String) async throws {
         let db = Firestore.firestore()
         let ref = db.collection(collectionName).document(categoryId.uuidString)
 
         try await ref.updateData([
             "name": name,
             "modifiedOn": Timestamp(date: Date()),
-            "modifiedBy": modifiedBy.uuidString
+            "modifiedBy": modifiedBy
         ])
     }
 }

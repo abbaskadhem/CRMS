@@ -7,8 +7,6 @@
 
 import UIKit
 import FirebaseAuth
-import FirebaseStorage
-import FirebaseFirestore
 
 class ForgotPasswordViewController: UIViewController {
 
@@ -95,38 +93,40 @@ class ForgotPasswordViewController: UIViewController {
         sendLink()
     }
 
+    /// Validates email and sends password reset link if email exists in database
     private func sendLink(){
-        //email input validation
+        // Email input validation
         guard let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
               !email.isEmpty else {
             showAlert(title: "Missing Email", message: "Please Enter Your Email Address")
             return
         }
 
-        //disable button during request
+        // Disable button during request
         sendButton.isEnabled = false
         sendButton.alpha = 0.75
-        
-        //checking if the email is correctly and in the db
-        let db = Firestore.firestore()
 
-        db.collection("User").whereField("email", isEqualTo: email).getDocuments { [weak self] snapshot, error in
-            if let error = error {
-                self?.showAlert(title: "Error", message: error.localizedDescription)
-                self?.sendButton.isEnabled = true
-                self?.sendButton.alpha = 1.0
-                return
-            }
-            
-            guard let self = self else { return }
-            
-            if let snapshot = snapshot, !snapshot.documents.isEmpty {
-                // Email exists, send reset link ✅ Fixed: no label needed
-                self.sendPasswordReset(email)
-            } else {
-                self.showAlert(title: "Email Not Found", message: "No account found with this email")
-                self.sendButton.isEnabled = true
-                self.sendButton.alpha = 1.0
+        // Check if email exists in the database using SessionManager
+        Task {
+            do {
+                let exists = try await SessionManager.shared.emailExists(email)
+
+                await MainActor.run {
+                    if exists {
+                        // Email exists, send reset link
+                        self.sendPasswordReset(email)
+                    } else {
+                        self.showAlert(title: "Email Not Found", message: "No account found with this email")
+                        self.sendButton.isEnabled = true
+                        self.sendButton.alpha = 1.0
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    self.showAlert(title: "Error", message: error.localizedDescription)
+                    self.sendButton.isEnabled = true
+                    self.sendButton.alpha = 1.0
+                }
             }
         }
     }

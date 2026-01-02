@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="requester-tabbar">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Notifications-->
+        <scene sceneID="notif-scene">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Notifications" id="notif-placeholder" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="" id="notif-tabitem">
+                        <imageReference key="image" image="bell.badge" catalog="system"/>
+                    </tabBarItem>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="notif-firstResp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="500" y="435"/>
+        </scene>
+        <!--Requests-->
+        <scene sceneID="requests-scene">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Requests" id="requests-placeholder" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="" id="requests-tabitem">
+                        <imageReference key="image" image="list.bullet.clipboard" catalog="system"/>
+                    </tabBarItem>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="requests-firstResp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1100" y="435"/>
+        </scene>
+        <!--Settings-->
+        <scene sceneID="settings-scene">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Settings" id="settings-placeholder" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="" id="settings-tabitem">
+                        <imageReference key="image" image="gearshape" catalog="system"/>
+                    </tabBarItem>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="settings-firstResp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1700" y="435"/>
+        </scene>
+        <!--Requester Tab Bar Controller-->
+        <scene sceneID="requester-tabbar-scene">
+            <objects>
+                <tabBarController id="requester-tabbar" customClass="RequesterTabBarController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="requester-tabbar-bar">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" red="0.96078431372549022" green="0.93725490196078431" blue="0.92156862745098034" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="notif-placeholder" kind="relationship" relationship="viewControllers" id="notif-segue"/>
+                        <segue destination="requests-placeholder" kind="relationship" relationship="viewControllers" id="requests-segue"/>
+                        <segue destination="settings-placeholder" kind="relationship" relationship="viewControllers" id="settings-segue"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="requester-tabbar-firstResp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1100" y="12"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="bell.badge" catalog="system" width="117" height="128"/>
+        <image name="gearshape" catalog="system" width="128" height="123"/>
+        <image name="list.bullet.clipboard" catalog="system" width="98" height="128"/>
+    </resources>
+</document>

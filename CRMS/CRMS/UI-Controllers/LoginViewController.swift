@@ -7,8 +7,6 @@
 
 import UIKit
 import FirebaseAuth
-import FirebaseStorage
-import FirebaseFirestore
 
 class LoginViewController: UIViewController {
 
@@ -115,49 +113,45 @@ class LoginViewController: UIViewController {
     }
 
     
+    /// Checks the user role via SessionManager and navigates to the appropriate storyboard
     private func checkUserRole(for user: FirebaseAuth.User) {
-        let db = Firestore.firestore()
-        let userID = user.uid
-        
-        db.collection("User").document(userID).getDocument { [weak self] snapshot, error in
-            guard let self = self else { return }
-            
-            if let error = error {
-                self.showAlert(title: "Error", message: error.localizedDescription)
-                return
-            }
-            
-            guard let snapshot = snapshot, snapshot.exists else {
-                self.showAlert(title: "User Not Found", message: "No user found with this ID.")
-                return
-            }
-            
-            let role = snapshot.get("type") as? Int ?? -1
+        Task {
+            do {
+                // Use SessionManager to get user type from database
+                let role = try await SessionManager.shared.getUserType()
 
-            // TODO: Create separate storyboards/tab bar controllers for Servicer and Requester roles
-            // Currently all roles use Admin.storyboard as a temporary solution
-            let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
-            var vc: UIViewController?
+                await MainActor.run {
+                    var vc: UIViewController?
 
-            switch role {
-            case 1000: // admin
-                vc = adminStoryboard.instantiateInitialViewController()
-            case 1002: // servicer
-                vc = adminStoryboard.instantiateInitialViewController()
-            case 1001: // requester
-                vc = adminStoryboard.instantiateInitialViewController()
-            default:
-                self.showAlert(title: "Invalid Role", message: "Unknown user role.")
-                return
-            }
-            
-            if let vc = vc {
-                // Navigate using navigation controller or present modally
-                if let navController = self.navigationController {
-                    navController.pushViewController(vc, animated: true)
-                } else {
-                    vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: true)
+                    switch role {
+                    case UserType.admin.rawValue:
+                        let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
+                        vc = adminStoryboard.instantiateInitialViewController()
+                    case UserType.servicer.rawValue:
+                        // TODO: Create separate Servicer storyboard
+                        let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
+                        vc = adminStoryboard.instantiateInitialViewController()
+                    case UserType.requester.rawValue:
+                        let requesterStoryboard = UIStoryboard(name: "Requester", bundle: nil)
+                        vc = requesterStoryboard.instantiateInitialViewController()
+                    default:
+                        self.showAlert(title: "Invalid Role", message: "Unknown user role.")
+                        return
+                    }
+
+                    if let vc = vc {
+                        // Navigate using navigation controller or present modally
+                        if let navController = self.navigationController {
+                            navController.pushViewController(vc, animated: true)
+                        } else {
+                            vc.modalPresentationStyle = .fullScreen
+                            self.present(vc, animated: true)
+                        }
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    self.showAlert(title: "Error", message: error.localizedDescription)
                 }
             }
         }
