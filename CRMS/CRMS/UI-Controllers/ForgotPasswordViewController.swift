@@ -182,20 +182,7 @@ class ForgotPasswordViewController: UIViewController {
         }
     }
 
-    //helper method for alert messages
-    func showAlert (title: String, message: String){
 
-        // Create an alert controller with a specified title and message.
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-
-        // Create an action for the alert, which will be a button labeled "OK".
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-
-        // Present the alert on the screen.
-        present(alert, animated: true)
-    }
-    
-    
 
     /*
     // MARK: - Navigation

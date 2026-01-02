@@ -7,20 +7,17 @@
 
 import UIKit
 import DGCharts
-import FirebaseFirestore
 
 class EscalationContainerViewController: UIViewController {
 
-    
     @IBOutlet weak var totalNum: UILabel!
     @IBOutlet weak var escalatedNum: UILabel!
 
     @IBOutlet weak var view1: UIView! //total
     @IBOutlet weak var view2: UIView! //escalateds
-    
+
     @IBOutlet weak var pieChart: UIView!
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -31,59 +28,25 @@ class EscalationContainerViewController: UIViewController {
 
     //fetching Escalated Requests
     private func fetchEscalationAnalysis() async throws {
-
-        //check connectivity
-        guard await hasInternetConnection() else {
-            throw NetworkError.noInternet
-        }
-
-        let db = Firestore.firestore()
-
         do {
+            let analytics = try await AnalyticsController.shared.fetchEscalationAnalytics()
 
-            //fetching all requests
-            let requestSnap = try await db.collection("Request").getDocuments()
-            let totalRequests = requestSnap.documents.count
-
-            //fetching requestr history
-            let historySnap = try await db.collection("RequestHistory").getDocuments()
-
-            //array to save the escalated requests , set --> without dupllications
-            var escalatedRequests: Set<String> = []
-            
-            //looping through the requests and count the escalated requests (sentBack, reassigned, delayed)
-            for doc in historySnap.documents {
-                guard let requestRef = doc["requestRef"] as? String,
-                      let actionValue = doc["action"] as? Int,
-                      let action = Action(rawValue: actionValue) else { 
-                    continue 
-                }
-
-                //counting
-                if action == .sentBack || action == .reassigned || action == .delayed {
-                    escalatedRequests.insert(requestRef)
-                }
-            }
-
-            let escalatedCount = escalatedRequests.count
-            let nonEscalatedCount = totalRequests - escalatedCount
-            //let escalationRate = Double(escalatedCount) / Double(max(totalRequests, 1)) * 100
-
-            //ensuring the code is running on main thread 
+            //ensuring the code is running on main thread
             await MainActor.run {
-                //updating the UI 
-                self.totalNum.text = "\(totalRequests)"
-                self.escalatedNum.text = "\(escalatedCount)"
+                //updating the UI
+                self.totalNum.text = "\(analytics.totalRequests)"
+                self.escalatedNum.text = "\(analytics.escalatedCount)"
 
-                //sneding data to the showPieChart Function
+                //sending data to the showPieChart Function
                 self.showPieChart(
-                    escalated: escalatedCount,
-                    nonEscalated: nonEscalatedCount
+                    escalated: analytics.escalatedCount,
+                    nonEscalated: analytics.nonEscalatedCount
                 )
             }
-        }
-        catch {
-            throw NetworkError.serverUnavailable
+        } catch {
+            await MainActor.run {
+                showAlert(title: "Error", message: error.localizedDescription)
+            }
         }
     }
 
@@ -168,20 +131,6 @@ class EscalationContainerViewController: UIViewController {
         view2.layer.cornerRadius = 10
         view2.layer.masksToBounds = true
     }
-    
-    //helper method for alert messages
-    func showAlert (title: String, message: String){
-
-        // Create an alert controller with a specified title and message.
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-
-        // Create an action for the alert, which will be a button labeled "OK".
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-
-        // Present the alert on the screen.
-        present(alert, animated: true)
-    }
-    
 
     /*
     // MARK: - Navigation

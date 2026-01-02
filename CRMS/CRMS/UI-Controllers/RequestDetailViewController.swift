@@ -84,7 +84,9 @@ final class RequestDetailViewController: UIViewController {
 
     private func fetchRequestDetails() {
         guard let requestId = requestId else {
-            showAlert(title: "Error", message: "No request ID provided")
+            showAlert(title: "Error", message: "No request ID provided") { [weak self] in
+                self?.dismiss(animated: true)
+            }
             return
         }
 
@@ -99,13 +101,17 @@ final class RequestDetailViewController: UIViewController {
                         self.requestModel = model
                         self.populateData()
                     } else {
-                        self.showAlert(title: "Error", message: "Request not found")
+                        self.showAlert(title: "Error", message: "Request not found") { [weak self] in
+                            self?.dismiss(animated: true)
+                        }
                     }
                 }
             } catch {
                 await MainActor.run {
                     self.activityIndicator?.stopAnimating()
-                    self.showAlert(title: "Error", message: error.localizedDescription)
+                    self.showAlert(title: "Error", message: error.localizedDescription) { [weak self] in
+                        self?.dismiss(animated: true)
+                    }
                 }
             }
         }
@@ -216,14 +222,4 @@ final class RequestDetailViewController: UIViewController {
     }
 
     // MARK: - Helpers
-
-    private func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default) { [weak self] _ in
-            if title == "Error" {
-                self?.dismiss(animated: true)
-            }
-        })
-        present(alert, animated: true)
-    }
 }

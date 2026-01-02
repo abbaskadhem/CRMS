@@ -434,7 +434,9 @@ final class SubmitRequestViewController: UIViewController {
 
                 await MainActor.run {
                     self.activityIndicator.stopAnimating()
-                    self.showSuccessAlert()
+                    self.showAlert(title: "Success", message: "Your request has been submitted successfully.") { [weak self] in
+                        self?.dismiss(animated: true)
+                    }
                 }
             } catch {
                 await MainActor.run {
@@ -453,20 +455,6 @@ final class SubmitRequestViewController: UIViewController {
     }
 
     // MARK: - Alerts
-
-    private func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
-    }
-
-    private func showSuccessAlert() {
-        let alert = UIAlertController(title: "Success", message: "Your request has been submitted successfully.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default) { [weak self] _ in
-            self?.dismiss(animated: true)
-        })
-        present(alert, animated: true)
-    }
 
     private func showSelectionSheet(title: String, items: [String], completion: @escaping (Int) -> Void) {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)

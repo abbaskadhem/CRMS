@@ -7,96 +7,56 @@
 
 import UIKit
 import DGCharts
-import FirebaseStorage
-import FirebaseFirestore
 
 class RequestContainerViewController: UIViewController {
 
-    
     //IBOutlets
-    
-    
     @IBOutlet weak var comView: UIView!
     @IBOutlet weak var inPView: UIView!
     @IBOutlet weak var oHView: UIView!
     @IBOutlet weak var cView: UIView!
-    
-    
+
     @IBOutlet weak var completedNum: UILabel!
     @IBOutlet weak var inProgressNum: UILabel!
     @IBOutlet weak var onHoldNum: UILabel!
     @IBOutlet weak var cancelledNum: UILabel!
-    
+
     @IBOutlet weak var pieChart: UIView!
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         Task {
            try? await fetchRequests()
         }
-        
+
     }
-    
-    //fetching requests status 
+
+    //fetching requests status
     private func fetchRequests() async throws {
-
-        //check connectivity
-        guard await hasInternetConnection() else {
-            throw NetworkError.noInternet
-        }
-
-        let db = Firestore.firestore()
-
         do {
-            let snapshot = try await db.collection("Request").getDocuments()
+            let analytics = try await AnalyticsController.shared.fetchRequestStatusAnalytics()
 
-            var completed = 0
-            var inProgress = 0
-            var onHold = 0
-            var cancelled = 0
-
-            for doc in snapshot.documents {
-                //taking the numeric data from the firebase and convert them to enum 
-                guard let statusValue = doc["status"] as? Int, let status = Status(rawValue: statusValue) else {
-                    continue
-                }
-
-                switch status {
-                    case .completed:
-                        completed += 1
-                        
-                    case .onHold:
-                        onHold += 1
-                        
-                    case .submitted, .assigned, .inProgress, .delayed:
-                        inProgress += 1
-                    
-                    case .cancelled:
-                        cancelled += 1
-                }
-            }
-
-            //ensuring the code is running on main thread 
+            //ensuring the code is running on main thread
             await MainActor.run {
                 //updating the UI
-                self.completedNum.text = "\(completed)"
-                self.inProgressNum.text = "\(inProgress)"
-                self.onHoldNum.text = "\(onHold)"
-                self.cancelledNum.text = "\(cancelled)"
+                self.completedNum.text = "\(analytics.completed)"
+                self.inProgressNum.text = "\(analytics.inProgress)"
+                self.onHoldNum.text = "\(analytics.onHold)"
+                self.cancelledNum.text = "\(analytics.cancelled)"
 
-                //sneding data to the showPieChart Function
+                //sending data to the showPieChart Function
                 self.showPieChart(
-                    completed: completed,
-                    inProgress: inProgress,
-                    onHold: onHold,
-                    cancelled: cancelled
+                    completed: analytics.completed,
+                    inProgress: analytics.inProgress,
+                    onHold: analytics.onHold,
+                    cancelled: analytics.cancelled
                 )
             }
-        }
-        catch {
-            throw NetworkError.serverUnavailable
+        } catch {
+            await MainActor.run {
+                showAlert(title: "Error", message: error.localizedDescription)
+            }
         }
     }
 
@@ -195,21 +155,7 @@ class RequestContainerViewController: UIViewController {
        //Add the chart to the container view
         pieChart.addSubview(chart)
     }
-    
-    
-    //helper method for alert messages
-    func showAlert (title: String, message: String){
 
-        // Create an alert controller with a specified title and message.
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-
-        // Create an action for the alert, which will be a button labeled "OK".
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-
-        // Present the alert on the screen.
-        present(alert, animated: true)
-    }
-    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         

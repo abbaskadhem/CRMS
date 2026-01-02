@@ -1,5 +1,5 @@
 //
-//  TechAvgTimeCollectionViewCell.swift
+//  ServicerAvgTimeCollectionViewCell.swift
 //  CRMS
 //
 //  Created by Hoor Hasan on 22/12/2025.

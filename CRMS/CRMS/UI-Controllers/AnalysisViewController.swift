@@ -340,36 +340,6 @@ class AnalysisViewController: UIViewController {
         }
     }
 
-    //helper method for confirmation messages
-    func showConfirmationAlert(title: String, message: String, confirmHandler: @escaping () -> Void) {
-
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        // Confirm action
-        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
-            confirmHandler()  // Execute the confirmed action
-        }))
-        
-        // Cancel action
-        alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
-        
-        // Present the alert
-        present(alert, animated: true)
-    }
-
-    //helper method for alert messages
-    func showAlert (title: String, message: String){
-
-        // Create an alert controller with a specified title and message.
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-
-        // Create an action for the alert, which will be a button labeled "OK".
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-
-        // Present the alert on the screen.
-        present(alert, animated: true)
-    }
-
     /*
     // MARK: - Navigation
 
