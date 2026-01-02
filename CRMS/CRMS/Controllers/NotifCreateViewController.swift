@@ -114,7 +114,7 @@ class NotifCreateViewController: UIViewController {
                         .addDocument(data: data)
                     print("Created notification")
                     
-                    //send announcement to all users
+                    //send announcement to all users in the toWho
                     showAnnouncementBanner(title: title, message: description)
                     
                     //send push notif

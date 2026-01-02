@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class ItemViewController: UIViewController,
                           UITableViewDelegate,
@@ -13,44 +14,52 @@ class ItemViewController: UIViewController,
     
     @IBOutlet weak var tableView: UITableView!
     
-    var allItems: [ItemModel] = []       // full items list
-        var items: [ItemModel] = []          // filtered for this child
-        var child: ItemCategoryModel?        // assigned from previous VC
+
+    var items: [ItemModel] =     []    // filtered for this child
+    var child: ItemCategoryModel?        // assigned from previous VC
+    var parentID: String = ""
+    
+    private var listener: ListenerRegistration?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Set title
-        title = child?.name
-        
-        print(child!)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-                barButtonSystemItem: .add,   // + icon
-                target: self,
-                action: #selector(addButtonTapped)
-            )
-        
-        navigationItem.rightBarButtonItem?.tintColor = AppColors.primary
-        navigationController?.navigationBar.tintColor = AppColors.primary
 
-        setupTableView()
-        
-//        allItems = loadSampleItems()
-        
-//            // Filter items
-//            if let childID = child?.id {
-//                items = allItems.filter { $0.itemSubcategoryRef == childID }
-//                print(items)
-//            }else{
-//                print("no items found!")
-//            }
+        guard let child else {
+            assertionFailure("ItemViewController opened without child")
+            return
         }
+
+        title = child.name
+        parentID = child.parentCategoryRef ?? ""
+
+        print(child.id)
+        
+        Task{
+            listener = InventoryService.shared.listenToItems() { [weak self]
+                items in
+                self?.items = items
+                print(items)
+                self?.tableView.reloadData()
+            }
+        }
+        
+        setupTableView()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        listener?.remove()
+        listener = nil
+    }
+
     
-    @objc private func addButtonTapped() {
+    //MARK: Add Button
+    @IBAction func addButtonTapped(_ sender: Any) {
         performSegue(withIdentifier: "ShowAddSegue", sender: self)
+
     }
     
-    
+    //MARK: Table UI
     private func setupTableView() {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SpacerCell")
         tableView.register(ItemCell.self, forCellReuseIdentifier: ItemCell.reuseID)
@@ -62,11 +71,13 @@ class ItemViewController: UIViewController,
 
     }
     
+    
+    //MARK: Table functions: num of sections
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count * 2 + 1 // first spacer row
     }
     
-    // cell
+    //MARK: Table functions: cell for row at
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row % 2 == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "SpacerCell", for: indexPath)
@@ -87,10 +98,12 @@ class ItemViewController: UIViewController,
         }
     }
     
+    //MARK: Table functions: height for row at
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return indexPath.row % 2 == 0 ? 10 : UITableView.automaticDimension
     }
     
+    //MARK: Table functions: did select row at
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.row % 2 != 0 else { return }
         let itemIndex = (indexPath.row - 1) / 2
@@ -99,50 +112,25 @@ class ItemViewController: UIViewController,
         performSegue(withIdentifier: "ShowDetailSegue", sender: item)
     }
     
+    // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowDetailSegue",
                let detailVC = segue.destination as? DetailViewController,
                let item = sender as? ItemModel {
-
                 detailVC.item = item
-                detailVC.delegate = self
             }
+        
         if segue.identifier == "ShowAddSegue",
            let addVC = segue.destination as? AddItemViewController {
-            addVC.delegate = self
-//            addVC.categoryID = child?.parentCategoryRef
-//            addVC.subcategoryID = child?.id
+            addVC.categoryID = parentID
+            addVC.subcategoryID = child?.id
         }
 
-        
+
         
     }
- 
-        /*
-         // MARK: - Navigation
-         
-         // In a storyboard-based application, you will often want to do a little preparation before navigation
-         override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-         // Get the new view controller using segue.destination.
-         // Pass the selected object to the new view controller.
-         }
-         */
-        
+
     
 }
 
-extension ItemViewController: AddItemDelegate {
-    func didCreateItem(_ item: ItemModel) {
-        items.append(item)
-        tableView.reloadData()
-    }
-}
 
-extension ItemViewController: EditItemDelegate {
-    func didEditItem(_ item: ItemModel) {
-        if let index = items.firstIndex(where: { $0.id == item.id }) {
-            items[index] = item
-            tableView.reloadData()
-        }
-    }
-}

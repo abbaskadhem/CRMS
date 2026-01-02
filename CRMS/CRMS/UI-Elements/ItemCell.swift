@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 
 
+//MARK: Item Cell
+
 class ItemCell: UITableViewCell {
     static let reuseID = "ItemCell"
     
@@ -80,6 +82,8 @@ class ItemCell: UITableViewCell {
     }
 }
 
+
+//MARK: Item First detail part
 class InfoCell: UITableViewCell {
 
     static let reuseID = "InfoCell"
@@ -103,13 +107,16 @@ class InfoCell: UITableViewCell {
     private func setupUI() {
         titleLabel.font = .systemFont(ofSize: 16, weight: .medium)
         titleLabel.tintColor = AppColors.secondary
+        titleLabel.backgroundColor = .clear
 
         valueLabel.font = .systemFont(ofSize: 16)
         valueLabel.textColor = .darkGray
         valueLabel.textAlignment = .right
+        valueLabel.backgroundColor = .clear
 
         textField.font = .systemFont(ofSize: 16)
         textField.tintColor = AppColors.secondary
+        textField.backgroundColor = .clear
         textField.textAlignment = .right
         textField.isHidden = true
 
@@ -117,6 +124,7 @@ class InfoCell: UITableViewCell {
         stack.axis = .horizontal
         stack.spacing = 8
         stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.backgroundColor = .clear
 
         contentView.addSubview(stack)
 
@@ -126,12 +134,9 @@ class InfoCell: UITableViewCell {
             stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
-        
-        
 
     }
-    
-   
+
 
     func configure(title: String, value: String) {
         titleLabel.text = title
@@ -142,6 +147,10 @@ class InfoCell: UITableViewCell {
     func setEditable(_ editable: Bool) {
         valueLabel.isHidden = editable
         textField.isHidden = !editable
+        textField.backgroundColor = .clear
+        textField.textColor = AppColors.text
+        valueLabel.textColor = AppColors.text
+        valueLabel.backgroundColor = .clear
         isEditingValue = editable
     }
 
@@ -151,12 +160,14 @@ class InfoCell: UITableViewCell {
     }
 }
 
-class TextAreaCell: UITableViewCell {
+//MARK: Item Second detail part
+class TextAreaCell: UITableViewCell, UITextViewDelegate {
 
     static let reuseID = "TextAreaCell"
 
     let titleLabel = UILabel()
     let textView = UITextView()
+    private let placeholderLabel = UILabel()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -188,17 +199,40 @@ class TextAreaCell: UITableViewCell {
             stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
+        
+        setupPlaceholder()
     }
+    private func setupPlaceholder() {
+           placeholderLabel.textColor = .systemGray3
+           placeholderLabel.font = textView.font
+           placeholderLabel.numberOfLines = 0
+           placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
 
-    func configure(title: String, text: String) {
-        titleLabel.text = title
-        textView.text = text
-    }
+           textView.addSubview(placeholderLabel)
+           textView.delegate = self
+
+           NSLayoutConstraint.activate([
+               placeholderLabel.topAnchor.constraint(equalTo: textView.topAnchor, constant: 8),
+               placeholderLabel.leadingAnchor.constraint(equalTo: textView.leadingAnchor, constant: 5),
+               placeholderLabel.trailingAnchor.constraint(equalTo: textView.trailingAnchor, constant: -5)
+           ])
+       }
+
+    func configure(title: String, text: String?, placeholder: String? = nil) {
+           titleLabel.text = title
+           textView.text = text
+           placeholderLabel.text = placeholder
+           placeholderLabel.isHidden = !(text?.isEmpty ?? true)
+       }
     
     func setEditable(_ editable: Bool) {
         textView.isEditable = editable
-        textView.backgroundColor = editable ? UIColor.systemGray6 : .clear
+        textView.backgroundColor = .clear
     }
+    
+    func textViewDidChange(_ textView: UITextView) {
+            placeholderLabel.isHidden = !textView.text.isEmpty
+        }
 
 }
 

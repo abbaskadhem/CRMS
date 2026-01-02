@@ -9,14 +9,14 @@ import Foundation
 import UIKit
 
 struct ItemCategoryModel: Codable, Identifiable {
-    var id: UUID
+    var id: String
     var name: String
     var isParent: Bool
-    var parentCategoryRef: UUID?
+    var parentCategoryRef: String?
     var createdOn: Date
-    var createdBy: UUID
+    var createdBy: String
     var modifiedOn: Date?
-    var modifiedBy: UUID?
+    var modifiedBy: String?
     var inactive: Bool
     
     // UI state

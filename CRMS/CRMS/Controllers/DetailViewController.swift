@@ -306,12 +306,12 @@ class DetailViewController: UIViewController,
                 case "Unit Cost":
                     let raw = infoCell.currentValue()
                         .replacingOccurrences(of: " BHD", with: "")
-                    draft.unitCost = Double(raw)
+                    draft.unitCost = Double(raw)!
 
                 case "Vendor":
                     draft.vendor = infoCell.currentValue()
                 case "Quantity in Stock":
-                    draft.quantity = Int(infoCell.currentValue())
+                    draft.quantity = Int(infoCell.currentValue())!
                 default:
                     break
                 }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class InventoryViewController: UIViewController,
                                UITableViewDelegate,
@@ -15,17 +16,33 @@ class InventoryViewController: UIViewController,
     @IBOutlet weak var tableView: UITableView!
     
     
+    //MARK: Variables
     var categories: [ItemCategoryModel] = []
+    var selectedChild: ItemCategoryModel?
+    var parentCategories: [ItemCategoryModel] {
+        categories.filter { $0.isParent && !$0.inactive }
+    }
+    var overlayView: UIView!
+    
+
+    private var listener: ListenerRegistration?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
+        listener = InventoryService.shared.listenToInventoryCategories { [weak self] categories in
+            self?.categories = categories
+            self?.tableView.reloadData()
+        }
         setupTableView()
-        loadSampleData()
     }
-    
 
+    deinit {
+        listener?.remove()
+    }
+
+    
+//MARK: Table UI
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
@@ -38,108 +55,22 @@ class InventoryViewController: UIViewController,
 
     }
 
-    private func loadSampleData() {
-
-        // Parent category IDs
-        let hardwareID = UUID(uuidString: "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA")!
-        let licensedID = UUID(uuidString: "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB")!
-
-        // Child category IDs
-        let electricalID = UUID(uuidString: "11111111-1111-1111-1111-111111111111")!
-        let networkingID = UUID(uuidString: "22222222-2222-2222-2222-222222222222")!
-        let hvacID = UUID(uuidString: "33333333-3333-3333-3333-333333333333")!
-
-        categories = [
-            // Parent Categories
-            ItemCategoryModel(
-                id: hardwareID,
-                name: "Hardware",
-                isParent: true,
-                parentCategoryRef: nil,
-                createdOn: Date(),
-                createdBy: UUID(),
-                modifiedOn: nil,
-                modifiedBy: nil,
-                inactive: false,
-                isExpanded: false
-            ),
-            ItemCategoryModel(
-                id: licensedID,
-                name: "Licensed",
-                isParent: true,
-                parentCategoryRef: nil,
-                createdOn: Date(),
-                createdBy: UUID(),
-                modifiedOn: nil,
-                modifiedBy: nil,
-                inactive: false,
-                isExpanded: false
-            ),
-
-            // Child Categories
-            ItemCategoryModel(
-                id: electricalID,
-                name: "Electrical",
-                isParent: false,
-                parentCategoryRef: hardwareID,
-                createdOn: Date(),
-                createdBy: UUID(),
-                modifiedOn: nil,
-                modifiedBy: nil,
-                inactive: false,
-                isExpanded: false
-            ),
-            ItemCategoryModel(
-                id: networkingID,
-                name: "Networking",
-                isParent: false,
-                parentCategoryRef: hardwareID,
-                createdOn: Date(),
-                createdBy: UUID(),
-                modifiedOn: nil,
-                modifiedBy: nil,
-                inactive: false,
-                isExpanded: false
-            ),
-            ItemCategoryModel(
-                id: hvacID,
-                name: "HVAC",
-                isParent: false,
-                parentCategoryRef: licensedID,
-                createdOn: Date(),
-                createdBy: UUID(),
-                modifiedOn: nil,
-                modifiedBy: nil,
-                inactive: false,
-                isExpanded: false
-            )
-        ]
-
-
-
-
-    }
-
-    // Helpers
-    var parentCategories: [ItemCategoryModel] {
-        categories.filter { $0.isParent && !$0.inactive }
-    }
-
+    //MARK: Get all SubCategories
     func children(for parent: ItemCategoryModel) -> [ItemCategoryModel] {
         categories.filter { !$0.isParent && $0.parentCategoryRef == parent.id && !$0.inactive }
     }
     
-//    number of sections
+    //MARK: Table functions: number Of Sections
     func numberOfSections(in tableView: UITableView) -> Int {
             return parentCategories.count
         }
-
+    //MARK: Table functions: number Of Rows In Section
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             let parent = parentCategories[section]
             return parent.isExpanded ? children(for: parent).count * 2+1: 0
         }
 
-//    For each cell
+    //MARK: Table functions: cell For Row At
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
@@ -152,9 +83,9 @@ class InventoryViewController: UIViewController,
             return cell
         }else{
             let cell = tableView.dequeueReusableCell(
-                withIdentifier: "CategoryCell",
+                withIdentifier: "InventoryCategoryCell",
                 for: indexPath
-            ) as! CategoryCell
+            ) as! InventoryCategoryCell
             
             let childIndex = (indexPath.row - 1) / 2
             let parent = parentCategories[indexPath.section]
@@ -169,7 +100,7 @@ class InventoryViewController: UIViewController,
     }
 
 
-        // Section header as blue bar
+    //MARK: Table functions: view For Header In Section
     func tableView(_ tableView: UITableView,
                    viewForHeaderInSection section: Int) -> UIView? {
 
@@ -220,18 +151,45 @@ class InventoryViewController: UIViewController,
     }
 
 
-//    height of header
+    //MARK: Table functions: height For Header In Section
         func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
             return 44
         }
         
+    //MARK: Table functions: height For Row At
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath) -> CGFloat {
         return indexPath.row % 2 == 0 ? 10:UITableView.automaticDimension
     }
+    //MARK: Table functions: height For Footer In Section
+    func tableView(_ tableView: UITableView,
+                   heightForFooterInSection section: Int) -> CGFloat {
+        return 12
+    }
+    //MARK: Table functions: view For Footer In Section
+    func tableView(_ tableView: UITableView,
+                   viewForFooterInSection section: Int) -> UIView? {
+        return UIView()
+    }
+    //MARK: Table functions: did Select Row At
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Ignore spacer rows
+        guard indexPath.row % 2 != 0 else { return }
 
+        let parent = parentCategories[indexPath.section]
+        let childIndex = (indexPath.row - 1) / 2
+        let child = children(for: parent)[childIndex]
+        print(child.name)
+        
+        // Store the selected child temporarily
+        selectedChild = child
+
+            // Perform the segue
+            performSegue(withIdentifier: "ShowItemSegue", sender: self)
+        
+    }
     
-//    section toggle
+    //MARK: toggle section
     @objc private func toggleSection(_ sender: UITapGestureRecognizer) {
         guard let headerView = sender.view else { return }
         let section = headerView.tag
@@ -258,37 +216,10 @@ class InventoryViewController: UIViewController,
     }
 
     
-    func tableView(_ tableView: UITableView,
-                   heightForFooterInSection section: Int) -> CGFloat {
-        return 12
-    }
-
-    func tableView(_ tableView: UITableView,
-                   viewForFooterInSection section: Int) -> UIView? {
-        return UIView()
-    }
-
-    
-    var selectedChild: ItemCategoryModel?
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // Ignore spacer rows
-        guard indexPath.row % 2 != 0 else { return }
-
-        let parent = parentCategories[indexPath.section]
-        let childIndex = (indexPath.row - 1) / 2
-        let child = children(for: parent)[childIndex]
-        print(child.name)
-        
-        // Store the selected child temporarily
-        selectedChild = child
-
-            // Perform the segue
-            performSegue(withIdentifier: "ShowItemSegue", sender: self)
-        
-    }
+   
 
 
-
+//MARK: Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowItemSegue",
            let itemVC = segue.destination as? ItemViewController {
@@ -301,17 +232,15 @@ class InventoryViewController: UIViewController,
     
     @IBOutlet weak var addView: UIView!
     
-    var overlayView: UIView!
-    
-    
-    
-    
+
+    //MARK: Plus Button Clicked
     @IBAction func addCategoryTapped(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Inventory", bundle: nil)
            if let categoryVC = storyboard.instantiateViewController(withIdentifier: "AddViewController") as? AddViewController {
 
                // This enables the "slide up" animation and dimmed background automatically
                categoryVC.modalPresentationStyle = .pageSheet
+               categoryVC.parentCategories = self.parentCategories
 
                if let sheet = categoryVC.sheetPresentationController {
                    sheet.detents = [.medium()]               // roughly half-screen
@@ -323,4 +252,5 @@ class InventoryViewController: UIViewController,
                self.present(categoryVC, animated: true)      // slide-up animation
            }
     }
+    
 }
