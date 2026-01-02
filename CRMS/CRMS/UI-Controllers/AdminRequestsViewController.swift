@@ -60,7 +60,10 @@ final class AdminRequestsViewController: UIViewController {
         tableView.dataSource = self
         tableView.backgroundColor = AppColors.background
         tableView.separatorStyle = .none
-        tableView.contentInset = AppSpacing.contentInsets
+        tableView.showsHorizontalScrollIndicator = false
+        tableView.showsVerticalScrollIndicator = true
+        // Only add vertical content insets, no horizontal to prevent horizontal scrolling
+        tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
 
         // Enable automatic cell sizing for dynamic content
         tableView.rowHeight = UITableView.automaticDimension

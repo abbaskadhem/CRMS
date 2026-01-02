@@ -154,6 +154,7 @@ final class RequestCardCell: UITableViewCell {
             // Date
             dateLabel.topAnchor.constraint(equalTo: categoryLabel.bottomAnchor, constant: 4),
             dateLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
+            dateLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
 
             // Chevron
             chevronImageView.centerYAnchor.constraint(equalTo: cardView.centerYAnchor),
