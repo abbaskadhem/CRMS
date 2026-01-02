@@ -35,3 +35,8 @@ GoogleService-Info.plist
 CLAUDE.md
 .claude
 settings.local.json
+
+# JetBrains
+indexLayout.xml
+projectSettingsUpdater.xml
+workspace.xml
