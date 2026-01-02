@@ -6,63 +6,69 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class DetailViewController: UIViewController,
                             UITableViewDataSource,
                             UITableViewDelegate{
+    //MARK: Variables
+    
     var item: ItemModel!
 
-    
-    @IBOutlet weak var tableView: UITableView!
-    
-    weak var delegate: EditItemDelegate?
+    var userID = SessionManager.shared.currentUserId!
 
+    private var isEditingItem = false
+    private var draftItem: ItemModel?
+    private var confirmationOverlay: UIView?
+    private var successOverlay: UIView?
+
+    
+    //MARK: Outlets
+    @IBOutlet weak var tableView: UITableView!
+  
+    
+    //MARK: viewWillAppear
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.tintColor = AppColors.primary
+    }
+
+    
+    
+//MARK: viewDidLoad()
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.allowsSelection = false
 
-       
         let editButton = UIBarButtonItem(
             image:   UIImage(named: "Edit"),
             style: .plain,
             target: self,
             action: #selector(editItem)
         )
-
+        editButton.tintColor = AppColors.primary
+        
         let deleteButton = UIBarButtonItem(
             image: UIImage(systemName: "trash"),
             style: .plain,
             target: self,
             action: #selector(deleteItem)
         )
+        deleteButton.tintColor = AppColors.primary
 
         navigationItem.rightBarButtonItems = [deleteButton, editButton]
         
         title = item.name
 
-               tableView.delegate = self
-               tableView.dataSource = self
-
+        tableView.delegate = self
+        tableView.dataSource = self
+        
         tableView.register(InfoCell.self, forCellReuseIdentifier: InfoCell.reuseID)
-        
         tableView.register(TextAreaCell.self, forCellReuseIdentifier: TextAreaCell.reuseID)
-
-
-        
         tableView.estimatedRowHeight = 120
-
-          
     }
-    
-    private var isEditingItem = false
-    private var draftItem: ItemModel?
-    private var confirmationOverlay: UIView?
-    private var successOverlay: UIView?
 
-
-
-    
-// make everything editable
+//MARK: make everything editable
     @objc private func editItem() {
         if isEditingItem {
             showConfirmationOverlay()
@@ -74,7 +80,7 @@ class DetailViewController: UIViewController,
         }
     }
 
-    //cancel the edit
+    //MARK: cancel the edit
     @objc private func cancelEdit() {
         isEditingItem = false
         draftItem = nil
@@ -82,7 +88,7 @@ class DetailViewController: UIViewController,
         tableView.reloadData()
     }
 
-    // conformation overlay
+    //MARK: conformation overlay
     private func showConfirmationOverlay() {
         let overlay = UIView(frame: view.bounds)
         overlay.backgroundColor = UIColor.black.withAlphaComponent(0.4)
@@ -155,7 +161,7 @@ class DetailViewController: UIViewController,
         }
     }
     
-    //succsess overlay
+    //MARK: succsess overlay
     private func showSuccessOverlay() {
         let overlay = UIView(frame: view.bounds)
         overlay.backgroundColor = UIColor.black.withAlphaComponent(0.35)
@@ -211,7 +217,7 @@ class DetailViewController: UIViewController,
         }
     }
 
-    //remove overlay
+    //MARK: remove overlay
     private func dismissSuccessOverlay() {
         UIView.animate(withDuration: 0.25, animations: {
             self.successOverlay?.alpha = 0
@@ -221,7 +227,7 @@ class DetailViewController: UIViewController,
         }
     }
 
-// In edit mode : save / cancel buttons
+//MARK: In edit mode : save / cancel buttons
     private func showEditButtons() {
         let saveButton = UIBarButtonItem(
             image: UIImage(systemName: "checkmark"),
@@ -240,7 +246,7 @@ class DetailViewController: UIViewController,
     }
     
     
-    // to hide edit and delete once inside edit mode
+    //MARK: to hide edit and delete once inside edit mode
     private func hideEditButtons() {
         let editButton = UIBarButtonItem(
             image: UIImage(named: "Edit"),
@@ -259,19 +265,19 @@ class DetailViewController: UIViewController,
         navigationItem.rightBarButtonItems = [deleteButton, editButton]
     }
 
-    // conformation cancel
+    //MARK: conformation cancel
     @objc private func cancelSaveTapped() {
         dismissConfirmationOverlay()
     }
     
-//conformation save
+//MARK: conformation save
     @objc private func confirmSaveTapped() {
         dismissConfirmationOverlay()
         commitAndExitEditMode()
         showSuccessOverlay()
     }
 
-    //overlay dissmissal
+    //MARK: overlay dissmissal
     private func dismissConfirmationOverlay() {
         UIView.animate(withDuration: 0.2, animations: {
             self.confirmationOverlay?.alpha = 0
@@ -282,17 +288,16 @@ class DetailViewController: UIViewController,
     }
 
 
-    //saved
+    //MARK: saved
     private func commitAndExitEditMode() {
         commitChanges()
-        delegate?.didEditItem(item)
         isEditingItem = false
         draftItem = nil
         hideEditButtons()
         tableView.reloadData()
     }
 
-    //commit changes once saved
+    //MARK: commit changes once saved
     private func commitChanges() {
         guard var draft = draftItem else { return }
 
@@ -330,19 +335,52 @@ class DetailViewController: UIViewController,
         }
 
         item = draft
+        
+        //update in db
+        Firestore.firestore()
+            .collection("Item")
+            .document(item.id)
+            .updateData([
+                "name": item.name,
+                "partNo": item.partNo,
+                "unitCost": item.unitCost,
+                "vendor": item.vendor,
+                "quantity": item.quantity,
+                "description": item.description,
+                "usage": item.usage,
+                "modifiedOn": Timestamp(date: Date()),
+                "modifiedBy": userID
+            ]) { error in
+                if let error = error {
+                    print("Error updating item: \(error)")
+                } else {
+                    print("Item updated successfully")
+                }
+            }
+
+        
     }
 
-    //delete the whole item
+    //MARK: delete the whole item
     @objc private func deleteItem() {
         print("Delete \(item.name)")
+        Firestore.firestore()
+            .collection("Item")
+            .document(item.id)
+            .delete { error in
+                if let error = error {
+                    print("Error deleting item: \(error)")
+                } else {
+                    print("Item deleted successfully")
+                }
+            }
+
     }
 
 
-    func numberOfSections(in tableView: UITableView) -> Int {
-          return 3
-      }
+
     
-//    headers
+//MARK:    headers
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 1: return "Details"
@@ -350,10 +388,17 @@ class DetailViewController: UIViewController,
         }
     }
 
+    //MARK: num of sections
+    func numberOfSections(in tableView: UITableView) -> Int {
+          return 3
+      }
+    
+    //MARK: height of sections
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 40 // or whatever height you want
     }
 
+    //MARK: view for header of sections
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         // Create container view
         let headerView = UIView()
@@ -364,7 +409,7 @@ class DetailViewController: UIViewController,
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .boldSystemFont(ofSize: 16)
         headerView.tintColor = AppColors.secondary
-        label.textColor = AppColors.text // your text color
+        label.textColor = AppColors.primary
         label.text = tableView.dataSource?.tableView?(tableView, titleForHeaderInSection: section) ?? ""
 
         headerView.addSubview(label)
@@ -393,6 +438,7 @@ class DetailViewController: UIViewController,
     }
 
 
+    //MARK: num of rows in section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 5  // Info cells
@@ -403,6 +449,7 @@ class DetailViewController: UIViewController,
     }
 
 
+    //MARK: cell For Row At
       func tableView(_ tableView: UITableView,
                      cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
@@ -410,10 +457,6 @@ class DetailViewController: UIViewController,
 
 
           switch indexPath.section {
-
-
-          
-              
           case 0:
               let cell = tableView.dequeueReusableCell(withIdentifier: InfoCell.reuseID, for: indexPath) as! InfoCell
 
@@ -444,7 +487,7 @@ class DetailViewController: UIViewController,
               cell.setEditable(isEditingItem)
               cell.titleLabel.textColor = AppColors.primary
               cell.layer.borderWidth = 0.5
-              cell.layer.borderColor = UIColor.black.cgColor
+              cell.layer.borderColor = AppColors.primary.cgColor
               cell.selectionStyle = .none
               cell.backgroundColor = .clear
               
@@ -461,7 +504,7 @@ class DetailViewController: UIViewController,
               cell.setEditable(isEditingItem)
               cell.titleLabel.textColor = AppColors.primary
               cell.layer.borderWidth = 0.5
-              cell.layer.borderColor = UIColor.black.cgColor
+              cell.layer.borderColor = AppColors.primary.cgColor
               cell.selectionStyle = .none
               cell.backgroundColor = .clear
 
@@ -473,6 +516,7 @@ class DetailViewController: UIViewController,
           }
       }
 
+    //MARK: height For Row At
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath) -> CGFloat {
         UITableView.automaticDimension
@@ -491,6 +535,3 @@ class DetailViewController: UIViewController,
 
 }
 
-protocol EditItemDelegate: AnyObject {
-    func didEditItem(_ item: ItemModel)
-}

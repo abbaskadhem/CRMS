@@ -14,13 +14,13 @@ class NotifDetailViewController: UIViewController {
     var currentUser : User!
     
     @IBOutlet weak var detail: UITextView!
-    
     @IBOutlet weak var date: UILabel!
-    
-    
     @IBOutlet weak var editBtn: UIImageView!
-    
     @IBOutlet weak var deleteBtn: UIImageView!
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.tintColor = AppColors.primary
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,14 +70,15 @@ class NotifDetailViewController: UIViewController {
 
            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
 
-           alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-               guard let id = self.notification?.id else { return }
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [self] _ in
+               
+            guard let id = self.notification?.id else { return }
 
                do {
-                    Firestore.firestore()
+                   Firestore.firestore()
                        .collection("Notification")
                        .document(id)
-                       .updateData(["inactive": true]) { error in
+                       .delete { error in
                            if error == nil {
                                self.navigationController?.popViewController(animated: true)
                            }

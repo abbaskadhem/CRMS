@@ -26,11 +26,12 @@ class AddItemViewController: UIViewController,
     private var listener: ListenerRegistration?
     
     override func viewWillAppear(_ animated: Bool) {
-        listener = InventoryService.shared.listenToItems(
+        listener = InventoryService.shared.listenToItems(subcategoryID: subcategoryID!
         ) { [weak self] items in
             self?.existingItems = items
             self?.tableView.reloadData()
         }
+        navigationController?.navigationBar.tintColor = AppColors.primary
     }
 
      override func viewDidLoad() {

@@ -257,7 +257,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D8L-jQ-iUX">
-                                        <rect key="frame" x="0.0" y="90" width="320" height="162"/>
+                                        <rect key="frame" x="0.0" y="89.666666666666686" width="320" height="162"/>
                                         <color key="tintColor" red="0.34117650989999998" green="0.40784314269999999" blue="0.49019610879999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <rect key="contentStretch" x="0.0" y="0.0" width="0.20000000000000001" height="1"/>
                                     </pickerView>
@@ -326,8 +326,26 @@
                                             <constraint firstAttribute="trailing" secondItem="l23-nx-IHq" secondAttribute="trailing" constant="139" id="yyu-og-sk3"/>
                                         </constraints>
                                     </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I40-0k-rrT">
+                                        <rect key="frame" x="0.0" y="131" width="393" height="50"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0cq-FT-qaX">
+                                                <rect key="frame" x="319" y="-4" width="66" height="59"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <color key="tintColor" red="0.34117650989999998" green="0.40784314269999999" blue="0.49019610879999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain">
+                                                    <imageReference key="image" image="plus" catalog="system" symbolScale="large"/>
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" scale="large" weight="regular"/>
+                                                </buttonConfiguration>
+                                                <connections>
+                                                    <action selector="addButtonTapped:" destination="5GT-QD-pwS" eventType="touchUpInside" id="p0d-pj-UjF"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fza-sO-1Hv">
-                                        <rect key="frame" x="0.0" y="131" width="393" height="491"/>
+                                        <rect key="frame" x="0.0" y="181" width="393" height="441"/>
                                         <subviews>
                                             <searchBar contentMode="redraw" searchBarStyle="minimal" placeholder="Search" translatesAutoresizingMaskIntoConstraints="NO" id="SLk-KU-Snz">
                                                 <rect key="frame" x="16" y="0.0" width="361" height="44"/>
@@ -341,7 +359,7 @@
                                                 </connections>
                                             </searchBar>
                                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="6AI-mt-kTO">
-                                                <rect key="frame" x="16" y="56" width="361" height="419"/>
+                                                <rect key="frame" x="16" y="58" width="361" height="367"/>
                                                 <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <prototypes>
                                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ItemCell" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="4" indentationWidth="0.0" reuseIdentifier="ItemCell" textLabel="6iU-TJ-vZ8" style="IBUITableViewCellStyleDefault" id="4tp-og-8fd" customClass="ItemCell" customModule="CRMS" customModuleProvider="target">
@@ -364,44 +382,21 @@
                                                     </tableViewCell>
                                                 </prototypes>
                                             </tableView>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0cq-FT-qaX">
-                                                <rect key="frame" x="327" y="44" width="66" height="59"/>
-                                                <color key="tintColor" red="0.34117650989999998" green="0.40784314269999999" blue="0.49019610879999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain">
-                                                    <imageReference key="image" image="plus" catalog="system" symbolScale="large"/>
-                                                    <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" scale="large" weight="regular"/>
-                                                </buttonConfiguration>
-                                                <connections>
-                                                    <action selector="addButtonTapped:" destination="5GT-QD-pwS" eventType="touchUpInside" id="p0d-pj-UjF"/>
-                                                </connections>
-                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <constraints>
-                                            <constraint firstAttribute="bottom" secondItem="0cq-FT-qaX" secondAttribute="bottom" constant="388" id="Ac9-Fb-Ht4"/>
                                             <constraint firstAttribute="trailing" secondItem="SLk-KU-Snz" secondAttribute="trailing" constant="16" id="KdR-3q-u7v"/>
                                             <constraint firstItem="6AI-mt-kTO" firstAttribute="leading" secondItem="fza-sO-1Hv" secondAttribute="leading" constant="16" id="LLJ-pO-Riq"/>
                                             <constraint firstItem="SLk-KU-Snz" firstAttribute="top" secondItem="fza-sO-1Hv" secondAttribute="top" id="O4T-c4-20v"/>
-                                            <constraint firstAttribute="trailing" secondItem="0cq-FT-qaX" secondAttribute="trailing" id="Ya0-CM-bsA"/>
                                             <constraint firstAttribute="trailing" secondItem="6AI-mt-kTO" secondAttribute="trailing" constant="16" id="bcK-DC-rYv"/>
-                                            <constraint firstItem="6AI-mt-kTO" firstAttribute="top" secondItem="SLk-KU-Snz" secondAttribute="bottom" constant="12" id="bfW-OR-auC"/>
-                                            <constraint firstItem="0cq-FT-qaX" firstAttribute="leading" secondItem="fza-sO-1Hv" secondAttribute="leading" constant="327" id="cO4-tZ-olJ"/>
+                                            <constraint firstItem="6AI-mt-kTO" firstAttribute="top" secondItem="SLk-KU-Snz" secondAttribute="bottom" constant="14" id="bfW-OR-auC"/>
                                             <constraint firstItem="SLk-KU-Snz" firstAttribute="leading" secondItem="fza-sO-1Hv" secondAttribute="leading" constant="16" id="dKI-Iz-TEV"/>
                                             <constraint firstAttribute="bottom" secondItem="6AI-mt-kTO" secondAttribute="bottom" constant="16" id="e0h-Co-UGf"/>
-                                            <constraint firstItem="0cq-FT-qaX" firstAttribute="top" secondItem="SLk-KU-Snz" secondAttribute="bottom" id="qF3-SO-oBc"/>
                                         </constraints>
                                     </view>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="fza-sO-1Hv" firstAttribute="top" secondItem="v4s-dj-jw6" secondAttribute="bottom" id="3Qz-4R-tvK"/>
-                                    <constraint firstItem="v4s-dj-jw6" firstAttribute="leading" secondItem="52u-nb-NGO" secondAttribute="leading" id="BLH-2r-aBS"/>
-                                    <constraint firstItem="fza-sO-1Hv" firstAttribute="top" secondItem="v4s-dj-jw6" secondAttribute="bottom" id="FI4-b2-fyB"/>
-                                    <constraint firstAttribute="trailing" secondItem="v4s-dj-jw6" secondAttribute="trailing" id="Qdf-Oh-Asm"/>
-                                    <constraint firstItem="fza-sO-1Hv" firstAttribute="leading" secondItem="52u-nb-NGO" secondAttribute="leading" id="aKR-pe-FfR"/>
-                                    <constraint firstAttribute="bottom" secondItem="fza-sO-1Hv" secondAttribute="bottom" id="bDm-TN-Ccj"/>
-                                    <constraint firstItem="v4s-dj-jw6" firstAttribute="top" secondItem="52u-nb-NGO" secondAttribute="top" id="gN5-sM-BIH"/>
-                                    <constraint firstAttribute="trailing" secondItem="fza-sO-1Hv" secondAttribute="trailing" id="yh2-SF-ja8"/>
+                                    <constraint firstItem="fza-sO-1Hv" firstAttribute="top" secondItem="52u-nb-NGO" secondAttribute="top" constant="181" id="4Yv-Bz-Kk4"/>
                                 </constraints>
                             </stackView>
                         </subviews>

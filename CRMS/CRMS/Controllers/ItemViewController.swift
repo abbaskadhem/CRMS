@@ -20,6 +20,22 @@ class ItemViewController: UIViewController,
     var parentID: String = ""
     
     private var listener: ListenerRegistration?
+
+    override func viewWillAppear(_ animated: Bool) {
+        guard let child else {
+            assertionFailure("ItemViewController opened without child")
+            return
+        }
+        listener = InventoryService.shared.listenToItems(subcategoryID: child.id) { [weak self] items in
+            DispatchQueue.main.async {
+                guard let self else { return }
+                self.items = items
+                print("items gotten from listener",items)
+                self.tableView.reloadData()
+            }
+        }
+        navigationController?.navigationBar.tintColor = AppColors.primary
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,16 +48,10 @@ class ItemViewController: UIViewController,
         title = child.name
         parentID = child.parentCategoryRef ?? ""
 
-        print(child.id)
+        print("Child id: ",child.id)
         
-        Task{
-            listener = InventoryService.shared.listenToItems() { [weak self]
-                items in
-                self?.items = items
-                print(items)
-                self?.tableView.reloadData()
-            }
-        }
+        
+
         
         setupTableView()
     }

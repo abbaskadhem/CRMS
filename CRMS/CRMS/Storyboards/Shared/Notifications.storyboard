@@ -465,22 +465,7 @@
                             <constraint firstItem="oTe-c7-1eT" firstAttribute="bottom" secondItem="5N9-ty-wj4" secondAttribute="bottom" id="wCu-4j-N8r"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="" id="gxg-WM-KgS">
-                        <imageReference key="image" image="person" catalog="system" renderingMode="hierarchical">
-                            <hierarchicalColors>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                            </hierarchicalColors>
-                        </imageReference>
-                        <imageReference key="selectedImage" image="Light mode logo, compressed &amp; cropped" renderingMode="hierarchical">
-                            <hierarchicalColors>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                            </hierarchicalColors>
-                        </imageReference>
-                    </tabBarItem>
+                    <tabBarItem key="tabBarItem" title="" id="gxg-WM-KgS"/>
                     <navigationItem key="navigationItem" title="New Announcement" style="editor" id="sa6-41-Shc"/>
                     <connections>
                         <outlet property="detail" destination="5Fa-8m-l59" id="ySa-p9-geV"/>

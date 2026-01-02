@@ -30,11 +30,13 @@ final class InventoryService {
     }
     
     func listenToItems(
+        subcategoryID: String,
         onUpdate: @escaping ([ItemModel]) -> Void
     ) -> ListenerRegistration {
 
         Firestore.firestore()
             .collection("Item")
+            .whereField("itemSubcategoryRef", isEqualTo: subcategoryID)
             .addSnapshotListener { snapshot, error in
                 guard let docs = snapshot?.documents else { return }
 
@@ -107,7 +109,7 @@ extension ItemModel{
             let unitCost = data["unitCost"] as? Double,
             let vendor = data["vendor"] as? String,
             let itemCategoryRef = data["itemCategoryRef"] as? String,
-            let itemSubCategoryRef = data["itemSubCategoryRef"] as? String,
+            let itemSubCategoryRef = data["itemSubcategoryRef"] as? String,
             let quantity = data["quantity"] as? Int,
             let description = data["description"] as? String,
             let usage = data["usage"] as? String,

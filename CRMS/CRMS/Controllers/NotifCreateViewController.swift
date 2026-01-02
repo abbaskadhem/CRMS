@@ -21,6 +21,9 @@ class NotifCreateViewController: UIViewController {
     @IBOutlet weak var titleInput: UITextField!
     @IBOutlet weak var detail: UITextView!
     
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.tintColor = AppColors.primary
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
