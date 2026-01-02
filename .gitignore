@@ -37,6 +37,9 @@ encodings.xml
 indexLayout.xml
 projectSettingsUpdater.xml
 workspace.xml
+CRMS.iml
+modules.xml
+vcs.xml
 
 # VS Code
 .vscode
