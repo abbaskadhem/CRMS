@@ -123,7 +123,12 @@ class NotifCreateViewController: UIViewController {
                     
                     //go back to list
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        self.navigationController?.popViewController(animated: true)
+                        self.navigationController?.viewControllers.forEach { vc in
+                            if vc is NotificationsViewController {
+                                self.navigationController?.popToViewController(vc, animated: true)
+                            }
+                        }
+
                     }
                     
                 } catch {
