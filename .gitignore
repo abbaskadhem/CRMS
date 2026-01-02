@@ -37,6 +37,7 @@ CLAUDE.md
 settings.local.json
 
 # JetBrains
+encodings.xml
 indexLayout.xml
 projectSettingsUpdater.xml
 workspace.xml
