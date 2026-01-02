@@ -165,60 +165,44 @@ final class RequestCardCell: UITableViewCell {
 
     // MARK: - Configure
 
+    /// Configures the cell with request display data
+    /// - Parameter model: The request display model containing all display data
     func configure(with model: RequestDisplayModel) {
         requestNoLabel.text = model.requestNo
-        statusLabel.text = model.statusString
+        statusLabel.text = model.status.displayString
         locationLabel.text = model.locationString
         categoryLabel.text = model.categoryString
         dateLabel.text = model.formattedDate
 
-        // Priority with color
+        // Priority with color - using Priority extension
         let priorityText = NSMutableAttributedString(string: "Priority: ", attributes: [
             .foregroundColor: AppColors.text,
             .font: UIFont.systemFont(ofSize: 14)
         ])
-        let priorityValue = NSAttributedString(string: model.priorityString, attributes: [
-            .foregroundColor: priorityColor(for: model.priority),
+        let priorityColor = model.priority?.displayColor ?? AppColors.secondary
+        let priorityString = model.priority?.displayString ?? "Not Set"
+        let priorityValue = NSAttributedString(string: priorityString, attributes: [
+            .foregroundColor: priorityColor,
             .font: UIFont.systemFont(ofSize: 14, weight: .medium)
         ])
         priorityText.append(priorityValue)
         priorityLabel.attributedText = priorityText
 
-        // Status dot color
-        statusDot.backgroundColor = statusColor(for: model.status)
+        // Status dot color - using Status extension
+        statusDot.backgroundColor = model.status.displayColor
+
+        // Configure accessibility
+        configureAccessibility(with: model)
     }
 
-    private func priorityColor(for priority: Priority?) -> UIColor {
-        guard let priority = priority else {
-            return AppColors.secondary
-        }
-        switch priority {
-        case .low:
-            return UIColor.systemGreen
-        case .moderate:
-            return UIColor.systemOrange
-        case .high:
-            return UIColor.systemRed
-        }
-    }
-
-    private func statusColor(for status: Status) -> UIColor {
-        switch status {
-        case .submitted:
-            return AppColors.statusSubmitted
-        case .assigned:
-            return AppColors.statusAssigned
-        case .inProgress:
-            return AppColors.statusInProgress
-        case .onHold:
-            return AppColors.statusOnHold
-        case .cancelled:
-            return AppColors.statusCancelled
-        case .delayed:
-            return AppColors.statusDelayed
-        case .completed:
-            return AppColors.statusCompleted
-        }
+    /// Configures VoiceOver accessibility for the cell
+    private func configureAccessibility(with model: RequestDisplayModel) {
+        isAccessibilityElement = true
+        accessibilityLabel = "Request \(model.requestNo)"
+        let priorityString = model.priority?.displayString ?? "Not Set"
+        accessibilityValue = "\(model.status.displayString), Priority \(priorityString), \(model.locationString), \(model.categoryString), submitted \(model.formattedDate)"
+        accessibilityHint = "Double tap to view request details"
+        accessibilityTraits = .button
     }
 
     override func prepareForReuse() {

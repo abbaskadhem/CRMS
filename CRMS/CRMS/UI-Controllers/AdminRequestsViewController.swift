@@ -60,7 +60,11 @@ final class AdminRequestsViewController: UIViewController {
         tableView.dataSource = self
         tableView.backgroundColor = AppColors.background
         tableView.separatorStyle = .none
-        tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+        tableView.contentInset = AppSpacing.contentInsets
+
+        // Enable automatic cell sizing for dynamic content
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 160
 
         // Register custom cell
         tableView.register(RequestCardCell.self, forCellReuseIdentifier: RequestCardCell.identifier)
@@ -182,10 +186,6 @@ extension AdminRequestsViewController: UITableViewDelegate, UITableViewDataSourc
         let request = filteredRequests[indexPath.row]
         cell.configure(with: request)
         return cell
-    }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 160
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

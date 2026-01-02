@@ -116,16 +116,18 @@ final class RequestDetailViewController: UIViewController {
 
         // Request Info
         requestNoLabel?.text = model.requestNo
-        statusLabel?.text = model.statusString
-        statusDot?.backgroundColor = statusColor(for: model.status)
+        statusLabel?.text = model.status.displayString
+        statusDot?.backgroundColor = model.status.displayColor
 
-        // Priority
+        // Priority - using Priority extension
         let priorityText = NSMutableAttributedString(string: "Priority: ", attributes: [
             .foregroundColor: AppColors.text,
             .font: UIFont.systemFont(ofSize: 14)
         ])
-        let priorityValue = NSAttributedString(string: model.priorityString, attributes: [
-            .foregroundColor: priorityColor(for: model.priority),
+        let priorityColor = model.priority?.displayColor ?? AppColors.secondary
+        let priorityString = model.priority?.displayString ?? "Not Set"
+        let priorityValue = NSAttributedString(string: priorityString, attributes: [
+            .foregroundColor: priorityColor,
             .font: UIFont.systemFont(ofSize: 14, weight: .medium)
         ])
         priorityText.append(priorityValue)
@@ -214,39 +216,6 @@ final class RequestDetailViewController: UIViewController {
     }
 
     // MARK: - Helpers
-
-    private func priorityColor(for priority: Priority?) -> UIColor {
-        guard let priority = priority else {
-            return AppColors.secondary
-        }
-        switch priority {
-        case .low:
-            return UIColor.systemGreen
-        case .moderate:
-            return UIColor.systemOrange
-        case .high:
-            return UIColor.systemRed
-        }
-    }
-
-    private func statusColor(for status: Status) -> UIColor {
-        switch status {
-        case .submitted:
-            return UIColor.systemYellow
-        case .assigned:
-            return UIColor.systemBlue
-        case .inProgress:
-            return UIColor.systemBlue
-        case .onHold:
-            return UIColor.systemGray
-        case .cancelled:
-            return UIColor.systemRed
-        case .delayed:
-            return UIColor.systemOrange
-        case .completed:
-            return UIColor.systemGreen
-        }
-    }
 
     private func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
