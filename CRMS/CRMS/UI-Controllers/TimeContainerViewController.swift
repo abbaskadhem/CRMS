@@ -72,10 +72,10 @@ class TimeContainerViewController: UIViewController, UICollectionViewDataSource,
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        view1.layer.cornerRadius = 10
+        view1.layer.cornerRadius = AppSize.cornerRadiusSmall
         view1.layer.masksToBounds = true
 
-        view2.layer.cornerRadius = 10
+        view2.layer.cornerRadius = AppSize.cornerRadiusSmall
         view2.layer.masksToBounds = true
     }
 

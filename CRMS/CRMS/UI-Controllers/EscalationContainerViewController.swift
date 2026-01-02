@@ -76,7 +76,7 @@ class EscalationContainerViewController: UIViewController {
         //chart colors
         dataSet.colors = [
             AppColors.primary, // escalated
-            UIColor(red: 217/255 , green: 217/255, blue: 217/255, alpha: 1.0), // non escalated
+            AppColors.chartNeutralLight, // non escalated
         ]
         
         //attaching data persentage onto the chart
@@ -90,12 +90,11 @@ class EscalationContainerViewController: UIViewController {
         )
 
         //attaching dataset to chart
-        dataSet.valueFont = .systemFont(ofSize: 10, weight: .medium)
         dataSet.entryLabelColor = AppColors.text
-        
+
         //the persantage will be outside the slice
         chart.usePercentValuesEnabled = true //make the values visible
-        dataSet.valueFont = .systemFont(ofSize: 10, weight: .medium)
+        dataSet.valueFont = AppTypography.chartLabel
         dataSet.yValuePosition = .outsideSlice
         dataSet.xValuePosition = .outsideSlice
         dataSet.valueLinePart1Length = 0.3
@@ -125,10 +124,10 @@ class EscalationContainerViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        view1.layer.cornerRadius = 10
+        view1.layer.cornerRadius = AppSize.cornerRadiusSmall
         view1.layer.masksToBounds = true
 
-        view2.layer.cornerRadius = 10
+        view2.layer.cornerRadius = AppSize.cornerRadiusSmall
         view2.layer.masksToBounds = true
     }
 

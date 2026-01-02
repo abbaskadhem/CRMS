@@ -43,7 +43,7 @@ final class AdminRequestsViewController: UIViewController {
         searchBar.placeholder = "Search"
         searchBar.backgroundImage = UIImage()
         searchBar.searchTextField.backgroundColor = .white
-        searchBar.searchTextField.layer.cornerRadius = 18
+        searchBar.searchTextField.layer.cornerRadius = AppSize.cornerRadiusLarge
         searchBar.searchTextField.layer.masksToBounds = true
         searchBar.searchTextField.layer.borderWidth = 1
         searchBar.searchTextField.layer.borderColor = AppColors.inputBorder.cgColor

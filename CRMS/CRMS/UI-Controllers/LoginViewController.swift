@@ -159,7 +159,7 @@ class LoginViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        backgroundLogin.layer.cornerRadius = 200
+        backgroundLogin.layer.cornerRadius = 200  // Large custom radius for background design
         backgroundLogin.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         backgroundLogin.layer.masksToBounds = true
     }

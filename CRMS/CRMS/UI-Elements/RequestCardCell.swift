@@ -15,19 +15,19 @@ final class RequestCardCell: UITableViewCell {
 
     private let cardView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
-        view.layer.cornerRadius = 12
+        view.backgroundColor = AppColors.inputBackground
+        view.layer.cornerRadius = AppSize.cornerRadiusMedium
         view.layer.shadowColor = UIColor.black.cgColor
-        view.layer.shadowOpacity = 0.05
-        view.layer.shadowOffset = CGSize(width: 0, height: 2)
-        view.layer.shadowRadius = 4
+        view.layer.shadowOpacity = AppSize.shadowOpacity
+        view.layer.shadowOffset = AppSize.shadowOffset
+        view.layer.shadowRadius = AppSize.shadowRadius
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
     private let requestNoLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        label.font = AppTypography.headline
         label.textColor = AppColors.text
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -35,14 +35,14 @@ final class RequestCardCell: UITableViewCell {
 
     private let statusDot: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 5
+        view.layer.cornerRadius = AppSize.statusDot / 2
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
     private let statusLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.font = AppTypography.subheadline
         label.textColor = AppColors.text
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -50,14 +50,14 @@ final class RequestCardCell: UITableViewCell {
 
     private let priorityLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = AppTypography.callout
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
     private let locationLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = AppTypography.callout
         label.textColor = AppColors.text
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -65,7 +65,7 @@ final class RequestCardCell: UITableViewCell {
 
     private let categoryLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = AppTypography.callout
         label.textColor = AppColors.text
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -73,7 +73,7 @@ final class RequestCardCell: UITableViewCell {
 
     private let dateLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = AppTypography.callout
         label.textColor = AppColors.text
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -177,13 +177,13 @@ final class RequestCardCell: UITableViewCell {
         // Priority with color - using Priority extension
         let priorityText = NSMutableAttributedString(string: "Priority: ", attributes: [
             .foregroundColor: AppColors.text,
-            .font: UIFont.systemFont(ofSize: 14)
+            .font: AppTypography.callout
         ])
         let priorityColor = model.priority?.displayColor ?? AppColors.secondary
         let priorityString = model.priority?.displayString ?? "Not Set"
         let priorityValue = NSAttributedString(string: priorityString, attributes: [
             .foregroundColor: priorityColor,
-            .font: UIFont.systemFont(ofSize: 14, weight: .medium)
+            .font: AppTypography.subheadline
         ])
         priorityText.append(priorityValue)
         priorityLabel.attributedText = priorityText

@@ -93,8 +93,8 @@ class RequestContainerViewController: UIViewController {
         dataSet.colors = [
             AppColors.primary, // Completed
             AppColors.secondary, // In Progress
-            UIColor(red: 217/255 , green: 217/255, blue: 217/255, alpha: 1.0), // On Hold
-            UIColor(red: 206/255 , green: 206/255, blue: 206/255, alpha: 1.0) // Cancelled
+            AppColors.chartNeutralLight, // On Hold
+            AppColors.chartNeutralDark // Cancelled
         ]
         
         //attaching data persentage onto the chart
@@ -113,7 +113,7 @@ class RequestContainerViewController: UIViewController {
         
         //the persantage will be outside the slice
         chart.usePercentValuesEnabled = true //make the values visible
-        dataSet.valueFont = .systemFont(ofSize: 10, weight: .medium)
+        dataSet.valueFont = AppTypography.chartLabel
         dataSet.yValuePosition = .outsideSlice
         dataSet.xValuePosition = .outsideSlice
         dataSet.valueLinePart1Length = 0.2
@@ -141,7 +141,7 @@ class RequestContainerViewController: UIViewController {
         let centerText = NSMutableAttributedString()
         centerText.append(NSAttributedString (
             string: text,
-            attributes: [.font: UIFont.systemFont(ofSize: 24, weight: .regular),
+            attributes: [.font: AppTypography.title1,
                          .foregroundColor: AppColors.text,
                          .paragraphStyle: style])
         )
@@ -159,16 +159,16 @@ class RequestContainerViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        comView.layer.cornerRadius = 10
+        comView.layer.cornerRadius = AppSize.cornerRadiusSmall
         comView.layer.masksToBounds = true
-        
-        inPView.layer.cornerRadius = 10
+
+        inPView.layer.cornerRadius = AppSize.cornerRadiusSmall
         inPView.layer.masksToBounds = true
-        
-        oHView.layer.cornerRadius = 10
+
+        oHView.layer.cornerRadius = AppSize.cornerRadiusSmall
         oHView.layer.masksToBounds = true
-        
-        cView.layer.cornerRadius = 10
+
+        cView.layer.cornerRadius = AppSize.cornerRadiusSmall
         cView.layer.masksToBounds = true
     }
     

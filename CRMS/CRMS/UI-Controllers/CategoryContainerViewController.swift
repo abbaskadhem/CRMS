@@ -67,7 +67,7 @@ class CategoryContainerViewController: UIViewController {
         //styling the chart
         chart.chartDescription.enabled = false //showing the title
         /*chart.chartDescription.text = title //title text
-        chart.chartDescription.font = .systemFont(ofSize: 16, weight: .bold)
+        chart.chartDescription.font = AppTypography.headline
         chart.chartDescription.textColor = AppColors.primary
         chart.chartDescription.textAlign = .center
         chart.chartDescription.yOffset = -50*/

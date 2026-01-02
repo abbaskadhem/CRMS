@@ -36,7 +36,7 @@ class ForgotPasswordViewController: UIViewController {
         super.viewDidLoad()
                 
         //rounding send button raduis
-        sendButton.layer.cornerRadius = 20
+        sendButton.layer.cornerRadius = AppSize.cornerRadiusXL
         
         self.title = "Forgot Password"
 

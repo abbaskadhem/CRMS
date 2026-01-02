@@ -221,8 +221,8 @@ class AnalysisViewController: UIViewController {
         
         let footerText = "Generated on \(formatter.string(from: Date()))"
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 10),
-            .foregroundColor: UIColor.gray
+            .font: AppTypography.chartLabelFootnote,
+            .foregroundColor: AppColors.placeholder
         ]
         
         //draw footer

@@ -41,7 +41,7 @@ final class SettingsViewController: UIViewController {
         // Style logout button
         logoutButton?.backgroundColor = AppColors.error
         logoutButton?.setTitleColor(.white, for: .normal)
-        logoutButton?.layer.cornerRadius = 8
+        logoutButton?.layer.cornerRadius = AppSize.cornerRadius
     }
 
     private func loadUserInfo() {

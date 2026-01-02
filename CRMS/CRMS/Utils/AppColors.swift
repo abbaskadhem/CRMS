@@ -37,4 +37,9 @@ struct AppColors {
     static let statusDelayed = UIColor(red: 83/255, green: 105/255, blue: 127/255, alpha: 1)     // #53697F
     static let statusCancelled = UIColor(red: 214/255, green: 150/255, blue: 145/255, alpha: 1)  // #D69691
     static let statusCompleted = UIColor(red: 146/255, green: 217/255, blue: 153/255, alpha: 1)  // #92D999
+
+    // Chart colors (for analytics visualizations)
+    static let chartNeutralLight = UIColor(red: 217/255, green: 217/255, blue: 217/255, alpha: 1) // #D9D9D9
+    static let chartNeutralDark = UIColor(red: 206/255, green: 206/255, blue: 206/255, alpha: 1)  // #CECECE
+    static let chartContainerBackground = UIColor(red: 0.7, green: 0.8, blue: 0.85, alpha: 1.0)   // Light blue-grey
 }

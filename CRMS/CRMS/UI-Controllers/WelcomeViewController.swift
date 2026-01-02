@@ -26,7 +26,7 @@ class WelcomeViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         //rounding the view bottom edge
 
-        //rounding the view bottom edge to raduis 200
+        //rounding the view bottom edge to raduis 200 (large custom radius for background design)
         backgroundWelcomeScreen.layer.cornerRadius = 200
         //specify which corner (botton left & right)
         backgroundWelcomeScreen.layer.maskedCorners=[.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
