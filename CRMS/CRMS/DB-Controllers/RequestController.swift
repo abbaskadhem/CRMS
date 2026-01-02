@@ -61,40 +61,53 @@ final class RequestController {
     private var categoriesCache: [UUID: RequestCategory] = [:]
     
 // MARK: - Get Priority
-    // Function to get the priority based on the cat and subcat
-    func getPriority(requestCategoryRef: UUID, requestSubcategoryRef: UUID) -> Priority
-    {
-        // todo: implement logic to determine priority based on category and subcategory
+
+    /// Determines the priority level based on category and subcategory
+    /// - Parameters:
+    ///   - requestCategoryRef: UUID of the main category
+    ///   - requestSubcategoryRef: UUID of the subcategory
+    /// - Returns: The appropriate Priority level for the request
+    /// - Note: Currently returns .low as placeholder. TODO: Implement priority logic based on category rules.
+    func getPriority(requestCategoryRef: UUID, requestSubcategoryRef: UUID) -> Priority {
+        // TODO: Implement logic to determine priority based on category and subcategory
         return .low
     }
 
 // MARK: - Autonumber Generation
-    // Function to get the next autonumber for a given document
+
+    /// Generates the next sequential number for a given document type
+    /// - Parameter document: The document type identifier (e.g., "requests", "requestHistories")
+    /// - Returns: A formatted string like "REQ-00001" based on the counter's format
+    /// - Throws: `NetworkError.noInternet` if offline
+    /// - Note: Uses Firestore Counters collection to track and increment numbers atomically
     func getNextAutonumber(document: String) async throws -> String {
-        
         guard await hasInternetConnection() else {
             throw NetworkError.noInternet
         }
-        
-        // Gets the reference to the counters collection and the specific document in the param
-        
-           let ref = db.collection("Counters").document(document)
-        
-        // Takes a snapshot of the document to read the last number and format to be implemented. In case of failure, defaults ERR is used to signal that an error occured with this request, allowing to track.
+
+        let ref = db.collection("Counters").document(document)
+
+        // Read current counter value and format string
         let snapshot = try await ref.getDocument()
         let last = snapshot.data()?["lastNumber"] as? Int ?? 0
         let format = snapshot.data()?["format"] as? String ?? "ERR-%05d"
         let next = last + 1
 
-        // Sets the new last number in the document
+        // Atomically update the counter
         try await ref.setData(["lastNumber": next], merge: true)
 
-        // Returns the formatted request number
         return String(format: format, next)
     }
 
 // MARK: - History Record Creation
-    // Function to create a history record for a request. it takes the request ref, action done, and in cases of sent back or reassignment, the reasons for those actions.
+
+    /// Creates an audit trail record for a request action
+    /// - Parameters:
+    ///   - requestRef: UUID of the request this history belongs to
+    ///   - action: The action that was performed (e.g., .assigned, .completed)
+    ///   - sentBackReason: Optional reason if action is .sentBack
+    ///   - reassignReason: Optional reason if action is .reassigned
+    /// - Throws: `NetworkError.noInternet` if offline, `SessionError.notLoggedIn` if no user
     func createHistoryRecord(requestRef: UUID, action: Action, sentBackReason: String?, reassignReason: String?) async throws {
         
         guard await hasInternetConnection() else {
@@ -129,14 +142,24 @@ final class RequestController {
        
     }
 
-// MARK: - Submitting a Requets
+// MARK: - Submitting a Request
+
+    /// Submits a new service request to Firestore
+    /// - Parameters:
+    ///   - requestCategoryRef: UUID of the selected main category
+    ///   - requestSubcategoryRef: UUID of the selected subcategory
+    ///   - buildingRef: UUID of the building location
+    ///   - roomRef: UUID of the specific room
+    ///   - description: User-provided description of the issue
+    ///   - images: Array of uploaded image URLs from Firebase Storage
+    /// - Throws: `NetworkError.noInternet` if offline, `SessionError.notLoggedIn` if no user
     func submitRequest(
         requestCategoryRef: UUID,
         requestSubcategoryRef: UUID,
         buildingRef: UUID,
         roomRef: UUID,
         description: String,
-        images: [String],
+        images: [String]
     ) async throws {
         
         guard await hasInternetConnection() else {
@@ -178,8 +201,15 @@ final class RequestController {
         }
     }
 
-    // MARK: - Fetch All Requests (Filtered by User Type)
-        func getAllRequests() async throws -> [Request] {
+// MARK: - Fetch All Requests (Filtered by User Type)
+
+    /// Fetches all requests filtered by the current user's role
+    /// - Admin (1000): Gets all active requests
+    /// - Requester (1001): Gets only their submitted requests
+    /// - Servicer (1002): Gets only requests assigned to them
+    /// - Returns: Array of Request objects sorted by creation date (newest first)
+    /// - Throws: `NetworkError.noInternet` if offline, `SessionError` if user issues
+    func getAllRequests() async throws -> [Request] {
             guard await hasInternetConnection() else {
                 throw NetworkError.noInternet
             }
@@ -272,6 +302,10 @@ final class RequestController {
         }
 
 // MARK: - Load Reference Data
+
+    /// Loads and caches reference data (buildings, rooms, categories) from Firestore
+    /// - Note: Called automatically by display methods when cache is empty
+    /// - Throws: Firestore errors if documents cannot be fetched
     private func loadReferenceData() async throws {
         // Load buildings
         let buildingsSnap = try await db.collection("Building").getDocuments()
@@ -361,6 +395,11 @@ final class RequestController {
     }
 
 // MARK: - Get All Requests with Display Data
+
+    /// Fetches all requests with resolved reference data for display purposes
+    /// - Returns: Array of RequestDisplayModel with building, room, and category names resolved
+    /// - Throws: `NetworkError.noInternet` if offline
+    /// - Note: Automatically loads and caches reference data (buildings, rooms, categories) on first call
     func getAllRequestsForDisplay() async throws -> [RequestDisplayModel] {
         guard await hasInternetConnection() else {
             throw NetworkError.noInternet
@@ -390,6 +429,11 @@ final class RequestController {
     }
 
 // MARK: - Get Single Request for Display
+
+    /// Fetches a single request with resolved reference data for display
+    /// - Parameter requestId: UUID of the request to fetch
+    /// - Returns: RequestDisplayModel with resolved names, or nil if not found
+    /// - Throws: `NetworkError.noInternet` if offline
     func getRequestForDisplay(requestId: UUID) async throws -> RequestDisplayModel? {
         guard await hasInternetConnection() else {
             throw NetworkError.noInternet
