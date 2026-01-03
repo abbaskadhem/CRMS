@@ -264,7 +264,6 @@ final class RequestController {
             images: images,
             priority: nil,
             status: .submitted,
-            ownerId: userId,
 
             // Default Common Fields
             createdOn: Date(),
@@ -341,7 +340,6 @@ final class RequestController {
                       let description = data["description"] as? String,
                       let statusRaw = data["status"] as? Int,
                       let status = Status(rawValue: statusRaw),
-                      let ownerId = data["ownerId"] as? String,
                       let createdOn = (data["createdOn"] as? Timestamp)?.dateValue(),
                       let createdBy = data["createdBy"] as? String,
                       let inactive = data["inactive"] as? Bool
@@ -375,7 +373,6 @@ final class RequestController {
                     estimatedEndDate: estimatedEndDate,
                     actualStartDate: actualStartDate,
                     actualEndDate: actualEndDate,
-                    ownerId: ownerId,
                     createdOn: createdOn,
                     createdBy: createdBy,
                     modifiedOn: modifiedOn,
@@ -546,7 +543,6 @@ final class RequestController {
               let description = data["description"] as? String,
               let statusRaw = data["status"] as? Int,
               let status = Status(rawValue: statusRaw),
-              let ownerId = data["ownerId"] as? String,
               let createdOn = (data["createdOn"] as? Timestamp)?.dateValue(),
               let createdBy = data["createdBy"] as? String,
               let inactive = data["inactive"] as? Bool
@@ -580,7 +576,6 @@ final class RequestController {
             estimatedEndDate: estimatedEndDate,
             actualStartDate: actualStartDate,
             actualEndDate: actualEndDate,
-            ownerId: ownerId,
             createdOn: createdOn,
             createdBy: createdBy,
             modifiedOn: modifiedOn,
@@ -666,61 +661,68 @@ final class RequestController {
     }
 
 
-// MARK: - Get Servicers
+    // MARK: - Get Servicers
     /// Fetches all servicer users from the database for admin to select from when assigning requests
     /// - Returns: Array of User objects with servicer type
     func getServicers() async throws -> [User] {
+        // Internet check
         guard await hasInternetConnection() else {
             throw NetworkError.noInternet
         }
 
-        // Validate that the current user is an admin
+        print("Has internet")
+
+        // Authorization check
         let userType = try await session.getUserType()
         guard userType == UserType.admin.rawValue else {
             throw RequestError.unauthorizedAction
         }
 
-        // Query users with servicer type (1002)
+        print("Is authorized")
+
+        // Firestore query
         let snapshot = try await db.collection("User")
             .whereField("type", isEqualTo: UserType.servicer.rawValue)
             .getDocuments()
 
+        print("Docs count:", snapshot.documents.count)
+
+        // Map documents → User
         return snapshot.documents.compactMap { doc -> User? in
             let data = doc.data()
 
-            guard let id = data["id"] as? String,
-                  let fullName = data["fullName"] as? String,
-                  let userNo = data["userNo"] as? String,
-                  let typeRaw = data["type"] as? Int,
-                  let type = UserType(rawValue: typeRaw),
-                  let email = data["email"] as? String,
-                  let inactive = data["inactive"] as? Bool,
-                  let createdOn = data["createdOn"] as? Timestamp,
-                  let createdBy = data["createdBy"] as? String
-
-            else { return nil }
-
-            // Skip inactive users
-            if inactive == true {
+            // REQUIRED fields (drop doc if missing)
+            guard
+                let fullName = data["fullName"] as? String,
+                let typeRaw = data["type"] as? Int,
+                let type = UserType(rawValue: typeRaw),
+                let email = data["email"] as? String
+            else {
+                print("Dropped doc (missing required fields):", doc.documentID)
                 return nil
             }
 
-            let subtypeRaw = data["subtype"] as? Int
-            let subtype = subtypeRaw.flatMap { SubType(rawValue: $0) }
+            // OPTIONAL Firestore fields → DEFAULTED for model
+            let userNo = data["userNo"] as? String ?? ""
+            let inactive = data["inactive"] as? Bool ?? false
+            let createdBy = data["createdBy"] as? String ?? "system"
+            let createdOn = (data["createdOn"] as? Timestamp)?.dateValue() ?? Date()
+            let subtype = (data["subtype"] as? Int).flatMap(SubType.init)
 
             return User(
-                id: id,
+                id: doc.documentID,     // Document ID
                 userNo: userNo,
                 fullName: fullName,
                 type: type,
                 subtype: subtype,
                 email: email,
-                createdOn: createdOn.dateValue(),
+                createdOn: createdOn,
                 createdBy: createdBy,
                 inactive: inactive
             )
         }
     }
+
 
 // MARK: - Assign New Request
     /// Assigns a new request to a servicer (Admin only)
@@ -778,19 +780,19 @@ final class RequestController {
         try await createHistoryRecord(requestRef: requestId, action: .assigned, sentBackReason: nil, reassignReason: nil)
         
         
-        //send a notification the request owner and technician
+        //send a notification the requester and technician
        let reqNo = requestData.self["requestNo"] as! String
-        let ownerID = requestData.self["ownerRef"] as! String
+        let requester = requestData.self["requesterRef"] as! String
         
-        let toWhoOwner: [String] = [ownerID]
+        let toWhoRequester: [String] = [requester]
         let toWhoServicer: [String] = [servicerId]
         
-        //Owner notif
-        let notifOwner: NotificationModel = NotificationModel(
+        //requester notif
+        let notifRequester: NotificationModel = NotificationModel(
             id: UUID().uuidString,
             title: "Servicer appointed on request number \"\(reqNo)\".",
             description: nil,
-            toWho: toWhoOwner,
+            toWho: toWhoRequester,
             type: NotiType.notification,
             requestRef: requestId.uuidString,
             createdOn: Date(),
@@ -799,9 +801,9 @@ final class RequestController {
             modifiedBy: nil,
             inactive: false
         )
-        await NotifCreateViewController.shared.createNotif(data: notifOwner)
+        await NotifCreateViewController.shared.createNotif(data: notifRequester)
         
-        //Owner notif
+        //servicer notif
         let notifServicer: NotificationModel = NotificationModel(
             id: UUID().uuidString,
             title: "Appointed to request number \"\(reqNo)\".",
