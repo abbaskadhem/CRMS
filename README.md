@@ -48,7 +48,9 @@
 
 ### Hoor Hasan  
 1. Export Analytics as PDF  
-2. Biometric Authentication using Face ID / Touch ID  
+
+### Abbas Kadhem
+1. Request History viewing and record keeping
 
 ---
 
