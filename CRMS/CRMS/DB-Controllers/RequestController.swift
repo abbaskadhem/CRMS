@@ -1017,6 +1017,30 @@ final class RequestController {
 
         // Create history record for completing the request
         try await createHistoryRecord(requestRef: requestId, action: .completed, sentBackReason: nil, reassignReason: nil)
+        
+        //send a notification the requester
+       let reqNo = requestData.self["requestNo"] as! String
+        let requester = requestData.self["requesterRef"] as! String
+        
+        let toWhoRequester: [String] = [requester]
+        
+        //requester notif
+        let notifRequester: NotificationModel = NotificationModel(
+            id: UUID().uuidString,
+            title: "Request Completed for request number \"\(reqNo)\".",
+            description: nil,
+            toWho: toWhoRequester,
+            type: NotiType.notification,
+            requestRef: requestId.uuidString,
+            createdOn: Date(),
+            createdBy: userId,
+            modifiedOn: nil,
+            modifiedBy: nil,
+            inactive: false
+        )
+        await NotifCreateViewController.shared.createNotif(data: notifRequester)
+        
+        
     }
 
 // MARK: - Check For Delayed Requests

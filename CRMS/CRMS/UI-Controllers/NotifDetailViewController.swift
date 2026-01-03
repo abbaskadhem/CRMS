@@ -71,6 +71,8 @@ class NotifDetailViewController: UIViewController {
         showConfirmationOverlay("Are you sure you want to delete this item?", "delete")
     }
     
+    
+    //MARK: Confirmation Overlay
     private func showConfirmationOverlay(_ message: String?,_ type: String?) {
         let overlay = UIView(frame: view.bounds)
         overlay.backgroundColor = UIColor.black.withAlphaComponent(0.4)

@@ -36,6 +36,7 @@ class NotificationsViewController: UIViewController,
     
     @IBOutlet weak var tableView: UITableView!
     
+    @IBOutlet weak var addBtn: UIButton!
     
 
     func loadUser() async {
@@ -114,6 +115,7 @@ class NotificationsViewController: UIViewController,
         if !isAdmin {
             hideAddButton()
         }
+        
         searchField.delegate = self
         searchField.placeholder = "Search notifications"
         searchField.autocapitalizationType = .none
@@ -145,17 +147,22 @@ class NotificationsViewController: UIViewController,
             tableView.reloadData()
             return
         }
+        if !isAdmin{
+            hideAddButton()
+        }
 
         var result = notifications.filter { notification in
             switch notification.type {
 
             case .announcement:
+                print("announcement")
                 if isAdmin && notification.createdBy == user.id {
                     return true
                 }
                 return notification.toWho.contains(user.id)
 
             case .notification:
+                print("notification")
                 return notification.toWho.contains(user.id)
             }
         }
@@ -194,7 +201,7 @@ class NotificationsViewController: UIViewController,
 
     //MARK: Hide Buttons
     private func hideAddButton() {
-        navigationItem.rightBarButtonItem = nil
+        addBtn.isHidden = true
     }
 
 
@@ -233,7 +240,7 @@ class NotificationsViewController: UIViewController,
             // Perform the segue
             performSegue(withIdentifier: "ShowNotifDetailSegue", sender: self)
         }else{
-            //go to the ticket itself
+            //go to the request page
             performSegue(withIdentifier: "ShowNotifSegue", sender: self)
         }
     }
@@ -313,13 +320,11 @@ class NotificationsViewController: UIViewController,
                 vc.currentUser = user
             }
         
-        
-        //TODO: Navigate to the request detail page
-//        if segue.identifier == "ShowNotifSegue",
-//           let vc = segue.destination as? NotifViewController {
-//            vc.currentUser = user
-//            vc.reguestRef = selectedNotif.requestRef
-//        }
+        //TODO: Navigate to the requests page
+        if segue.identifier == "ShowNotifSegue",
+           let vc = segue.destination as? RequestsViewController {
+        }
+            
     }
 }
 
@@ -342,10 +347,7 @@ extension NotificationModel {
             return nil
         }
 
-        guard let description = data["description"] as? String else {
-            print("❌ description missing or not String")
-            return nil
-        }
+         let description = data["description"] as? String 
 
         let toWhoStrings = data["toWho"] as? [String] ?? []
 
