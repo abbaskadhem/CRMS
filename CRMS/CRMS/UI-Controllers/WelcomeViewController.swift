@@ -2,7 +2,7 @@
 //  WelcomeViewController.swift
 //  CRMS
 //
-//  Created by Guest User on 08/12/2025.
+//  Created by Hoor Hasan 08/12/2025.
 //
 
 import UIKit
@@ -26,7 +26,7 @@ class WelcomeViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         //rounding the view bottom edge
 
-        //rounding the view bottom edge to raduis 200
+        //rounding the view bottom edge to raduis 200 (large custom radius for background design)
         backgroundWelcomeScreen.layer.cornerRadius = 200
         //specify which corner (botton left & right)
         backgroundWelcomeScreen.layer.maskedCorners=[.layerMinXMaxYCorner, .layerMaxXMaxYCorner]

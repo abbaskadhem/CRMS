@@ -95,7 +95,7 @@ final class SubmitRequestViewController: UIViewController {
         button.setTitleColor(AppColors.placeholder, for: .normal)
         button.contentHorizontalAlignment = .left
         button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
-        button.layer.cornerRadius = 8
+        button.layer.cornerRadius = AppSize.cornerRadius
         button.layer.borderWidth = 1
         button.layer.borderColor = AppColors.inputBorder.cgColor
 
@@ -110,11 +110,11 @@ final class SubmitRequestViewController: UIViewController {
 
     private func styleTextView(_ textView: UITextView) {
         textView.backgroundColor = AppColors.inputBackground
-        textView.layer.cornerRadius = 8
+        textView.layer.cornerRadius = AppSize.cornerRadius
         textView.layer.borderWidth = 1
         textView.layer.borderColor = AppColors.inputBorder.cgColor
         textView.textContainerInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
-        textView.font = UIFont.systemFont(ofSize: 16)
+        textView.font = AppTypography.body
         textView.text = placeholderText
         textView.textColor = AppColors.placeholder
     }
@@ -122,17 +122,17 @@ final class SubmitRequestViewController: UIViewController {
     private func styleOutlinedButton(_ button: UIButton) {
         button.backgroundColor = .clear
         button.setTitleColor(AppColors.text, for: .normal)
-        button.layer.cornerRadius = 8
+        button.layer.cornerRadius = AppSize.cornerRadius
         button.layer.borderWidth = 1
         button.layer.borderColor = AppColors.inputBorder.cgColor
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        button.titleLabel?.font = AppTypography.callout
     }
 
     private func styleFilledButton(_ button: UIButton) {
         button.backgroundColor = AppColors.primary
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 8
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.layer.cornerRadius = AppSize.cornerRadius
+        button.titleLabel?.font = AppTypography.headline
     }
 
     private func setupImageActionButtons() {
@@ -434,7 +434,9 @@ final class SubmitRequestViewController: UIViewController {
 
                 await MainActor.run {
                     self.activityIndicator.stopAnimating()
-                    self.showSuccessAlert()
+                    self.showAlert(title: "Success", message: "Your request has been submitted successfully.") { [weak self] in
+                        self?.dismiss(animated: true)
+                    }
                 }
             } catch {
                 await MainActor.run {
@@ -453,20 +455,6 @@ final class SubmitRequestViewController: UIViewController {
     }
 
     // MARK: - Alerts
-
-    private func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
-    }
-
-    private func showSuccessAlert() {
-        let alert = UIAlertController(title: "Success", message: "Your request has been submitted successfully.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default) { [weak self] _ in
-            self?.dismiss(animated: true)
-        })
-        present(alert, animated: true)
-    }
 
     private func showSelectionSheet(title: String, items: [String], completion: @escaping (Int) -> Void) {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)

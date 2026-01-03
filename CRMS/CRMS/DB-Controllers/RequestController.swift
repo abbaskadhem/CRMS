@@ -960,7 +960,7 @@ final class RequestController {
         // Validate request status allows reassignment (assigned, inProgress, or delayed)
         guard let statusRaw = requestData["status"] as? Int,
               let status = Status(rawValue: statusRaw),
-              status == .assigned || status == .inProgress || status == .delayed else {
+              status == .assigned || status == .onHold || status == .delayed else {
             throw RequestError.invalidRequestStatus
         }
 

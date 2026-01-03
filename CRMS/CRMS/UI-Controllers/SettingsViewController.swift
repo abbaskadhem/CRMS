@@ -46,6 +46,14 @@ final class SettingsViewController: UIViewController,
 
         setupSwitches()
         fetchUserProfile()
+        // Style labels
+        nameLabel?.textColor = AppColors.text
+        emailLabel?.textColor = AppColors.secondary
+
+        // Style logout button
+        logoutButton?.backgroundColor = AppColors.error
+        logoutButton?.setTitleColor(.white, for: .normal)
+        logoutButton?.layer.cornerRadius = AppSize.cornerRadius
     }
 
     // MARK: - Switch Setup

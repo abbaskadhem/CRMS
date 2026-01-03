@@ -31,7 +31,21 @@ GoogleService-Info.plist
 # Logs
 *.log
 
+# JetBrains
+.idea
+encodings.xml
+indexLayout.xml
+projectSettingsUpdater.xml
+workspace.xml
+CRMS.iml
+modules.xml
+vcs.xml
+
+# VS Code
+.vscode
+
 # Claude
 CLAUDE.md
 .claude
 settings.local.json
+
