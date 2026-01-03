@@ -2,8 +2,6 @@
 //  UIViewController+Extension.swift
 //  CRMS
 //
-//  Created by Claude Code on 02/01/2026.
-//
 
 import UIKit
 
