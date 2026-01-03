@@ -3,6 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -31,16 +32,14 @@
             <point key="canvasLocation" x="1100" y="435"/>
         </scene>
         <!--Settings-->
-        <scene sceneID="settings-scene">
+        <scene sceneID="7Dh-L6-SiK">
             <objects>
-                <viewControllerPlaceholder storyboardName="Settings" id="settings-placeholder" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" id="settings-tabitem">
-                        <imageReference key="image" image="gearshape" catalog="system"/>
-                    </tabBarItem>
+                <viewControllerPlaceholder storyboardName="Settings" id="JL8-0T-cAv" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" image="gearshape" catalog="system" selectedImage="gearshape" id="rct-gs-aaR"/>
                 </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="settings-firstResp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="f59-nH-2Y0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1700" y="435"/>
+            <point key="canvasLocation" x="1631" y="435"/>
         </scene>
         <!--Requester Tab Bar Controller-->
         <scene sceneID="requester-tabbar-scene">
@@ -54,7 +53,7 @@
                     <connections>
                         <segue destination="notif-placeholder" kind="relationship" relationship="viewControllers" id="notif-segue"/>
                         <segue destination="requests-placeholder" kind="relationship" relationship="viewControllers" id="requests-segue"/>
-                        <segue destination="settings-placeholder" kind="relationship" relationship="viewControllers" id="settings-segue"/>
+                        <segue destination="JL8-0T-cAv" kind="relationship" relationship="viewControllers" id="rZA-hU-tVK"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="requester-tabbar-firstResp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
