@@ -123,6 +123,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 return
             }
             
+            print("User:", user)
+            
             UserDefaults.standard.set(user.uid, forKey: "userID")
             self?.checkUserRole(for: user)
         }
@@ -132,48 +134,46 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     private func checkUserRole(for user: FirebaseAuth.User) {
         Task {
             do {
-                // Use SessionManager to get user type from database
                 let role = try await SessionManager.shared.getUserType()
+                print("Role: \(role)")
+                // Fire admin background work
+                if role == UserType.admin.rawValue {
+                    Task.detached {
+                        do {
+                            let delayedCount = try await RequestController.shared.checkForDelayedRequests()
+                            if delayedCount > 0 {
+                                print("Marked \(delayedCount) request(s) as delayed")
+                            }
+                        } catch {
+                            print("Failed to check for delayed requests: \(error)")
+                        }
+                    }
+                }
 
                 await MainActor.run {
-                    var vc: UIViewController?
+                    let vc: UIViewController?
 
                     switch role {
                     case UserType.admin.rawValue:
-                        // Check for delayed requests when admin logs in
-                        Task {
-                            do {
-                                let delayedCount = try await RequestController.shared.checkForDelayedRequests()
-                                if delayedCount > 0 {
-                                    print(" Marked \(delayedCount) request(s) as delayed")
-                                }
-                            } catch {
-                                print("Failed to check for delayed requests: \(error)")
-                            }
-                        }
-
-                        let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
-                        vc = adminStoryboard.instantiateInitialViewController()
+                        print("Going to Admin")
+                        vc = UIStoryboard(name: "Admin", bundle: nil).instantiateInitialViewController()
                     case UserType.servicer.rawValue:
-                        // TODO: Create separate Servicer storyboard
-                        let servicerStoryboard = UIStoryboard(name: "Servicer", bundle: nil)
-                        vc = servicerStoryboard.instantiateInitialViewController()
+                        print("Going to Servicer")
+                        vc = UIStoryboard(name: "Servicer", bundle: nil).instantiateInitialViewController()
                     case UserType.requester.rawValue:
-                        let requesterStoryboard = UIStoryboard(name: "Requester", bundle: nil)
-                        vc = requesterStoryboard.instantiateInitialViewController()
+                        print("Going to Requester")
+                        vc = UIStoryboard(name: "Requester", bundle: nil).instantiateInitialViewController()
                     default:
                         self.showAlert(title: "Invalid Role", message: "Unknown user role.")
                         return
                     }
 
-                    if let vc = vc {
-                        // Navigate using navigation controller or present modally
-                        if let navController = self.navigationController {
-                            navController.pushViewController(vc, animated: true)
-                        } else {
-                            vc.modalPresentationStyle = .fullScreen
-                            self.present(vc, animated: true)
-                        }
+                    guard let vc else { return }
+
+                    if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                       let window = scene.windows.first {
+                        window.rootViewController = vc
+                        window.makeKeyAndVisible()
                     }
                 }
             } catch {
@@ -183,6 +183,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             }
         }
     }
+
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()

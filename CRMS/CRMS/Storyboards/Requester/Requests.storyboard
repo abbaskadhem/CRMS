@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="d8e-NF-H09">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="FzM-Jw-YAx">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
@@ -16,38 +16,33 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <!-- Logo -->
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="S65-61-jC0">
-                                <rect key="frame" x="146" y="59" width="100" height="50"/>
+                                <rect key="frame" x="146.66666666666666" y="170" width="100" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="MGM-TZ-Hje"/>
                                     <constraint firstAttribute="height" constant="50" id="yQS-cF-3Pb"/>
                                 </constraints>
                             </imageView>
-                            <!-- Title -->
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Requests" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J0N-lv-gil">
-                                <rect key="frame" x="147" y="117" width="99" height="29"/>
+                                <rect key="frame" x="143.66666666666666" y="228" width="105.66666666666666" height="29"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
-                                <color key="textColor" red="0.058823529411764705" green="0.09803921568627451" blue="0.16078431372549021" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="textColor" red="0.058823529411764705" green="0.098039215686274508" blue="0.16078431372549021" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <!-- Table View -->
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="requests-table">
-                                <rect key="frame" x="0.0" y="154" width="393" height="614"/>
+                                <rect key="frame" x="0.0" y="265" width="393" height="519"/>
                                 <color key="backgroundColor" red="0.96078431372549022" green="0.93725490196078431" blue="0.92156862745098034" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </tableView>
-                            <!-- Activity Indicator -->
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="requests-activity">
-                                <rect key="frame" x="178" y="443" width="37" height="37"/>
+                                <rect key="frame" x="178" y="506" width="37" height="37"/>
                             </activityIndicatorView>
-                            <!-- Add Button -->
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="addBtn-001">
-                                <rect key="frame" x="309" y="680" width="60" height="60"/>
+                                <rect key="frame" x="309" y="696" width="60" height="60"/>
+                                <color key="backgroundColor" red="0.058823529411764705" green="0.098039215686274508" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="60" id="addBtn-w"/>
                                     <constraint firstAttribute="height" constant="60" id="addBtn-h"/>
+                                    <constraint firstAttribute="width" constant="60" id="addBtn-w"/>
                                 </constraints>
-                                <color key="backgroundColor" red="0.058823529411764705" green="0.09803921568627451" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal">
                                     <imageReference key="image" image="plus" catalog="system"/>
                                 </state>
@@ -64,25 +59,379 @@
                         <viewLayoutGuide key="safeArea" id="y2X-CL-0qc"/>
                         <color key="backgroundColor" red="0.96078431372549022" green="0.93725490196078431" blue="0.92156862745098034" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <!-- Logo -->
-                            <constraint firstItem="S65-61-jC0" firstAttribute="top" secondItem="y2X-CL-0qc" secondAttribute="top" constant="8" id="req-logo-top"/>
-                            <constraint firstItem="S65-61-jC0" firstAttribute="centerX" secondItem="Xfn-qy-Zca" secondAttribute="centerX" id="req-logo-cx"/>
-                            <!-- Title -->
-                            <constraint firstItem="J0N-lv-gil" firstAttribute="top" secondItem="S65-61-jC0" secondAttribute="bottom" constant="8" id="req-title-top"/>
-                            <constraint firstItem="J0N-lv-gil" firstAttribute="centerX" secondItem="Xfn-qy-Zca" secondAttribute="centerX" id="req-title-cx"/>
-                            <!-- Table View -->
-                            <constraint firstItem="requests-table" firstAttribute="top" secondItem="J0N-lv-gil" secondAttribute="bottom" constant="8" id="req-table-top"/>
-                            <constraint firstItem="requests-table" firstAttribute="leading" secondItem="Xfn-qy-Zca" secondAttribute="leading" id="req-table-lead"/>
-                            <constraint firstItem="requests-table" firstAttribute="trailing" secondItem="Xfn-qy-Zca" secondAttribute="trailing" id="req-table-trail"/>
-                            <constraint firstItem="y2X-CL-0qc" firstAttribute="bottom" secondItem="requests-table" secondAttribute="bottom" id="req-table-bot"/>
-                            <!-- Activity Indicator -->
+                            <constraint firstItem="y2X-CL-0qc" firstAttribute="bottom" secondItem="addBtn-001" secondAttribute="bottom" constant="28" id="addBtn-bot"/>
+                            <constraint firstItem="y2X-CL-0qc" firstAttribute="trailing" secondItem="addBtn-001" secondAttribute="trailing" constant="24" id="addBtn-trail"/>
                             <constraint firstItem="requests-activity" firstAttribute="centerX" secondItem="Xfn-qy-Zca" secondAttribute="centerX" id="req-activity-cx"/>
                             <constraint firstItem="requests-activity" firstAttribute="centerY" secondItem="requests-table" secondAttribute="centerY" id="req-activity-cy"/>
-                            <!-- Add Button -->
-                            <constraint firstItem="y2X-CL-0qc" firstAttribute="trailing" secondItem="addBtn-001" secondAttribute="trailing" constant="24" id="addBtn-trail"/>
-                            <constraint firstItem="y2X-CL-0qc" firstAttribute="bottom" secondItem="addBtn-001" secondAttribute="bottom" constant="28" id="addBtn-bot"/>
+                            <constraint firstItem="S65-61-jC0" firstAttribute="centerX" secondItem="Xfn-qy-Zca" secondAttribute="centerX" id="req-logo-cx"/>
+                            <constraint firstItem="S65-61-jC0" firstAttribute="top" secondItem="y2X-CL-0qc" secondAttribute="top" constant="8" id="req-logo-top"/>
+                            <constraint firstItem="y2X-CL-0qc" firstAttribute="bottom" secondItem="requests-table" secondAttribute="bottom" id="req-table-bot"/>
+                            <constraint firstItem="requests-table" firstAttribute="leading" secondItem="Xfn-qy-Zca" secondAttribute="leading" id="req-table-lead"/>
+                            <constraint firstItem="requests-table" firstAttribute="top" secondItem="J0N-lv-gil" secondAttribute="bottom" constant="8" id="req-table-top"/>
+                            <constraint firstItem="requests-table" firstAttribute="trailing" secondItem="Xfn-qy-Zca" secondAttribute="trailing" id="req-table-trail"/>
+                            <constraint firstItem="J0N-lv-gil" firstAttribute="centerX" secondItem="Xfn-qy-Zca" secondAttribute="centerX" id="req-title-cx"/>
+                            <constraint firstItem="J0N-lv-gil" firstAttribute="top" secondItem="S65-61-jC0" secondAttribute="bottom" constant="8" id="req-title-top"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="Wjh-Ng-D47"/>
+                    <connections>
+                        <outlet property="activityIndicator" destination="requests-activity" id="req-activity-outlet"/>
+                        <outlet property="addButton" destination="addBtn-001" id="addBtn-outlet"/>
+                        <outlet property="tableView" destination="requests-table" id="req-table-outlet"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pis-7f-ddf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="979.38931297709917" y="441.54929577464793"/>
+        </scene>
+        <!--Submit Request View Controller-->
+        <scene sceneID="submitReq-scene">
+            <objects>
+                <viewController storyboardIdentifier="SubmitRequestViewController" id="submitReq-vc" customClass="SubmitRequestViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="submitReq-view">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="scrollView-001">
+                                <rect key="frame" x="0.0" y="118" width="393" height="734"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="contentView-001">
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="867"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="logo-img">
+                                                <rect key="frame" x="146.66666666666666" y="8" width="100" height="50"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="50" id="logo-h"/>
+                                                    <constraint firstAttribute="width" constant="100" id="logo-w"/>
+                                                </constraints>
+                                            </imageView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="back-btn">
+                                                <rect key="frame" x="20" y="70" width="30" height="30"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="back-h"/>
+                                                    <constraint firstAttribute="width" constant="30" id="back-w"/>
+                                                </constraints>
+                                                <state key="normal">
+                                                    <imageReference key="image" image="chevron.left" catalog="system"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="backButtonTapped:" destination="submitReq-vc" eventType="touchUpInside" id="back-action"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Request" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="title-lbl">
+                                                <rect key="frame" x="161" y="74.333333333333343" width="71" height="21.666666666666671"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                                <color key="textColor" red="0.058823529411764705" green="0.098039215686274508" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="separator-001">
+                                                <rect key="frame" x="20" y="110" width="353" height="1"/>
+                                                <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="1" id="sep-h"/>
+                                                </constraints>
+                                            </view>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Problem" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="problem-lbl">
+                                                <rect key="frame" x="20.000000000000004" y="126" width="55.333333333333343" height="17"/>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                                                <color key="textColor" red="0.31" green="0.40000000000000002" blue="0.48999999999999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Main Category *" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mainCat-lbl">
+                                                <rect key="frame" x="20.000000000000007" y="158" width="106.66666666666669" height="17"/>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                                                <color key="textColor" red="0.058823529411764705" green="0.098039215686274508" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mainCat-btn">
+                                                <rect key="frame" x="20" y="183" width="353" height="44"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="44" id="mainCat-h"/>
+                                                </constraints>
+                                                <state key="normal" title="Select Category">
+                                                    <color key="titleColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </state>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="8"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                                        <integer key="value" value="1"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
+                                                        <color key="value" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="mainCategoryTapped:" destination="submitReq-vc" eventType="touchUpInside" id="mainCat-action"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sub-Category *" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="subCat-lbl">
+                                                <rect key="frame" x="20.000000000000007" y="242" width="103.66666666666669" height="17"/>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                                                <color key="textColor" red="0.058823529411764705" green="0.098039215686274508" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="subCat-btn">
+                                                <rect key="frame" x="20" y="267" width="353" height="44"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="44" id="subCat-h"/>
+                                                </constraints>
+                                                <state key="normal" title="Select Sub-Category">
+                                                    <color key="titleColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </state>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="8"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                                        <integer key="value" value="1"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
+                                                        <color key="value" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="subCategoryTapped:" destination="submitReq-vc" eventType="touchUpInside" id="subCat-action"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description *" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="desc-lbl">
+                                                <rect key="frame" x="20" y="326" width="86.333333333333329" height="17"/>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                                                <color key="textColor" red="0.058823529411764705" green="0.098039215686274508" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Please describe the problem as detailed as you can..." translatesAutoresizingMaskIntoConstraints="NO" id="desc-tv">
+                                                <rect key="frame" x="20" y="351" width="353" height="100"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="100" id="desc-h"/>
+                                                </constraints>
+                                                <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="8"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                                        <integer key="value" value="1"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
+                                                        <color key="value" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </textView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Images" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="images-lbl">
+                                                <rect key="frame" x="20" y="471" width="48" height="17"/>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                                                <color key="textColor" red="0.058823529411764705" green="0.098039215686274508" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="selectImg-btn">
+                                                <rect key="frame" x="20" y="496" width="114" height="36"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="36" id="selImg-h"/>
+                                                </constraints>
+                                                <state key="normal" title="Select Images">
+                                                    <color key="titleColor" red="0.058823529411764705" green="0.098039215686274508" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </state>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="8"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                                        <integer key="value" value="1"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
+                                                        <color key="value" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="selectImagesTapped:" destination="submitReq-vc" eventType="touchUpInside" id="selImg-action"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="location-lbl">
+                                                <rect key="frame" x="20" y="552" width="57" height="17"/>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                                                <color key="textColor" red="0.31" green="0.40000000000000002" blue="0.48999999999999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Building No. *" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="building-lbl">
+                                                <rect key="frame" x="19.999999999999993" y="584" width="90.333333333333314" height="17"/>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                                                <color key="textColor" red="0.058823529411764705" green="0.098039215686274508" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="building-btn">
+                                                <rect key="frame" x="20" y="609" width="353" height="44"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="44" id="building-h"/>
+                                                </constraints>
+                                                <state key="normal" title="Select Building">
+                                                    <color key="titleColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </state>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="8"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                                        <integer key="value" value="1"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
+                                                        <color key="value" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="buildingTapped:" destination="submitReq-vc" eventType="touchUpInside" id="building-action"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Room No. *" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="room-lbl">
+                                                <rect key="frame" x="20" y="668" width="74.666666666666671" height="17"/>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                                                <color key="textColor" red="0.058823529411764705" green="0.098039215686274508" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="room-btn">
+                                                <rect key="frame" x="20" y="693" width="353" height="44"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="44" id="room-h"/>
+                                                </constraints>
+                                                <state key="normal" title="Select Room">
+                                                    <color key="titleColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </state>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="8"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                                        <integer key="value" value="1"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
+                                                        <color key="value" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="roomTapped:" destination="submitReq-vc" eventType="touchUpInside" id="room-action"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="submit-btn">
+                                                <rect key="frame" x="96.666666666666686" y="777" width="200" height="50"/>
+                                                <color key="backgroundColor" red="0.058823529411764705" green="0.098039215686274508" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="50" id="submit-h"/>
+                                                    <constraint firstAttribute="width" constant="200" id="submit-w"/>
+                                                </constraints>
+                                                <state key="normal" title="Submit">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="12"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="submitTapped:" destination="submitReq-vc" eventType="touchUpInside" id="submit-action"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" red="0.96078431372549022" green="0.93725490196078431" blue="0.92156862745098034" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstItem="back-btn" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="back-lead"/>
+                                            <constraint firstItem="back-btn" firstAttribute="top" secondItem="logo-img" secondAttribute="bottom" constant="12" id="back-top"/>
+                                            <constraint firstItem="building-btn" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="bld-btn-lead"/>
+                                            <constraint firstItem="building-btn" firstAttribute="top" secondItem="building-lbl" secondAttribute="bottom" constant="8" id="bld-btn-top"/>
+                                            <constraint firstAttribute="trailing" secondItem="building-btn" secondAttribute="trailing" constant="20" id="bld-btn-trail"/>
+                                            <constraint firstItem="building-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="bld-lbl-lead"/>
+                                            <constraint firstItem="building-lbl" firstAttribute="top" secondItem="location-lbl" secondAttribute="bottom" constant="15" id="bld-lbl-top"/>
+                                            <constraint firstAttribute="bottom" secondItem="submit-btn" secondAttribute="bottom" constant="40" id="content-bot"/>
+                                            <constraint firstItem="desc-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="desc-lbl-lead"/>
+                                            <constraint firstItem="desc-lbl" firstAttribute="top" secondItem="subCat-btn" secondAttribute="bottom" constant="15" id="desc-lbl-top"/>
+                                            <constraint firstItem="desc-tv" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="desc-tv-lead"/>
+                                            <constraint firstItem="desc-tv" firstAttribute="top" secondItem="desc-lbl" secondAttribute="bottom" constant="8" id="desc-tv-top"/>
+                                            <constraint firstAttribute="trailing" secondItem="desc-tv" secondAttribute="trailing" constant="20" id="desc-tv-trail"/>
+                                            <constraint firstItem="images-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="img-lbl-lead"/>
+                                            <constraint firstItem="images-lbl" firstAttribute="top" secondItem="desc-tv" secondAttribute="bottom" constant="20" id="img-lbl-top"/>
+                                            <constraint firstItem="location-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="loc-lbl-lead"/>
+                                            <constraint firstItem="location-lbl" firstAttribute="top" secondItem="selectImg-btn" secondAttribute="bottom" constant="20" id="loc-lbl-top"/>
+                                            <constraint firstItem="logo-img" firstAttribute="centerX" secondItem="contentView-001" secondAttribute="centerX" id="logo-cx"/>
+                                            <constraint firstItem="logo-img" firstAttribute="top" secondItem="contentView-001" secondAttribute="top" constant="8" id="logo-top"/>
+                                            <constraint firstItem="mainCat-btn" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="mcat-btn-lead"/>
+                                            <constraint firstItem="mainCat-btn" firstAttribute="top" secondItem="mainCat-lbl" secondAttribute="bottom" constant="8" id="mcat-btn-top"/>
+                                            <constraint firstAttribute="trailing" secondItem="mainCat-btn" secondAttribute="trailing" constant="20" id="mcat-btn-trail"/>
+                                            <constraint firstItem="mainCat-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="mcat-lbl-lead"/>
+                                            <constraint firstItem="mainCat-lbl" firstAttribute="top" secondItem="problem-lbl" secondAttribute="bottom" constant="15" id="mcat-lbl-top"/>
+                                            <constraint firstItem="problem-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="prob-lead"/>
+                                            <constraint firstItem="problem-lbl" firstAttribute="top" secondItem="separator-001" secondAttribute="bottom" constant="15" id="prob-top"/>
+                                            <constraint firstItem="room-btn" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="rm-btn-lead"/>
+                                            <constraint firstItem="room-btn" firstAttribute="top" secondItem="room-lbl" secondAttribute="bottom" constant="8" id="rm-btn-top"/>
+                                            <constraint firstAttribute="trailing" secondItem="room-btn" secondAttribute="trailing" constant="20" id="rm-btn-trail"/>
+                                            <constraint firstItem="room-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="rm-lbl-lead"/>
+                                            <constraint firstItem="room-lbl" firstAttribute="top" secondItem="building-btn" secondAttribute="bottom" constant="15" id="rm-lbl-top"/>
+                                            <constraint firstItem="subCat-btn" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="scat-btn-lead"/>
+                                            <constraint firstItem="subCat-btn" firstAttribute="top" secondItem="subCat-lbl" secondAttribute="bottom" constant="8" id="scat-btn-top"/>
+                                            <constraint firstAttribute="trailing" secondItem="subCat-btn" secondAttribute="trailing" constant="20" id="scat-btn-trail"/>
+                                            <constraint firstItem="subCat-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="scat-lbl-lead"/>
+                                            <constraint firstItem="subCat-lbl" firstAttribute="top" secondItem="mainCat-btn" secondAttribute="bottom" constant="15" id="scat-lbl-top"/>
+                                            <constraint firstItem="selectImg-btn" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="selimg-lead"/>
+                                            <constraint firstItem="selectImg-btn" firstAttribute="top" secondItem="images-lbl" secondAttribute="bottom" constant="8" id="selimg-top"/>
+                                            <constraint firstItem="separator-001" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="sep-lead"/>
+                                            <constraint firstItem="separator-001" firstAttribute="top" secondItem="back-btn" secondAttribute="bottom" constant="10" id="sep-top"/>
+                                            <constraint firstAttribute="trailing" secondItem="separator-001" secondAttribute="trailing" constant="20" id="sep-trail"/>
+                                            <constraint firstItem="submit-btn" firstAttribute="centerX" secondItem="contentView-001" secondAttribute="centerX" id="submit-cx"/>
+                                            <constraint firstItem="submit-btn" firstAttribute="top" secondItem="room-btn" secondAttribute="bottom" constant="40" id="submit-top"/>
+                                            <constraint firstItem="title-lbl" firstAttribute="centerX" secondItem="contentView-001" secondAttribute="centerX" id="title-cx"/>
+                                            <constraint firstItem="title-lbl" firstAttribute="centerY" secondItem="back-btn" secondAttribute="centerY" id="title-cy"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="contentView-001" firstAttribute="bottom" secondItem="scrollView-001" secondAttribute="bottom" id="cv-bot"/>
+                                    <constraint firstItem="contentView-001" firstAttribute="leading" secondItem="scrollView-001" secondAttribute="leading" id="cv-lead"/>
+                                    <constraint firstItem="contentView-001" firstAttribute="top" secondItem="scrollView-001" secondAttribute="top" id="cv-top"/>
+                                    <constraint firstItem="contentView-001" firstAttribute="trailing" secondItem="scrollView-001" secondAttribute="trailing" id="cv-trail"/>
+                                    <constraint firstItem="contentView-001" firstAttribute="width" secondItem="scrollView-001" secondAttribute="width" id="cv-width"/>
+                                </constraints>
+                            </scrollView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="activity-ind">
+                                <rect key="frame" x="178" y="407.66666666666669" width="37" height="37"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="submitReq-safe"/>
+                        <color key="backgroundColor" red="0.96078431372549022" green="0.93725490196078431" blue="0.92156862745098034" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="activity-ind" firstAttribute="centerX" secondItem="submitReq-view" secondAttribute="centerX" id="act-cx"/>
+                            <constraint firstItem="activity-ind" firstAttribute="centerY" secondItem="submitReq-view" secondAttribute="centerY" id="act-cy"/>
+                            <constraint firstItem="scrollView-001" firstAttribute="bottom" secondItem="submitReq-view" secondAttribute="bottom" id="sv-bot"/>
+                            <constraint firstItem="scrollView-001" firstAttribute="leading" secondItem="submitReq-view" secondAttribute="leading" id="sv-lead"/>
+                            <constraint firstItem="scrollView-001" firstAttribute="top" secondItem="submitReq-safe" secondAttribute="top" id="sv-top"/>
+                            <constraint firstItem="scrollView-001" firstAttribute="trailing" secondItem="submitReq-view" secondAttribute="trailing" id="sv-trail"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="activityIndicator" destination="activity-ind" id="activity-outlet"/>
+                        <outlet property="buildingButton" destination="building-btn" id="building-outlet"/>
+                        <outlet property="descriptionTextView" destination="desc-tv" id="desc-outlet"/>
+                        <outlet property="mainCategoryButton" destination="mainCat-btn" id="mainCat-outlet"/>
+                        <outlet property="roomButton" destination="room-btn" id="room-outlet"/>
+                        <outlet property="selectImagesButton" destination="selectImg-btn" id="selImg-outlet"/>
+                        <outlet property="subCategoryButton" destination="subCat-btn" id="subCat-outlet"/>
+                        <outlet property="submitButton" destination="submit-btn" id="submit-outlet"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="submitReq-firstResp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1725.9541984732823" y="441.54929577464793"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="rJf-1m-6P7">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="FzM-Jw-YAx" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" id="9Qm-wT-Nbi">
                         <imageReference key="image" image="list.bullet.clipboard" catalog="system" renderingMode="hierarchical">
                             <hierarchicalColors>
@@ -99,397 +448,25 @@
                             </hierarchicalColors>
                         </imageReference>
                     </tabBarItem>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="2Jh-9O-OmK">
+                        <rect key="frame" x="0.0" y="118" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
                     <connections>
-                        <outlet property="addButton" destination="addBtn-001" id="addBtn-outlet"/>
-                        <outlet property="tableView" destination="requests-table" id="req-table-outlet"/>
-                        <outlet property="activityIndicator" destination="requests-activity" id="req-activity-outlet"/>
+                        <segue destination="d8e-NF-H09" kind="relationship" relationship="rootViewController" id="pac-qw-wZg"/>
                     </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="pis-7f-ddf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MOL-qr-IHG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="442"/>
-        </scene>
-        <!--Submit Request View Controller-->
-        <scene sceneID="submitReq-scene">
-            <objects>
-                <viewController storyboardIdentifier="SubmitRequestViewController" id="submitReq-vc" customClass="SubmitRequestViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="submitReq-view">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="scrollView-001">
-                                <rect key="frame" x="0.0" y="59" width="393" height="793"/>
-                                <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="contentView-001">
-                                        <rect key="frame" x="0.0" y="0.0" width="393" height="900"/>
-                                        <subviews>
-                                            <!-- Logo -->
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="logo-img">
-                                                <rect key="frame" x="146" y="8" width="100" height="50"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="100" id="logo-w"/>
-                                                    <constraint firstAttribute="height" constant="50" id="logo-h"/>
-                                                </constraints>
-                                            </imageView>
-                                            <!-- Back Button -->
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="back-btn">
-                                                <rect key="frame" x="20" y="70" width="30" height="30"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="30" id="back-w"/>
-                                                    <constraint firstAttribute="height" constant="30" id="back-h"/>
-                                                </constraints>
-                                                <state key="normal">
-                                                    <imageReference key="image" image="chevron.left" catalog="system"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="backButtonTapped:" destination="submitReq-vc" eventType="touchUpInside" id="back-action"/>
-                                                </connections>
-                                            </button>
-                                            <!-- Title -->
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Request" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="title-lbl">
-                                                <rect key="frame" x="160" y="73" width="73" height="24"/>
-                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
-                                                <color key="textColor" red="0.058823529411764705" green="0.09803921568627451" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <!-- Separator -->
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="separator-001">
-                                                <rect key="frame" x="20" y="110" width="353" height="1"/>
-                                                <color key="backgroundColor" red="0.8" green="0.8" blue="0.8" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="1" id="sep-h"/>
-                                                </constraints>
-                                            </view>
-                                            <!-- Problem Section Label -->
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Problem" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="problem-lbl">
-                                                <rect key="frame" x="20" y="125" width="60" height="18"/>
-                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
-                                                <color key="textColor" red="0.31" green="0.4" blue="0.49" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <!-- Main Category Label -->
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Main Category *" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mainCat-lbl">
-                                                <rect key="frame" x="20" y="155" width="120" height="18"/>
-                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
-                                                <color key="textColor" red="0.058823529411764705" green="0.09803921568627451" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <!-- Main Category Button -->
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mainCat-btn">
-                                                <rect key="frame" x="20" y="178" width="353" height="44"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="44" id="mainCat-h"/>
-                                                </constraints>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <state key="normal" title="Select Category">
-                                                    <color key="titleColor" red="0.6" green="0.6" blue="0.6" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                </state>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                        <integer key="value" value="8"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                                        <integer key="value" value="1"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
-                                                        <color key="value" red="0.8" green="0.8" blue="0.8" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="mainCategoryTapped:" destination="submitReq-vc" eventType="touchUpInside" id="mainCat-action"/>
-                                                </connections>
-                                            </button>
-                                            <!-- Sub Category Label -->
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sub-Category *" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="subCat-lbl">
-                                                <rect key="frame" x="20" y="235" width="110" height="18"/>
-                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
-                                                <color key="textColor" red="0.058823529411764705" green="0.09803921568627451" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <!-- Sub Category Button -->
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="subCat-btn">
-                                                <rect key="frame" x="20" y="258" width="353" height="44"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="44" id="subCat-h"/>
-                                                </constraints>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <state key="normal" title="Select Sub-Category">
-                                                    <color key="titleColor" red="0.6" green="0.6" blue="0.6" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                </state>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                        <integer key="value" value="8"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                                        <integer key="value" value="1"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
-                                                        <color key="value" red="0.8" green="0.8" blue="0.8" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="subCategoryTapped:" destination="submitReq-vc" eventType="touchUpInside" id="subCat-action"/>
-                                                </connections>
-                                            </button>
-                                            <!-- Description Label -->
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description *" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="desc-lbl">
-                                                <rect key="frame" x="20" y="315" width="100" height="18"/>
-                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
-                                                <color key="textColor" red="0.058823529411764705" green="0.09803921568627451" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <!-- Description Text View -->
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Please describe the problem as detailed as you can..." translatesAutoresizingMaskIntoConstraints="NO" id="desc-tv">
-                                                <rect key="frame" x="20" y="338" width="353" height="100"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="100" id="desc-h"/>
-                                                </constraints>
-                                                <color key="textColor" red="0.6" green="0.6" blue="0.6" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                        <integer key="value" value="8"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                                        <integer key="value" value="1"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
-                                                        <color key="value" red="0.8" green="0.8" blue="0.8" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                            </textView>
-                                            <!-- Images Label -->
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Images" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="images-lbl">
-                                                <rect key="frame" x="20" y="455" width="55" height="18"/>
-                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
-                                                <color key="textColor" red="0.058823529411764705" green="0.09803921568627451" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <!-- Select Images Button -->
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="selectImg-btn">
-                                                <rect key="frame" x="20" y="478" width="110" height="36"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="36" id="selImg-h"/>
-                                                </constraints>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <state key="normal" title="Select Images">
-                                                    <color key="titleColor" red="0.058823529411764705" green="0.09803921568627451" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                </state>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                        <integer key="value" value="8"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                                        <integer key="value" value="1"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
-                                                        <color key="value" red="0.8" green="0.8" blue="0.8" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="selectImagesTapped:" destination="submitReq-vc" eventType="touchUpInside" id="selImg-action"/>
-                                                </connections>
-                                            </button>
-                                            <!-- Location Section Label -->
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="location-lbl">
-                                                <rect key="frame" x="20" y="535" width="65" height="18"/>
-                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
-                                                <color key="textColor" red="0.31" green="0.4" blue="0.49" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <!-- Building Label -->
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Building No. *" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="building-lbl">
-                                                <rect key="frame" x="20" y="565" width="100" height="18"/>
-                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
-                                                <color key="textColor" red="0.058823529411764705" green="0.09803921568627451" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <!-- Building Button -->
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="building-btn">
-                                                <rect key="frame" x="20" y="588" width="353" height="44"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="44" id="building-h"/>
-                                                </constraints>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <state key="normal" title="Select Building">
-                                                    <color key="titleColor" red="0.6" green="0.6" blue="0.6" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                </state>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                        <integer key="value" value="8"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                                        <integer key="value" value="1"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
-                                                        <color key="value" red="0.8" green="0.8" blue="0.8" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="buildingTapped:" destination="submitReq-vc" eventType="touchUpInside" id="building-action"/>
-                                                </connections>
-                                            </button>
-                                            <!-- Room Label -->
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Room No. *" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="room-lbl">
-                                                <rect key="frame" x="20" y="645" width="85" height="18"/>
-                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
-                                                <color key="textColor" red="0.058823529411764705" green="0.09803921568627451" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <!-- Room Button -->
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="room-btn">
-                                                <rect key="frame" x="20" y="668" width="353" height="44"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="44" id="room-h"/>
-                                                </constraints>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <state key="normal" title="Select Room">
-                                                    <color key="titleColor" red="0.6" green="0.6" blue="0.6" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                </state>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                        <integer key="value" value="8"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                                        <integer key="value" value="1"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
-                                                        <color key="value" red="0.8" green="0.8" blue="0.8" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="roomTapped:" destination="submitReq-vc" eventType="touchUpInside" id="room-action"/>
-                                                </connections>
-                                            </button>
-                                            <!-- Submit Button -->
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="submit-btn">
-                                                <rect key="frame" x="96" y="740" width="200" height="50"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="200" id="submit-w"/>
-                                                    <constraint firstAttribute="height" constant="50" id="submit-h"/>
-                                                </constraints>
-                                                <color key="backgroundColor" red="0.058823529411764705" green="0.09803921568627451" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <state key="normal" title="Submit">
-                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                </state>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                        <integer key="value" value="12"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="submitTapped:" destination="submitReq-vc" eventType="touchUpInside" id="submit-action"/>
-                                                </connections>
-                                            </button>
-                                        </subviews>
-                                        <color key="backgroundColor" red="0.96078431372549022" green="0.93725490196078431" blue="0.92156862745098034" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <!-- Logo constraints -->
-                                            <constraint firstItem="logo-img" firstAttribute="top" secondItem="contentView-001" secondAttribute="top" constant="8" id="logo-top"/>
-                                            <constraint firstItem="logo-img" firstAttribute="centerX" secondItem="contentView-001" secondAttribute="centerX" id="logo-cx"/>
-                                            <!-- Back button constraints -->
-                                            <constraint firstItem="back-btn" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="back-lead"/>
-                                            <constraint firstItem="back-btn" firstAttribute="top" secondItem="logo-img" secondAttribute="bottom" constant="12" id="back-top"/>
-                                            <!-- Title constraints -->
-                                            <constraint firstItem="title-lbl" firstAttribute="centerY" secondItem="back-btn" secondAttribute="centerY" id="title-cy"/>
-                                            <constraint firstItem="title-lbl" firstAttribute="centerX" secondItem="contentView-001" secondAttribute="centerX" id="title-cx"/>
-                                            <!-- Separator constraints -->
-                                            <constraint firstItem="separator-001" firstAttribute="top" secondItem="back-btn" secondAttribute="bottom" constant="10" id="sep-top"/>
-                                            <constraint firstItem="separator-001" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="sep-lead"/>
-                                            <constraint firstItem="contentView-001" firstAttribute="trailing" secondItem="separator-001" secondAttribute="trailing" constant="20" id="sep-trail"/>
-                                            <!-- Problem label -->
-                                            <constraint firstItem="problem-lbl" firstAttribute="top" secondItem="separator-001" secondAttribute="bottom" constant="15" id="prob-top"/>
-                                            <constraint firstItem="problem-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="prob-lead"/>
-                                            <!-- Main Category -->
-                                            <constraint firstItem="mainCat-lbl" firstAttribute="top" secondItem="problem-lbl" secondAttribute="bottom" constant="15" id="mcat-lbl-top"/>
-                                            <constraint firstItem="mainCat-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="mcat-lbl-lead"/>
-                                            <constraint firstItem="mainCat-btn" firstAttribute="top" secondItem="mainCat-lbl" secondAttribute="bottom" constant="8" id="mcat-btn-top"/>
-                                            <constraint firstItem="mainCat-btn" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="mcat-btn-lead"/>
-                                            <constraint firstItem="contentView-001" firstAttribute="trailing" secondItem="mainCat-btn" secondAttribute="trailing" constant="20" id="mcat-btn-trail"/>
-                                            <!-- Sub Category -->
-                                            <constraint firstItem="subCat-lbl" firstAttribute="top" secondItem="mainCat-btn" secondAttribute="bottom" constant="15" id="scat-lbl-top"/>
-                                            <constraint firstItem="subCat-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="scat-lbl-lead"/>
-                                            <constraint firstItem="subCat-btn" firstAttribute="top" secondItem="subCat-lbl" secondAttribute="bottom" constant="8" id="scat-btn-top"/>
-                                            <constraint firstItem="subCat-btn" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="scat-btn-lead"/>
-                                            <constraint firstItem="contentView-001" firstAttribute="trailing" secondItem="subCat-btn" secondAttribute="trailing" constant="20" id="scat-btn-trail"/>
-                                            <!-- Description -->
-                                            <constraint firstItem="desc-lbl" firstAttribute="top" secondItem="subCat-btn" secondAttribute="bottom" constant="15" id="desc-lbl-top"/>
-                                            <constraint firstItem="desc-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="desc-lbl-lead"/>
-                                            <constraint firstItem="desc-tv" firstAttribute="top" secondItem="desc-lbl" secondAttribute="bottom" constant="8" id="desc-tv-top"/>
-                                            <constraint firstItem="desc-tv" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="desc-tv-lead"/>
-                                            <constraint firstItem="contentView-001" firstAttribute="trailing" secondItem="desc-tv" secondAttribute="trailing" constant="20" id="desc-tv-trail"/>
-                                            <!-- Images -->
-                                            <constraint firstItem="images-lbl" firstAttribute="top" secondItem="desc-tv" secondAttribute="bottom" constant="20" id="img-lbl-top"/>
-                                            <constraint firstItem="images-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="img-lbl-lead"/>
-                                            <constraint firstItem="selectImg-btn" firstAttribute="top" secondItem="images-lbl" secondAttribute="bottom" constant="8" id="selimg-top"/>
-                                            <constraint firstItem="selectImg-btn" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="selimg-lead"/>
-                                            <!-- Location -->
-                                            <constraint firstItem="location-lbl" firstAttribute="top" secondItem="selectImg-btn" secondAttribute="bottom" constant="20" id="loc-lbl-top"/>
-                                            <constraint firstItem="location-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="loc-lbl-lead"/>
-                                            <!-- Building -->
-                                            <constraint firstItem="building-lbl" firstAttribute="top" secondItem="location-lbl" secondAttribute="bottom" constant="15" id="bld-lbl-top"/>
-                                            <constraint firstItem="building-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="bld-lbl-lead"/>
-                                            <constraint firstItem="building-btn" firstAttribute="top" secondItem="building-lbl" secondAttribute="bottom" constant="8" id="bld-btn-top"/>
-                                            <constraint firstItem="building-btn" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="bld-btn-lead"/>
-                                            <constraint firstItem="contentView-001" firstAttribute="trailing" secondItem="building-btn" secondAttribute="trailing" constant="20" id="bld-btn-trail"/>
-                                            <!-- Room -->
-                                            <constraint firstItem="room-lbl" firstAttribute="top" secondItem="building-btn" secondAttribute="bottom" constant="15" id="rm-lbl-top"/>
-                                            <constraint firstItem="room-lbl" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="rm-lbl-lead"/>
-                                            <constraint firstItem="room-btn" firstAttribute="top" secondItem="room-lbl" secondAttribute="bottom" constant="8" id="rm-btn-top"/>
-                                            <constraint firstItem="room-btn" firstAttribute="leading" secondItem="contentView-001" secondAttribute="leading" constant="20" id="rm-btn-lead"/>
-                                            <constraint firstItem="contentView-001" firstAttribute="trailing" secondItem="room-btn" secondAttribute="trailing" constant="20" id="rm-btn-trail"/>
-                                            <!-- Submit -->
-                                            <constraint firstItem="submit-btn" firstAttribute="top" secondItem="room-btn" secondAttribute="bottom" constant="40" id="submit-top"/>
-                                            <constraint firstItem="submit-btn" firstAttribute="centerX" secondItem="contentView-001" secondAttribute="centerX" id="submit-cx"/>
-                                            <constraint firstItem="contentView-001" firstAttribute="bottom" secondItem="submit-btn" secondAttribute="bottom" constant="40" id="content-bot"/>
-                                        </constraints>
-                                    </view>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstItem="contentView-001" firstAttribute="top" secondItem="scrollView-001" secondAttribute="top" id="cv-top"/>
-                                    <constraint firstItem="contentView-001" firstAttribute="leading" secondItem="scrollView-001" secondAttribute="leading" id="cv-lead"/>
-                                    <constraint firstItem="contentView-001" firstAttribute="trailing" secondItem="scrollView-001" secondAttribute="trailing" id="cv-trail"/>
-                                    <constraint firstItem="contentView-001" firstAttribute="bottom" secondItem="scrollView-001" secondAttribute="bottom" id="cv-bot"/>
-                                    <constraint firstItem="contentView-001" firstAttribute="width" secondItem="scrollView-001" secondAttribute="width" id="cv-width"/>
-                                </constraints>
-                            </scrollView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="activity-ind">
-                                <rect key="frame" x="179.66666666666666" y="409" width="37" height="37"/>
-                            </activityIndicatorView>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="submitReq-safe"/>
-                        <color key="backgroundColor" red="0.96078431372549022" green="0.93725490196078431" blue="0.92156862745098034" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="scrollView-001" firstAttribute="top" secondItem="submitReq-safe" secondAttribute="top" id="sv-top"/>
-                            <constraint firstItem="scrollView-001" firstAttribute="leading" secondItem="submitReq-view" secondAttribute="leading" id="sv-lead"/>
-                            <constraint firstItem="scrollView-001" firstAttribute="trailing" secondItem="submitReq-view" secondAttribute="trailing" id="sv-trail"/>
-                            <constraint firstItem="scrollView-001" firstAttribute="bottom" secondItem="submitReq-view" secondAttribute="bottom" id="sv-bot"/>
-                            <constraint firstItem="activity-ind" firstAttribute="centerX" secondItem="submitReq-view" secondAttribute="centerX" id="act-cx"/>
-                            <constraint firstItem="activity-ind" firstAttribute="centerY" secondItem="submitReq-view" secondAttribute="centerY" id="act-cy"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="mainCategoryButton" destination="mainCat-btn" id="mainCat-outlet"/>
-                        <outlet property="subCategoryButton" destination="subCat-btn" id="subCat-outlet"/>
-                        <outlet property="descriptionTextView" destination="desc-tv" id="desc-outlet"/>
-                        <outlet property="selectImagesButton" destination="selectImg-btn" id="selImg-outlet"/>
-                        <outlet property="buildingButton" destination="building-btn" id="building-outlet"/>
-                        <outlet property="roomButton" destination="room-btn" id="room-outlet"/>
-                        <outlet property="submitButton" destination="submit-btn" id="submit-outlet"/>
-                        <outlet property="activityIndicator" destination="activity-ind" id="activity-outlet"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="submitReq-firstResp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="800" y="442"/>
+            <point key="canvasLocation" x="52.671755725190835" y="441.54929577464793"/>
         </scene>
     </scenes>
     <resources>
         <image name="Light mode logo, compressed &amp; cropped" width="5524" height="3070"/>
-        <image name="chevron.left" catalog="system" width="99" height="128"/>
+        <image name="chevron.left" catalog="system" width="97" height="128"/>
         <image name="list.bullet.clipboard" catalog="system" width="98" height="128"/>
-        <image name="plus" catalog="system" width="107" height="128"/>
+        <image name="plus" catalog="system" width="128" height="113"/>
     </resources>
 </document>

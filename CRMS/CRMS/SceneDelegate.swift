@@ -29,6 +29,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
 
+
         // Check user role if credentials exist
         checkUserRole(for: currentUser)
 
@@ -69,6 +70,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // TODO: Create separate storyboards/tab bar controllers for Servicer and Requester roles
                 // Currently all roles use Admin.storyboard as a temporary solution
                 let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
+                let servicerStoryboard = UIStoryboard(name: "Servicer", bundle: nil)
+                let requesterStoryboard = UIStoryboard(name: "Requester", bundle: nil)
                 var vc: UIViewController?
 
                 // Navigate based on user role
@@ -88,9 +91,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
                     vc = adminStoryboard.instantiateInitialViewController()
                 case 1002: // servicer
-                    vc = adminStoryboard.instantiateInitialViewController()
+                    vc = servicerStoryboard.instantiateInitialViewController()
                 case 1001: // requester
-                    vc = adminStoryboard.instantiateInitialViewController()
+                    vc = requesterStoryboard.instantiateInitialViewController()
                 default:
                     self.showAlert(title: "Invalid Role", message: "Unknown user role.")
                     self.fallbackToLogin()

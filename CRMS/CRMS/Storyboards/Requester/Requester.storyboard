@@ -11,54 +11,116 @@
         <scene sceneID="notif-scene">
             <objects>
                 <viewControllerPlaceholder storyboardName="Notifications" id="notif-placeholder" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" id="notif-tabitem">
-                        <imageReference key="image" image="bell.badge" catalog="system"/>
-                    </tabBarItem>
+                    <navigationItem key="navigationItem" id="PFr-a3-xTr"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="notif-firstResp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="500" y="435"/>
+            <point key="canvasLocation" x="1425.9541984732823" y="434.50704225352115"/>
         </scene>
         <!--Requests-->
         <scene sceneID="requests-scene">
             <objects>
                 <viewControllerPlaceholder storyboardName="Requests" id="requests-placeholder" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" id="requests-tabitem">
-                        <imageReference key="image" image="list.bullet.clipboard" catalog="system"/>
-                    </tabBarItem>
+                    <navigationItem key="navigationItem" id="MPV-4W-bDq"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="requests-firstResp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1100" y="435"/>
+            <point key="canvasLocation" x="2953.4351145038167" y="434.50704225352115"/>
         </scene>
         <!--Settings-->
         <scene sceneID="7Dh-L6-SiK">
             <objects>
                 <viewControllerPlaceholder storyboardName="Settings" id="JL8-0T-cAv" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" image="gearshape" catalog="system" selectedImage="gearshape" id="rct-gs-aaR"/>
+                    <navigationItem key="navigationItem" id="o4g-IT-x4F"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f59-nH-2Y0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1631" y="435"/>
+            <point key="canvasLocation" x="4409.9236641221369" y="434.50704225352115"/>
         </scene>
         <!--Requester Tab Bar Controller-->
         <scene sceneID="requester-tabbar-scene">
             <objects>
-                <tabBarController id="requester-tabbar" customClass="RequesterTabBarController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="RequesterTabBarController" id="requester-tabbar" customClass="RequesterTabBarController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="requester-tabbar-bar">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" red="0.96078431372549022" green="0.93725490196078431" blue="0.92156862745098034" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </tabBar>
                     <connections>
-                        <segue destination="notif-placeholder" kind="relationship" relationship="viewControllers" id="notif-segue"/>
-                        <segue destination="requests-placeholder" kind="relationship" relationship="viewControllers" id="requests-segue"/>
-                        <segue destination="JL8-0T-cAv" kind="relationship" relationship="viewControllers" id="rZA-hU-tVK"/>
+                        <segue destination="f3H-4b-lHN" kind="relationship" relationship="viewControllers" id="notif-segue"/>
+                        <segue destination="cRm-mK-TRM" kind="relationship" relationship="viewControllers" id="requests-segue"/>
+                        <segue destination="py2-zJ-usc" kind="relationship" relationship="viewControllers" id="rZA-hU-tVK"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="requester-tabbar-firstResp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1100" y="12"/>
+            <point key="canvasLocation" x="1958" y="-363"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="dkC-S9-Npi">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="f3H-4b-lHN" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="" id="notif-tabitem">
+                        <imageReference key="image" image="bell.badge" catalog="system" symbolScale="medium"/>
+                        <color key="badgeColor" red="0.34117650989999998" green="0.40784314269999999" blue="0.49019610879999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <imageReference key="selectedImage" image="bell.badge" catalog="system" symbolScale="large"/>
+                    </tabBarItem>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="FKa-VH-3Ap">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="notif-placeholder" kind="relationship" relationship="rootViewController" id="JHB-W8-VFv"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cLr-Co-qhw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="500" y="434.50704225352115"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="xpR-S9-LEC">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="cRm-mK-TRM" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="" id="requests-tabitem">
+                        <imageReference key="image" image="list.bullet.clipboard" catalog="system" symbolScale="medium"/>
+                        <color key="badgeColor" red="0.34117650989999998" green="0.40784314269999999" blue="0.49019610879999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <imageReference key="selectedImage" image="list.bullet.clipboard" catalog="system" symbolScale="large"/>
+                    </tabBarItem>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="gKi-1G-D1C">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="requests-placeholder" kind="relationship" relationship="rootViewController" id="u5m-jn-bjt"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ICf-Y9-VAE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2026.7175572519084" y="434.50704225352115"/>
+        </scene>
+        <!--Item-->
+        <scene sceneID="iYi-r4-sk0">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="py2-zJ-usc" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="rct-gs-aaR">
+                        <imageReference key="image" image="gearshape" catalog="system" symbolScale="medium"/>
+                        <color key="badgeColor" red="0.34117650989999998" green="0.40784314269999999" blue="0.49019610879999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <imageReference key="selectedImage" image="gearshape" catalog="system" symbolScale="large"/>
+                    </tabBarItem>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="YCT-JK-kMJ">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="JL8-0T-cAv" kind="relationship" relationship="rootViewController" id="0DG-tD-rBm"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Rep-Id-ns1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3483.2061068702287" y="434.50704225352115"/>
         </scene>
     </scenes>
     <resources>
