@@ -688,17 +688,20 @@ final class RequestController {
         return snapshot.documents.compactMap { doc -> User? in
             let data = doc.data()
 
-            // Use document ID as user ID (Firebase Auth UID)
-            let id = doc.documentID
-
-            guard let fullName = data["fullName"] as? String,
+            guard let id = data["id"] as? String,
+                  let fullName = data["fullName"] as? String,
+                  let userNo = data["userNo"] as? String,
                   let typeRaw = data["type"] as? Int,
                   let type = UserType(rawValue: typeRaw),
-                  let email = data["email"] as? String
+                  let email = data["email"] as? String,
+                  let inactive = data["inactive"] as? Bool,
+                  let createdOn = data["createdOn"] as? Timestamp,
+                  let createdBy = data["createdBy"] as? String
+
             else { return nil }
 
-            // Skip inactive users if the field exists
-            if let inactive = data["inactive"] as? Bool, inactive == true {
+            // Skip inactive users
+            if inactive == true {
                 return nil
             }
 
@@ -707,10 +710,14 @@ final class RequestController {
 
             return User(
                 id: id,
+                userNo: userNo,
                 fullName: fullName,
                 type: type,
                 subtype: subtype,
-                email: email
+                email: email,
+                createdOn: createdOn.dateValue(),
+                createdBy: createdBy,
+                inactive: inactive
             )
         }
     }
@@ -769,6 +776,46 @@ final class RequestController {
 
         // Create history record for the assignment
         try await createHistoryRecord(requestRef: requestId, action: .assigned, sentBackReason: nil, reassignReason: nil)
+        
+        
+        //send a notification the request owner and technician
+       let reqNo = requestData.self["requestNo"] as! String
+        let ownerID = requestData.self["ownerRef"] as! String
+        
+        let toWhoOwner: [String] = [ownerID]
+        let toWhoServicer: [String] = [servicerId]
+        
+        //Owner notif
+        let notifOwner: NotificationModel = NotificationModel(
+            id: UUID().uuidString,
+            title: "Servicer appointed on request number \"\(reqNo)\".",
+            description: nil,
+            toWho: toWhoOwner,
+            type: NotiType.notification,
+            requestRef: requestId.uuidString,
+            createdOn: Date(),
+            createdBy: userId,
+            modifiedOn: nil,
+            modifiedBy: nil,
+            inactive: false
+        )
+        await NotifCreateViewController.shared.createNotif(data: notifOwner)
+        
+        //Owner notif
+        let notifServicer: NotificationModel = NotificationModel(
+            id: UUID().uuidString,
+            title: "Appointed to request number \"\(reqNo)\".",
+            description: nil,
+            toWho: toWhoServicer,
+            type: NotiType.notification,
+            requestRef: requestId.uuidString,
+            createdOn: Date(),
+            createdBy: userId,
+            modifiedOn: nil,
+            modifiedBy: nil,
+            inactive: false
+        )
+        await NotifCreateViewController.shared.createNotif(data: notifServicer)
     }
 
 // MARK: - Send Back Request
