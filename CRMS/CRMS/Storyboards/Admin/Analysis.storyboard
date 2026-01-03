@@ -126,22 +126,7 @@
                             <constraint firstItem="Cm4-sO-Tn2" firstAttribute="top" secondItem="dOO-eU-zyw" secondAttribute="top" constant="72.000000000000028" id="yBx-hp-Jtf"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="" id="fZg-8J-JXc">
-                        <imageReference key="image" image="chart.bar" catalog="system" renderingMode="hierarchical">
-                            <hierarchicalColors>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                            </hierarchicalColors>
-                        </imageReference>
-                        <imageReference key="selectedImage" image="chart.bar" catalog="system" renderingMode="hierarchical">
-                            <hierarchicalColors>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                            </hierarchicalColors>
-                        </imageReference>
-                    </tabBarItem>
+                    <tabBarItem key="tabBarItem" title="" image="chart.bar" catalog="system" id="fZg-8J-JXc"/>
                     <connections>
                         <outlet property="analyticsSegment" destination="gxJ-Ln-0mX" id="Bfr-Vh-tGN"/>
                         <outlet property="categoryAnalysis" destination="8od-Ni-LrH" id="fBA-9j-FeX"/>

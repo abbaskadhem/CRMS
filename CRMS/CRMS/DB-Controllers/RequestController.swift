@@ -588,12 +588,19 @@ final class RequestController {
         return snapshot.documents.compactMap { doc -> User? in
             let data = doc.data()
 
-            guard let id = data["id"] as? String,
-                  let fullName = data["fullName"] as? String,
+            // Use document ID as user ID (Firebase Auth UID)
+            let id = doc.documentID
+
+            guard let fullName = data["fullName"] as? String,
                   let typeRaw = data["type"] as? Int,
                   let type = UserType(rawValue: typeRaw),
                   let email = data["email"] as? String
             else { return nil }
+
+            // Skip inactive users if the field exists
+            if let inactive = data["inactive"] as? Bool, inactive == true {
+                return nil
+            }
 
             let subtypeRaw = data["subtype"] as? Int
             let subtype = subtypeRaw.flatMap { SubType(rawValue: $0) }

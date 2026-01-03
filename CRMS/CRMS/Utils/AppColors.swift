@@ -42,4 +42,7 @@ struct AppColors {
     static let chartNeutralLight = UIColor(red: 217/255, green: 217/255, blue: 217/255, alpha: 1) // #D9D9D9
     static let chartNeutralDark = UIColor(red: 206/255, green: 206/255, blue: 206/255, alpha: 1)  // #CECECE
     static let chartContainerBackground = UIColor(red: 0.7, green: 0.8, blue: 0.85, alpha: 1.0)   // Light blue-grey
+
+    // Tab bar colors
+    static let tabBarUnselected = UIColor(red: 100/255, green: 110/255, blue: 120/255, alpha: 1) // Darker grey for visibility
 }

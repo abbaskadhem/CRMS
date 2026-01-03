@@ -22,6 +22,11 @@ final class BaseRequestFormViewController: UIViewController {
     private var currentUserType: UserType?
     private var requestModel: RequestDisplayModel?
 
+    // MARK: - UI Components - Navigation Bar
+    private let navigationBar = UIView()
+    private let closeButton = UIButton(type: .system)
+    private let titleLabel = UILabel()
+
     // MARK: - UI Components - Header (for view/edit modes)
     private let headerContainerView = UIView()
     private let requestNumberLabel = UILabel()
@@ -109,6 +114,9 @@ final class BaseRequestFormViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = AppColors.background
 
+        // Setup navigation bar
+        setupNavigationBar()
+
         // Setup scroll view
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -119,7 +127,7 @@ final class BaseRequestFormViewController: UIViewController {
         contentView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -149,6 +157,55 @@ final class BaseRequestFormViewController: UIViewController {
         view.addGestureRecognizer(tapGesture)
     }
 
+    private func setupNavigationBar() {
+        navigationBar.backgroundColor = AppColors.background
+        view.addSubview(navigationBar)
+        navigationBar.translatesAutoresizingMaskIntoConstraints = false
+
+        // Close button
+        closeButton.setImage(UIImage(systemName: "xmark"), for: .normal)
+        closeButton.tintColor = AppColors.text
+        closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
+        navigationBar.addSubview(closeButton)
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+
+        // Title label
+        let titleText: String
+        switch mode {
+        case .create:
+            titleText = "New Request"
+        case .view:
+            titleText = "Request Details"
+        case .edit:
+            titleText = "Edit Request"
+        }
+        titleLabel.text = titleText
+        titleLabel.font = AppTypography.headline
+        titleLabel.textColor = AppColors.text
+        titleLabel.textAlignment = .center
+        navigationBar.addSubview(titleLabel)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            navigationBar.heightAnchor.constraint(equalToConstant: 44),
+
+            closeButton.leadingAnchor.constraint(equalTo: navigationBar.leadingAnchor, constant: AppSpacing.md),
+            closeButton.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor),
+            closeButton.widthAnchor.constraint(equalToConstant: 44),
+            closeButton.heightAnchor.constraint(equalToConstant: 44),
+
+            titleLabel.centerXAnchor.constraint(equalTo: navigationBar.centerXAnchor),
+            titleLabel.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor)
+        ])
+    }
+
+    @objc private func closeButtonTapped() {
+        dismiss(animated: true)
+    }
+
     private func setupFormComponents() {
         var currentY: CGFloat = AppSpacing.lg
 
@@ -169,7 +226,12 @@ final class BaseRequestFormViewController: UIViewController {
         setupLabel(problemHeaderLabel, text: "Problem", font: AppTypography.headline, color: AppColors.secondary)
         contentView.addSubview(problemHeaderLabel)
         problemHeaderLabel.translatesAutoresizingMaskIntoConstraints = false
-        let problemHeaderTopAnchor = case .view = mode ? headerContainerView.bottomAnchor : contentView.topAnchor
+        let problemHeaderTopAnchor: NSLayoutYAxisAnchor
+        if case .view = mode {
+            problemHeaderTopAnchor = headerContainerView.bottomAnchor
+        } else {
+            problemHeaderTopAnchor = contentView.topAnchor
+        }
         NSLayoutConstraint.activate([
             problemHeaderLabel.topAnchor.constraint(equalTo: problemHeaderTopAnchor, constant: AppSpacing.lg),
             problemHeaderLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: AppSpacing.lg),
@@ -613,7 +675,7 @@ final class BaseRequestFormViewController: UIViewController {
             priorityLabel.attributedText = priorityText
 
             // Fetch and display technician name
-            fetchServicerName(servicerId: model.servicerRef)
+            fetchServicerName(servicerId: model.request.servicerRef)
         }
 
         // Populate form fields
@@ -641,8 +703,8 @@ final class BaseRequestFormViewController: UIViewController {
         // Fetch subcategories and rooms for the selected items
         Task {
             do {
-                async let subcatsTask = CategoryController.shared.getSubcategories(forParentId: model.requestCategoryRef)
-                async let roomsTask = LocationController.shared.getActiveRooms(forBuildingId: model.buildingRef)
+                async let subcatsTask = CategoryController.shared.getSubcategories(forParentId: model.request.requestCategoryRef)
+                async let roomsTask = LocationController.shared.getActiveRooms(forBuildingId: model.request.buildingRef)
 
                 let (subcats, fetchedRooms) = try await (subcatsTask, roomsTask)
 
@@ -651,10 +713,10 @@ final class BaseRequestFormViewController: UIViewController {
                     self.rooms = fetchedRooms
 
                     // Set selected items
-                    self.selectedMainCategory = self.mainCategories.first { $0.id == model.requestCategoryRef }
-                    self.selectedSubCategory = subcats.first { $0.id == model.requestSubcategoryRef }
-                    self.selectedBuilding = self.buildings.first { $0.id == model.buildingRef }
-                    self.selectedRoom = fetchedRooms.first { $0.id == model.roomRef }
+                    self.selectedMainCategory = self.mainCategories.first { $0.id == model.request.requestCategoryRef }
+                    self.selectedSubCategory = subcats.first { $0.id == model.request.requestSubcategoryRef }
+                    self.selectedBuilding = self.buildings.first { $0.id == model.request.buildingRef }
+                    self.selectedRoom = fetchedRooms.first { $0.id == model.request.roomRef }
                 }
             } catch {
                 await MainActor.run {
@@ -797,7 +859,7 @@ final class BaseRequestFormViewController: UIViewController {
     private func setupServicerActions(for status: Status) {
         guard let model = requestModel,
               let currentUserId = try? SessionManager.shared.requireUserId(),
-              model.servicerRef == currentUserId else {
+              model.request.servicerRef == currentUserId else {
             return
         }
 
@@ -816,7 +878,7 @@ final class BaseRequestFormViewController: UIViewController {
         switch status {
         case .assigned:
             // Show "Schedule" button if not yet scheduled
-            if model.estimatedStartDate == nil {
+            if model.request.estimatedStartDate == nil {
                 let scheduleButton = UIButton(type: .system)
                 styleFilledButton(scheduleButton)
                 scheduleButton.setTitle("Schedule", for: .normal)
@@ -1106,7 +1168,7 @@ final class BaseRequestFormViewController: UIViewController {
     }
 
     @objc private func deleteButtonTapped() {
-        guard let requestId = requestModel?.id else { return }
+        guard let requestId = requestModel?.request.id else { return }
 
         showConfirmationAlert(
             title: "Cancel Request",
@@ -1147,7 +1209,7 @@ final class BaseRequestFormViewController: UIViewController {
     }
 
     @objc private func assignServicerButtonTapped() {
-        guard let requestId = requestModel?.id else { return }
+        guard let requestId = requestModel?.request.id else { return }
 
         activityIndicator.startAnimating()
 
@@ -1169,7 +1231,7 @@ final class BaseRequestFormViewController: UIViewController {
     }
 
     @objc private func reassignButtonTapped() {
-        guard let requestId = requestModel?.id else { return }
+        guard let requestId = requestModel?.request.id else { return }
 
         activityIndicator.startAnimating()
 
@@ -1259,7 +1321,7 @@ final class BaseRequestFormViewController: UIViewController {
     }
 
     @objc private func sendBackButtonTapped() {
-        guard let requestId = requestModel?.id else { return }
+        guard let requestId = requestModel?.request.id else { return }
 
         promptForReason(title: "Send Back Reason", message: "Please provide a reason for sending back this request:") { [weak self] reason in
             self?.performSendBack(requestId: requestId, reason: reason)
@@ -1289,7 +1351,7 @@ final class BaseRequestFormViewController: UIViewController {
     }
 
     @objc private func scheduleButtonTapped() {
-        guard let requestId = requestModel?.id else { return }
+        guard let requestId = requestModel?.request.id else { return }
 
         // Show date pickers for start and end dates
         showDatePickersAlert(requestId: requestId)
@@ -1377,7 +1439,7 @@ final class BaseRequestFormViewController: UIViewController {
     }
 
     @objc private func startButtonTapped() {
-        guard let requestId = requestModel?.id else { return }
+        guard let requestId = requestModel?.request.id else { return }
 
         showConfirmationAlert(title: "Start Request", message: "Are you ready to start working on this request?") { [weak self] in
             self?.performStart(requestId: requestId)
@@ -1408,7 +1470,7 @@ final class BaseRequestFormViewController: UIViewController {
     }
 
     @objc private func completeButtonTapped() {
-        guard let requestId = requestModel?.id else { return }
+        guard let requestId = requestModel?.request.id else { return }
 
         showConfirmationAlert(title: "Complete Request", message: "Are you sure you want to mark this request as completed?") { [weak self] in
             self?.performComplete(requestId: requestId)
