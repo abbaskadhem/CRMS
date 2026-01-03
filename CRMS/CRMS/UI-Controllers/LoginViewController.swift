@@ -156,8 +156,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                         vc = adminStoryboard.instantiateInitialViewController()
                     case UserType.servicer.rawValue:
                         // TODO: Create separate Servicer storyboard
-                        let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
-                        vc = adminStoryboard.instantiateInitialViewController()
+                        let servicerStoryboard = UIStoryboard(name: "Servicer", bundle: nil)
+                        vc = servicerStoryboard.instantiateInitialViewController()
                     case UserType.requester.rawValue:
                         let requesterStoryboard = UIStoryboard(name: "Requester", bundle: nil)
                         vc = requesterStoryboard.instantiateInitialViewController()
