@@ -52,7 +52,7 @@ final class ConfirmDeleteViewController: UIViewController {
     }
 
     private func showDeleteSuccessAndClose() {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
         let raw = sb.instantiateViewController(withIdentifier: "DeleteSuccessViewController")
         print("Loaded type:", type(of: raw))
 

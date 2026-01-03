@@ -31,7 +31,7 @@ class EditFAQViewController: UIViewController {
     }
     
     func showConfirmEditAlert() {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
         let vc = sb.instantiateViewController(
             withIdentifier: "ConfirmEditAlertViewController"
         ) as! ConfirmEditAlertViewController

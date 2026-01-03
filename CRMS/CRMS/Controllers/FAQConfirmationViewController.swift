@@ -57,7 +57,7 @@ final class FAQConfirmationViewController: UIViewController {
  
     
     private func showSuccessAndCloseConfirmation() {
-            let sb = UIStoryboard(name: "Main", bundle: nil)
+            let sb = UIStoryboard(name: "Faq", bundle: nil)
             let successVC = sb.instantiateViewController(
                 withIdentifier: "FAQSuccessViewController"
             ) as! FAQSuccessViewController

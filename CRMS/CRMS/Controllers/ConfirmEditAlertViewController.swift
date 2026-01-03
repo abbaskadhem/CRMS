@@ -55,7 +55,7 @@ final class ConfirmEditAlertViewController: UIViewController {
     }
     
     private func showSuccessAndClose() {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
         let successVC = sb.instantiateViewController(
             withIdentifier: "FAQEditSuccessViewController"
         ) as! FAQEditSuccessViewController

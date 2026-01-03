@@ -18,7 +18,7 @@ class NewFAQViewController: UIViewController {
     }
     
     private func showAddConfirmationScreen() {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
 
         let vc = sb.instantiateViewController(
             withIdentifier: "FAQConfirmationViewController"
@@ -45,7 +45,7 @@ class NewFAQViewController: UIViewController {
     @IBAction func cancelButtonAction(_ sender: Any) {
         view.endEditing(true)
             
-            let sb = UIStoryboard(name: "Main", bundle: nil)
+            let sb = UIStoryboard(name: "Faq", bundle: nil)
             let vc = sb.instantiateViewController(withIdentifier: "CancelAddingConfirmationViewController") as! CancelAddingConfirmationViewController
             
             // Set the closure here

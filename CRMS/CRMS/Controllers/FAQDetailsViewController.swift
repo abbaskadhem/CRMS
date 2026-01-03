@@ -23,7 +23,7 @@ class FAQDetailsViewController: UIViewController {
     }
     
     func showConfirmDelete() {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "ConfirmDeleteViewController") as! ConfirmDeleteViewController
 
         vc.id = id

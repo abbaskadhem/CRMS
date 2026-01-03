@@ -51,7 +51,7 @@ class ConfirmAddCategory: UIViewController {
     }
     
     private func showSuccessThenCloseAll() {
-            let sb = UIStoryboard(name: "Main", bundle: nil)
+            let sb = UIStoryboard(name: "Faq", bundle: nil)
             let successVC = sb.instantiateViewController(
                 withIdentifier: "CategoryAddSuccess"
             ) as! CategoryAddSuccess

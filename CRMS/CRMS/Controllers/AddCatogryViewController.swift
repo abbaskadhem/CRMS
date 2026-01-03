@@ -22,7 +22,7 @@ class AddCatogryViewController: UIViewController {
         let name = nameTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !name.isEmpty else { return }
 
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
         let confirmVC = sb.instantiateViewController(
             withIdentifier: "ConfirmAddCategory"
             )as! ConfirmAddCategory
@@ -38,7 +38,7 @@ class AddCatogryViewController: UIViewController {
     
     @IBAction func cancelButtonTapped(_ sender: Any) {
         
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "CancelAddCategory") as! CancelAddCategory
 
           vc.modalPresentationStyle = .overFullScreen

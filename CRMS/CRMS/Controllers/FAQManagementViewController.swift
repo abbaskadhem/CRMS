@@ -16,7 +16,7 @@ class FAQManagementViewController: UIViewController {
     }
     
     @IBAction func addButtonTapped(_ sender: Any) {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
             guard let faqVC = sb.instantiateViewController(withIdentifier: "NewFAQViewController") as? NewFAQViewController else { return }
       
             self.navigationController?.pushViewController(faqVC, animated: true)
@@ -72,7 +72,7 @@ extension FAQManagementViewController: UITableViewDataSource, UITableViewDelegat
 
         let selectedItem = faqList[indexPath.row]
         print(selectedItem.question)
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard = UIStoryboard(name: "Faq", bundle: nil)
         let vc = storyboard.instantiateViewController(
              withIdentifier: "FAQDetailsViewController"
              
