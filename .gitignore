@@ -44,8 +44,3 @@ vcs.xml
 # VS Code
 .vscode
 
-# Claude
-CLAUDE.md
-.claude
-settings.local.json
-
