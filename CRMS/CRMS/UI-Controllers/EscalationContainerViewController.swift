@@ -53,6 +53,10 @@ class EscalationContainerViewController: UIViewController {
      //pie chart function
     private func showPieChart(escalated: Int, nonEscalated: Int){
         
+        //calculating escalating rate
+        let total = escalated + nonEscalated
+        let rate = (escalated/total) * 100
+        
         //removing any previous chart views from the container
         pieChart.subviews.forEach {
             $0.removeFromSuperview()
@@ -91,27 +95,39 @@ class EscalationContainerViewController: UIViewController {
 
         //attaching dataset to chart
         dataSet.entryLabelColor = AppColors.text
+        
+        //removing the percentage from around the chart
+        chart.drawEntryLabelsEnabled = false
+        dataSet.drawValuesEnabled = false
 
-        //the persantage will be outside the slice
-        chart.usePercentValuesEnabled = true //make the values visible
-        dataSet.valueFont = AppTypography.chartLabel
-        dataSet.yValuePosition = .outsideSlice
-        dataSet.xValuePosition = .outsideSlice
-        dataSet.valueLinePart1Length = 0.3
-        dataSet.valueLinePart2Length = 0.2
-        dataSet.valueLinePart1OffsetPercentage = 1.2
-        dataSet.valueTextColor = AppColors.primary
         dataSet.valueLineWidth = 0
         dataSet.valueLineColor = .clear
         dataSet.label = "" //removing the word dataset
         
         
         chart.data = PieChartData(dataSet: dataSet)
+        
         //doughnut chart
         chart.drawHoleEnabled = true
         chart.holeRadiusPercent = 0.75
         chart.holeColor = AppColors.background
         
+        //write inside the hole
+        chart.drawCenterTextEnabled = true
+        let text = "Escalation Rate\n\(rate)%"
+        
+        let style = NSMutableParagraphStyle()
+        style.alignment = .center
+        
+        let centerText = NSMutableAttributedString()
+        centerText.append(NSAttributedString (
+            string: text,
+            attributes: [.font: AppTypography.title1,
+                         .foregroundColor: AppColors.text,
+                         .paragraphStyle: style])
+        )
+        
+        chart.centerAttributedText = centerText
         
         chart.animate(yAxisDuration: 1.0) //animated on load
         

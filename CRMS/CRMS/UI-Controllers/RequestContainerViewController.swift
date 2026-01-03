@@ -133,7 +133,7 @@ class RequestContainerViewController: UIViewController {
         
         //write inside the hole
         chart.drawCenterTextEnabled = true
-        let text = "Total Requests \n\(total)"
+        let text = "Total Requests\n\(total)"
         
         let style = NSMutableParagraphStyle()
         style.alignment = .center

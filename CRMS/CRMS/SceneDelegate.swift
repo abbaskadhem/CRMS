@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let rememberUser = UserDefaults.standard.bool(forKey: "rememberMeButton")
         guard rememberUser, let currentUser = Auth.auth().currentUser else {
             let loginVC = UIStoryboard(name: "Main", bundle: nil)
-                .instantiateViewController(identifier: "LoginViewController") as! LoginViewController
+                .instantiateViewController(identifier: "WelcomeViewController") as! WelcomeViewController
             window?.rootViewController = loginVC
             window?.makeKeyAndVisible()
             return
