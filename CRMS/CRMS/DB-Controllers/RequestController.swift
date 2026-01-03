@@ -786,6 +786,7 @@ final class RequestController {
         try await createHistoryRecord(requestRef: requestId, action: .assigned, sentBackReason: nil, reassignReason: nil)
         
         
+        //TODO: Create Notification
         //send a notification the requester and technician
        let reqNo = requestData.self["requestNo"] as! String
         let requester = requestData.self["requesterRef"] as! String
@@ -873,6 +874,8 @@ final class RequestController {
 
         // Create history record for the send back action
         try await createHistoryRecord(requestRef: requestId, action: .sentBack, sentBackReason: reason, reassignReason: nil)
+        
+        
     }
 
 // MARK: - Schedule Request
@@ -970,6 +973,31 @@ final class RequestController {
 
         // Create history record for starting the request
         try await createHistoryRecord(requestRef: requestId, action: .started, sentBackReason: nil, reassignReason: nil)
+        
+        //TODO: Create Notification
+        //send a notification the requester
+       let reqNo = requestData.self["requestNo"] as! String
+        let requester = requestData.self["requesterRef"] as! String
+        
+        let toWhoRequester: [String] = [requester]
+        
+        //requester notif
+        let notifRequester: NotificationModel = NotificationModel(
+            id: UUID().uuidString,
+            title: "Servicer started working on request number \"\(reqNo)\".",
+            description: nil,
+            toWho: toWhoRequester,
+            type: NotiType.notification,
+            requestRef: requestId.uuidString,
+            createdOn: Date(),
+            createdBy: userId,
+            modifiedOn: nil,
+            modifiedBy: nil,
+            inactive: false
+        )
+        await NotifCreateViewController.shared.createNotif(data: notifRequester)
+        
+        
     }
 
 // MARK: - Complete Request
@@ -1018,6 +1046,7 @@ final class RequestController {
         // Create history record for completing the request
         try await createHistoryRecord(requestRef: requestId, action: .completed, sentBackReason: nil, reassignReason: nil)
         
+        //TODO: Send notification
         //send a notification the requester
        let reqNo = requestData.self["requestNo"] as! String
         let requester = requestData.self["requesterRef"] as! String

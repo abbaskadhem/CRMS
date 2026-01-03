@@ -12,6 +12,16 @@ class AddViewController: UIViewController {
     var parentCategories: [ItemCategoryModel] = []
     var subCategories: [ItemCategoryModel] = []
     
+    override func viewWillAppear(_ animated: Bool) {
+        Task{
+            do{
+                parentCategories = try await InventoryService.shared.getParentCategories()
+                
+                self.parentCategories = parentCategories
+
+            }catch{}
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,26 +63,9 @@ class AddViewController: UIViewController {
                 categoryVC.modalPresentationStyle = .pageSheet // or .popover
                 categoryVC.sheetPresentationController?.detents = [.medium()] // adjust height
                 categoryVC.sheetPresentationController?.prefersGrabberVisible = true
-                if parentCategories.isEmpty {
-                    //refetch parents category
-                    Task{
-                        do{
-                            parentCategories = try await InventoryService.shared.getParentCategories()
-                            
-                            categoryVC.categoriesArray = self.parentCategories
-
-                        }catch{}
-                    }
-                    
-                }else{
-                    categoryVC.categoriesArray = self.parentCategories
-
-                }
                
-
                 self.present(categoryVC, animated: true)
             }
-
     }
     
 

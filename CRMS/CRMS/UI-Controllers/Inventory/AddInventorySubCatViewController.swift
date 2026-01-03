@@ -46,37 +46,46 @@ class AddInventorySubCatViewController: UIViewController,
         
         @IBOutlet weak var stackView: UIStackView!
         
-        override func viewDidLoad() {
-            super.viewDidLoad()
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
-               userid = SessionManager.shared.currentUserId
+        userid = SessionManager.shared.currentUserId
 
-               categories.delegate = self
-               categories.dataSource = self
+        categories.delegate = self
+        categories.dataSource = self
 
-               categoryNames = categoriesArray.map { $0.name }
+        Task {
+            do {
+                categoriesArray = try await InventoryService.shared.getAllCategories()
+                
+                categoriesArray = categoriesArray.filter { $0.isParent }
 
-               if let first = categoriesArray.first {
-                   selectedCategory = first
-               }
+                categoryNames = categoriesArray.map { $0.name }
 
-               categories.reloadAllComponents()
-            
-            if subCategoriesArray.isEmpty {
-                Task {
-                    do {
-                        subCategoriesArray = try await InventoryService.shared.getSubCategories()
-
-                        DispatchQueue.main.async {
-                            self.categories.reloadAllComponents()
-                        }
-                    } catch {
-                        print("❌ Failed to load subcategories:", error)
-                    }
+                if let first = categoriesArray.first {
+                    selectedCategory = first
                 }
+
+                await MainActor.run {
+                    self.categories.reloadAllComponents()
+                }
+
+            } catch {
+                print("❌ Failed to load categories:", error)
             }
-            configUI()
         }
+
+        Task {
+            do {
+                subCategoriesArray = try await InventoryService.shared.getSubCategories()
+            } catch {
+                print("❌ Failed to load subcategories:", error)
+            }
+        }
+
+        configUI()
+    }
+
 
 
         
@@ -105,7 +114,7 @@ class AddInventorySubCatViewController: UIViewController,
                    return
                }
 
-               if subCategoriesArray.contains(where: { $0.name == title }) {
+            if subCategoriesArray.contains(where: { $0.name == title && $0.parentCategoryRef == selectedCategory.id}) {
                    showErrorBanner(title: "Sub-Category already exists")
                    return
                }
