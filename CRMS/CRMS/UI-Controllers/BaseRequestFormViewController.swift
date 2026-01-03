@@ -586,6 +586,11 @@ final class BaseRequestFormViewController: UIViewController {
                 if let userType = UserType(rawValue: userTypeRaw) {
                     await MainActor.run {
                         self.currentUserType = userType
+
+                        // For create mode, setup action buttons after user type is fetched
+                        if case .create = self.mode {
+                            self.setupActionButtons(for: userType, status: .submitted)
+                        }
                     }
                 }
             } catch {
@@ -822,13 +827,20 @@ final class BaseRequestFormViewController: UIViewController {
     private func setupAdminActions(for status: Status) {
         switch status {
         case .submitted:
-            // Show "Assign Servicer" button
-            let assignButton = UIButton(type: .system)
-            styleFilledButton(assignButton)
-            assignButton.setTitle("Assign Servicer", for: .normal)
-            assignButton.addTarget(self, action: #selector(assignServicerButtonTapped), for: .touchUpInside)
-            assignButton.heightAnchor.constraint(equalToConstant: AppSize.buttonHeight).isActive = true
-            actionButtonsStackView.addArrangedSubview(assignButton)
+            guard let model = requestModel else { return }
+
+            if model.request.priority == nil {
+                // Priority not set - show "Assign Priority" button ONLY
+                addPriorityButton()
+            } else if model.request.servicerRef == nil || model.request.servicerRef?.isEmpty == true {
+                // Priority set but servicer not assigned - show "Assign Servicer" button ONLY
+                let assignButton = UIButton(type: .system)
+                styleFilledButton(assignButton)
+                assignButton.setTitle("Assign Servicer", for: .normal)
+                assignButton.addTarget(self, action: #selector(assignServicerButtonTapped), for: .touchUpInside)
+                assignButton.heightAnchor.constraint(equalToConstant: AppSize.buttonHeight).isActive = true
+                actionButtonsStackView.addArrangedSubview(assignButton)
+            }
 
         case .assigned, .onHold, .delayed:
             // Show "Reassign" button
@@ -842,6 +854,15 @@ final class BaseRequestFormViewController: UIViewController {
         default:
             break
         }
+    }
+
+    private func addPriorityButton() {
+        let priorityButton = UIButton(type: .system)
+        styleFilledButton(priorityButton)
+        priorityButton.setTitle("Assign Priority", for: .normal)
+        priorityButton.addTarget(self, action: #selector(assignPriorityButtonTapped), for: .touchUpInside)
+        priorityButton.heightAnchor.constraint(equalToConstant: AppSize.buttonHeight).isActive = true
+        actionButtonsStackView.addArrangedSubview(priorityButton)
     }
 
     private func setupRequesterActions(for status: Status) {
@@ -1242,6 +1263,45 @@ final class BaseRequestFormViewController: UIViewController {
                 await MainActor.run {
                     self.activityIndicator.stopAnimating()
                     self.showServicerSelection(servicers: servicers, mode: .reassign, requestId: requestId)
+                }
+            } catch {
+                await MainActor.run {
+                    self.activityIndicator.stopAnimating()
+                    self.showAlert(title: "Error", message: error.localizedDescription)
+                }
+            }
+        }
+    }
+
+    @objc private func assignPriorityButtonTapped() {
+        guard let requestId = requestModel?.request.id else { return }
+        showPrioritySelection(requestId: requestId)
+    }
+
+    private func showPrioritySelection(requestId: UUID) {
+        let title = "Select Priority"
+        let priorities: [Priority] = [.low, .moderate, .high]
+        let priorityNames = priorities.map { $0.displayString }
+
+        showSelectionSheet(title: title, items: priorityNames) { [weak self] index in
+            let selectedPriority = priorities[index]
+            self?.performPriorityAssignment(requestId: requestId, priority: selectedPriority)
+        }
+    }
+
+    private func performPriorityAssignment(requestId: UUID, priority: Priority) {
+        activityIndicator.startAnimating()
+
+        Task {
+            do {
+                try await RequestController.shared.assignPriority(requestId: requestId, priority: priority)
+
+                await MainActor.run {
+                    self.activityIndicator.stopAnimating()
+                    self.showAlert(title: "Success", message: "Priority has been set to \(priority.displayString).") { [weak self] in
+                        // Refresh the request details to show updated priority
+                        self?.fetchRequestDetails(requestId: requestId)
+                    }
                 }
             } catch {
                 await MainActor.run {

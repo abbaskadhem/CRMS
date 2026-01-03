@@ -59,19 +59,6 @@ final class RequestController {
     private var buildingsCache: [UUID: Building] = [:]
     private var roomsCache: [UUID: Room] = [:]
     private var categoriesCache: [UUID: RequestCategory] = [:]
-    
-// MARK: - Get Priority
-
-    /// Determines the priority level based on category and subcategory
-    /// - Parameters:
-    ///   - requestCategoryRef: UUID of the main category
-    ///   - requestSubcategoryRef: UUID of the subcategory
-    /// - Returns: The appropriate Priority level for the request
-    /// - Note: Currently returns .low as placeholder. TODO: Implement priority logic based on category rules.
-    func getPriority(requestCategoryRef: UUID, requestSubcategoryRef: UUID) -> Priority {
-        // TODO: Implement logic to determine priority based on category and subcategory
-        return .low
-    }
 
 // MARK: - Autonumber Generation
 
@@ -178,7 +165,7 @@ final class RequestController {
             roomRef: roomRef,
             description: description,
             images: images,
-            priority: getPriority(requestCategoryRef: requestCategoryRef,requestSubcategoryRef: requestSubcategoryRef),
+            priority: nil,
             status: .submitted,
             ownerId: userId,
 
@@ -984,5 +971,59 @@ final class RequestController {
 
         // Create history record for the reassignment
         try await createHistoryRecord(requestRef: requestId, action: .reassigned, sentBackReason: nil, reassignReason: reason)
+    }
+
+// MARK: - Assign Priority
+
+    /// Allows an admin to assign priority to a request (one-time only, when request is first submitted)
+    /// - Parameters:
+    ///   - requestId: The UUID of the request
+    ///   - priority: The priority level to assign (Low/Moderate/High)
+    /// - Throws: RequestError or NetworkError if validation fails
+    func assignPriority(requestId: UUID, priority: Priority) async throws {
+        guard await hasInternetConnection() else {
+            throw NetworkError.noInternet
+        }
+
+        let userId = try session.requireUserId()
+
+        // Validate that the current user is an admin
+        let userType = try await session.getUserType()
+        guard userType == UserType.admin.rawValue else {
+            throw RequestError.unauthorizedAction
+        }
+
+        // Fetch the request and validate
+        let requestDoc = try await db.collection("Request").document(requestId.uuidString).getDocument()
+        guard let requestData = requestDoc.data() else {
+            throw RequestError.requestNotFound
+        }
+
+        // Validate request status is submitted
+        guard let statusRaw = requestData["status"] as? Int,
+              let status = Status(rawValue: statusRaw),
+              status == .submitted else {
+            throw RequestError.invalidRequestStatus
+        }
+
+        // Validate priority is currently nil (not already assigned)
+        if let existingPriority = requestData["priority"] as? Int, existingPriority != 0 {
+            throw RequestError.invalidRequestStatus
+        }
+
+        // Validate servicer is not yet assigned
+        if let servicerRef = requestData["servicerRef"] as? String, !servicerRef.isEmpty {
+            throw RequestError.requestAlreadyAssigned
+        }
+
+        // Update the request with the new priority
+        try await db.collection("Request").document(requestId.uuidString).updateData([
+            "priority": priority.rawValue,
+            "modifiedOn": Timestamp(date: Date()),
+            "modifiedBy": userId
+        ])
+
+        // Create history record for the priority assignment
+        try await createHistoryRecord(requestRef: requestId, action: .priorityChanged, sentBackReason: nil, reassignReason: nil)
     }
 }

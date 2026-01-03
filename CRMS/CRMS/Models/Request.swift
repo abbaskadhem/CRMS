@@ -112,6 +112,7 @@ enum Action: Int, Codable {
     case completed = 1005
     case delayed = 1006
     case reassigned = 1007
+    case priorityChanged = 1008
 }
 
 // MARK: - Request
