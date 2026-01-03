@@ -58,6 +58,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         updateBiometricLabelVisibility()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateBiometricLabelVisibility()
+    }
     
     //showing cursor
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
