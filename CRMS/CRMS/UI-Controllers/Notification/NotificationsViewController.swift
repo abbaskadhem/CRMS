@@ -155,14 +155,12 @@ class NotificationsViewController: UIViewController,
             switch notification.type {
 
             case .announcement:
-                print("announcement")
                 if isAdmin && notification.createdBy == user.id {
                     return true
                 }
                 return notification.toWho.contains(user.id)
 
             case .notification:
-                print("notification")
                 return notification.toWho.contains(user.id)
             }
         }
@@ -322,7 +320,7 @@ class NotificationsViewController: UIViewController,
         
         //TODO: Navigate to the requests page
         if segue.identifier == "ShowNotifSegue",
-           let vc = segue.destination as? RequestsViewController {
+           let _ = segue.destination as? RequestsViewController {
         }
             
     }

@@ -23,6 +23,18 @@ class AddInventoryCatViewController: UIViewController {
     @IBOutlet weak var stackView: UIStackView!
     
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        Task{
+            do{
+                self.categoriesArray = try await InventoryService.shared.getParentCategories()
+                
+            }catch{
+                print("❌ Failed to load categories:", error)
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
