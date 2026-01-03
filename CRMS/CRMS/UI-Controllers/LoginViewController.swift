@@ -53,14 +53,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         let tapGesture2 = UITapGestureRecognizer(target: self, action: #selector(biometricsTapped))
         biometrics.isUserInteractionEnabled = true
         biometrics.addGestureRecognizer(tapGesture2)
-        
-        //updateBiometricLabelVisibility
-        updateBiometricLabelVisibility()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        updateBiometricLabelVisibility()
+
     }
     
     //showing cursor
@@ -138,7 +131,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             }
             
             UserDefaults.standard.set(user.uid, forKey: "userID")
-            self?.updateBiometricLabelVisibility()
             self?.checkUserRole(for: user)
         }
     }
@@ -224,20 +216,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 }
             }
         }
-    }
-    
-    //show/hide face id label
-    private func updateBiometricLabelVisibility(){
-        
-        //checking if the device supports Face ID / Touch ID
-        let context = LAContext()
-        var error: NSError?
-        let available = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
-        
-        let loggedin = (Auth.auth().currentUser != nil)
-        
-        //showing label only if user have a firebase session & device supports biometrics
-        biometrics.isHidden = !(available && loggedin)
     }
 
     
