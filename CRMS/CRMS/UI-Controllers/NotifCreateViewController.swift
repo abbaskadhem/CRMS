@@ -183,9 +183,6 @@ class NotifCreateViewController: UIViewController {
             //send announcement to all users in the toWho
             showBanner(title: data.title,nil, data.toWho)
             
-            //send push notif
-
-            
         } catch {
             // show error to user
             print("Notification not created")
@@ -288,7 +285,7 @@ class NotifCreateViewController: UIViewController {
         dismissConfirmationOverlay()
     }
     
-    //MARK: conformation save
+    //MARK: Create Announcement
     @objc private func confirmSaveTapped() {
         guard isTechSelected || isStudentSelected || isStaffSelected else {
             showErrorBanner(title: "Select at least one target")

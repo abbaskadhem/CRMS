@@ -9,6 +9,8 @@ import UIKit
 import FirebaseFirestore
 
 class NotifDetailViewController: UIViewController {
+    
+    var notificationID: String?
 
     var notification: NotificationModel!
     var currentUser : User!

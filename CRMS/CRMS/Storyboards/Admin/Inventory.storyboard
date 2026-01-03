@@ -497,7 +497,7 @@
                                             <constraint firstAttribute="height" constant="406" id="QRE-jK-thf"/>
                                         </constraints>
                                         <prototypes>
-                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="CategoryCell" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="4" indentationWidth="0.0" reuseIdentifier="InventoryCategoryCell" textLabel="FEh-S3-aws" style="IBUITableViewCellStyleDefault" id="gow-fA-c80" customClass="InventoryCategoryCell" customModule="CRMS" customModuleProvider="target">
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="InventoryCategoryCell" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="4" indentationWidth="0.0" reuseIdentifier="InventoryCategoryCell" textLabel="FEh-S3-aws" style="IBUITableViewCellStyleDefault" id="gow-fA-c80" customClass="InventoryCategoryCell" customModule="CRMS" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="50" width="329" height="43.666667938232422"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="gow-fA-c80" id="8yg-jD-Ttp">
