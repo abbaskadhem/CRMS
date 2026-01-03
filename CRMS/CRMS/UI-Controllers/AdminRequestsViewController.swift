@@ -190,12 +190,10 @@ extension AdminRequestsViewController: UITableViewDelegate, UITableViewDataSourc
 
         let request = filteredRequests[indexPath.row]
 
-        let storyboard = UIStoryboard(name: "AdminRequests", bundle: nil)
-        if let detailVC = storyboard.instantiateViewController(withIdentifier: "RequestDetailViewController") as? RequestDetailViewController {
-            detailVC.requestId = request.request.id
-            detailVC.modalPresentationStyle = .fullScreen
-            present(detailVC, animated: true)
-        }
+        // Use BaseRequestFormViewController in view mode
+        let detailVC = BaseRequestFormViewController(mode: .view(requestId: request.request.id))
+        detailVC.modalPresentationStyle = .fullScreen
+        present(detailVC, animated: true)
     }
 }
 
