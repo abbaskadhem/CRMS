@@ -41,7 +41,7 @@ final class SettingsViewController: UIViewController {
         // Style logout button
         logoutButton?.backgroundColor = AppColors.error
         logoutButton?.setTitleColor(.white, for: .normal)
-        logoutButton?.layer.cornerRadius = 8
+        logoutButton?.layer.cornerRadius = AppSize.cornerRadius
     }
 
     private func loadUserInfo() {
@@ -83,11 +83,5 @@ final class SettingsViewController: UIViewController {
         } catch {
             showAlert(title: "Error", message: error.localizedDescription)
         }
-    }
-
-    private func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
     }
 }

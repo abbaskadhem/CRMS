@@ -2,39 +2,41 @@
 //  ForgotPasswordViewController.swift
 //  CRMS
 //
-//  Created by Hoor Hasan
+//  Created by Hoor Hasan 
 //
 
 import UIKit
 import FirebaseAuth
-import FirebaseStorage
-import FirebaseFirestore
 
 class ForgotPasswordViewController: UIViewController {
 
+    
     //IBOutlets
     @IBOutlet weak var emailTextField: UITextField!
+
     @IBOutlet weak var sendButton: UIButton!
-    @IBOutlet weak var resend: UILabel!
-    @IBOutlet weak var counter: UILabel!
+
+    @IBOutlet weak var resend : UILabel!
+    @IBOutlet weak var counter : UILabel!
     
-    //set timer & count down
+    ////set timer & count down
     var timer: Timer?
-    var countDown = 30
+    var countDown = 30 
 
     //property to disable the send button ONLY if text field is empty
-    var isSendButtonEnabled: Bool {
-        guard let email = emailTextField.text, !email.isEmpty else {
-            return false
+    var isSendButtonEnabled : Bool {
+        guard let email = emailTextField.text else {
+            return false // will return false if not empty
         }
-        return true
+        return !email.isEmpty
     }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //rounding send button radius
-        sendButton.layer.cornerRadius = 20
+                
+        //rounding send button raduis
+        sendButton.layer.cornerRadius = AppSize.cornerRadiusXL
         
         self.title = "Forgot Password"
 
@@ -55,91 +57,100 @@ class ForgotPasswordViewController: UIViewController {
         resend.addGestureRecognizer(tapGesture)
     }
 
+    //make the page appears as bottom sheet
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        timer?.invalidate() // Clean up timer when leaving VC [web:77][web:82]
-    }
-    
-    deinit {
-        timer?.invalidate() // Final cleanup [web:80]
     }
 
     //resend label tapped
     @objc private func resendTapped(){
+
         // Hide the resend label and restart the timer
         resend.isHidden = true
 
         //fade effect
         UIView.animate(withDuration: 0.5, animations: {
             self.resend.alpha = 0.0 }) { _ in
+
             self.resend.alpha = 1.0 // Reset alpha for next time
             self.startTimer() // Restart the timer
         }
         
         //resend forgot password link
         sendLink()
+        
     }
     
     // Enables / disables send button while user types
     @objc private func textFieldsDidChange(){
-        sendButton.isEnabled = isSendButtonEnabled
-        sendButton.alpha = isSendButtonEnabled ? 1.0 : 0.75
+        if isSendButtonEnabled{
+            sendButton.isEnabled = true
+            sendButton.alpha = 1.0
+        }
+        else {
+            sendButton.isEnabled = false
+            sendButton.alpha = 0.75
+        }
     }
 
     //send reset password email
     @IBAction func sendButtonTapped(_ sender: UIButton) {
+
+        //send forgot password link
         sendLink()
+         
     }
 
+    /// Validates email and sends password reset link if email exists in database
     private func sendLink(){
-        //email input validation
+        // Email input validation
         guard let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !email.isEmpty else {
+            !email.isEmpty else {
             showAlert(title: "Missing Email", message: "Please Enter Your Email Address")
             return
         }
 
-        //disable button during request
+        // Disable button during request
         sendButton.isEnabled = false
         sendButton.alpha = 0.75
-        
-        //checking if the email is correctly and in the db
-        let db = Firestore.firestore()
 
-        db.collection("User").whereField("email", isEqualTo: email).getDocuments { [weak self] snapshot, error in
-            if let error = error {
-                self?.showAlert(title: "Error", message: error.localizedDescription)
-                self?.sendButton.isEnabled = true
-                self?.sendButton.alpha = 1.0
-                return
-            }
-            
-            guard let self = self else { return }
-            
-            if let snapshot = snapshot, !snapshot.documents.isEmpty {
-                // Email exists, send reset link ✅ Fixed: no label needed
-                self.sendPasswordReset(email)
-            } else {
-                self.showAlert(title: "Email Not Found", message: "No account found with this email")
-                self.sendButton.isEnabled = true
-                self.sendButton.alpha = 1.0
+        // Check if email exists in the database using SessionManager
+        Task {
+            do {
+                let exists = try await SessionManager.shared.emailExists(email)
+
+                await MainActor.run {
+                    if exists {
+                        // Email exists, send reset link
+                        self.sendPasswordReset(email)
+                    } else {
+                        self.showAlert(title: "Email Not Found", message: "No account found with this email")
+                        self.sendButton.isEnabled = true
+                        self.sendButton.alpha = 1.0
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    self.showAlert(title: "Error", message: error.localizedDescription)
+                    self.sendButton.isEnabled = true
+                    self.sendButton.alpha = 1.0
+                }
             }
         }
     }
 
-    private func sendPasswordReset(_ email: String){ // ✅ Fixed parameter label
+    private func sendPasswordReset(_ email: String){
+        //send reset password email using firebase
         Auth.auth().sendPasswordReset(withEmail: email) { [weak self] error in
+
             //re-enable button
             self?.sendButton.isEnabled = true
             self?.sendButton.alpha = 1.0
 
             if let error = error {
                 self?.showAlert(title: "Error", message: error.localizedDescription)
-            } else {
+            }
+            else {
                 self?.showAlert(title: "Email Sent", message: "A password reset link has been sent to your email")
                 self?.startTimer() // Start timer after sending email
             }
@@ -162,7 +173,8 @@ class ForgotPasswordViewController: UIViewController {
         if countDown > 0 {
             countDown -= 1
             counter.text = "Resend in \(countDown)s"
-        } else {
+        } 
+        else {
             // Timer finished
             timer?.invalidate()
             resend.isHidden = false
@@ -170,10 +182,17 @@ class ForgotPasswordViewController: UIViewController {
         }
     }
 
-    //helper method for alert messages
-    private func showAlert(title: String, message: String){ // Made private
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
+
+
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
     }
+    */
+
+
 }

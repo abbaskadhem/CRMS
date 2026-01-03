@@ -11,7 +11,7 @@ import FirebaseStorage
 import FirebaseFirestore
 import LocalAuthentication
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController, UITextFieldDelegate {
 
     //IBOutlets
     @IBOutlet weak var backgroundLogin: UIView!
@@ -43,11 +43,14 @@ class LoginViewController: UIViewController {
 
         //hiding "back" button in the navigation bar
         navigationItem.hidesBackButton = true
-
+        
         //disable login button intially when the page loaded
         loginButton.isEnabled = false
         loginButton.alpha = 0.75
-
+        
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
+        
         //listening to text changes for live validation
         emailTextField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
         passwordTextField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
@@ -62,7 +65,7 @@ class LoginViewController: UIViewController {
         faceTouchId.isUserInteractionEnabled = true
         faceTouchId.addGestureRecognizer(tapGesture2)
 
-        //showing/hidding Use Face/Touch Id to Login accourding to the saved prefrences
+        //showing/hidding Use Face/Touch Id to Login according to the saved prefrences
          updateBiometricLabelVisibility()
     }
 
@@ -71,6 +74,17 @@ class LoginViewController: UIViewController {
 
         //refreshing Face/Touch ID label every time the page appears after logout
         updateBiometricLabelVisibility()
+    }
+    
+    //showing cursor
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == emailTextField {
+            passwordTextField.becomeFirstResponder() //move cursor to password textField
+        }
+        else {
+            textField.resignFirstResponder() //hide keyboard
+        }
+        return true
     }
 
     @objc private func textFieldsDidChange(){
@@ -269,52 +283,47 @@ class LoginViewController: UIViewController {
             self?.checkUserRole(for: user)
         }
     }
-
-    //check for role function
+    
+    //Checks the user role via SessionManager and navigates to the appropriate storyboard
     private func checkUserRole(for user: FirebaseAuth.User) {
-        let db = Firestore.firestore()
-            
-            // Look up user document by Firebase Auth UID
-        db.collection("User").document(user.uid).getDocument { [weak self] snapshot, error in
-            guard let self = self else { return }
-            
-            if let error = error {
-                self.showAlert(title: "Error", message: error.localizedDescription)
-                return
-            }
-            
-            guard let snapshot = snapshot, snapshot.exists, let data = snapshot.data() else {
-                self.showAlert(title: "User Not Found", message: "No user profile found. Please contact support.")
-                return
-            }
-            
-            let role = data["type"] as? Int ?? -1
-            
-            var vc: UIViewController?
-            
-            switch role {
-            case UserType.admin.rawValue:
-                let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
-                vc = adminStoryboard.instantiateInitialViewController()
-            case UserType.servicer.rawValue:
-                // TODO: Create separate Servicer storyboard
-                let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
-                vc = adminStoryboard.instantiateInitialViewController()
-            case UserType.requester.rawValue:
-                let requesterStoryboard = UIStoryboard(name: "Requester", bundle: nil)
-                vc = requesterStoryboard.instantiateInitialViewController()
-            default:
-                self.showAlert(title: "Invalid Role", message: "Unknown user role.")
-                return
-            }
-            
-            if let vc = vc {
-                // Navigate using navigation controller or present modally
-                if let navController = self.navigationController {
-                    navController.pushViewController(vc, animated: true)
-                } else {
-                    vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: true)
+        Task {
+            do {
+                // Use SessionManager to get user type from database
+                let role = try await SessionManager.shared.getUserType()
+
+                await MainActor.run {
+                    var vc: UIViewController?
+
+                    switch role {
+                    case UserType.admin.rawValue:
+                        let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
+                        vc = adminStoryboard.instantiateInitialViewController()
+                    case UserType.servicer.rawValue:
+                        // TODO: Create separate Servicer storyboard
+                        let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
+                        vc = adminStoryboard.instantiateInitialViewController()
+                    case UserType.requester.rawValue:
+                        let requesterStoryboard = UIStoryboard(name: "Requester", bundle: nil)
+                        vc = requesterStoryboard.instantiateInitialViewController()
+                    default:
+                        self.showAlert(title: "Invalid Role", message: "Unknown user role.")
+                        return
+                    }
+
+                    if let vc = vc {
+                        // Navigate using navigation controller or present modally
+                        if let navController = self.navigationController {
+                            navController.pushViewController(vc, animated: true)
+                        } else {
+                            vc.modalPresentationStyle = .fullScreen
+                            self.present(vc, animated: true)
+                        }
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    self.showAlert(title: "Error", message: error.localizedDescription)
+>>>>>>> main
                 }
             }
         }
@@ -323,7 +332,7 @@ class LoginViewController: UIViewController {
     //this method is for rounding the bottom edge of the view
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        backgroundLogin.layer.cornerRadius = 200
+        backgroundLogin.layer.cornerRadius = 200  // Large custom radius for background design
         backgroundLogin.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         backgroundLogin.layer.masksToBounds = true
     }

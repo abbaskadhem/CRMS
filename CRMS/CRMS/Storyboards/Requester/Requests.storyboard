@@ -16,23 +16,31 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <!-- Logo -->
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Light mode logo, compressed &amp; cropped" translatesAutoresizingMaskIntoConstraints="NO" id="S65-61-jC0">
-                                <rect key="frame" x="146.66666666666666" y="85.666666666666686" width="100" height="100"/>
+                                <rect key="frame" x="146" y="59" width="100" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="MGM-TZ-Hje"/>
-                                    <constraint firstAttribute="height" constant="100" id="yQS-cF-3Pb"/>
+                                    <constraint firstAttribute="height" constant="50" id="yQS-cF-3Pb"/>
                                 </constraints>
                             </imageView>
+                            <!-- Title -->
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Requests" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J0N-lv-gil">
-                                <rect key="frame" x="148" y="188.66666666666666" width="97" height="28"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <rect key="frame" x="147" y="117" width="99" height="29"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                 <color key="textColor" red="0.058823529411764705" green="0.09803921568627451" blue="0.16078431372549021" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CFu-YT-YJN">
-                                <rect key="frame" x="16" y="224.66666666666669" width="361" height="543.33333333333326"/>
-                                <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                            </view>
+                            <!-- Table View -->
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="requests-table">
+                                <rect key="frame" x="0.0" y="154" width="393" height="614"/>
+                                <color key="backgroundColor" red="0.96078431372549022" green="0.93725490196078431" blue="0.92156862745098034" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </tableView>
+                            <!-- Activity Indicator -->
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="requests-activity">
+                                <rect key="frame" x="178" y="443" width="37" height="37"/>
+                            </activityIndicatorView>
+                            <!-- Add Button -->
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="addBtn-001">
                                 <rect key="frame" x="309" y="680" width="60" height="60"/>
                                 <constraints>
@@ -54,18 +62,25 @@
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="y2X-CL-0qc"/>
-                        <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" red="0.96078431372549022" green="0.93725490196078431" blue="0.92156862745098034" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="S65-61-jC0" firstAttribute="top" secondItem="y2X-CL-0qc" secondAttribute="top" multiplier="0.7" constant="3" id="1nM-jK-aXi"/>
-                            <constraint firstItem="y2X-CL-0qc" firstAttribute="trailing" secondItem="CFu-YT-YJN" secondAttribute="trailing" constant="16" id="IA7-Tl-beM"/>
-                            <constraint firstItem="J0N-lv-gil" firstAttribute="top" secondItem="S65-61-jC0" secondAttribute="bottom" constant="3" id="IHt-9S-mKL"/>
-                            <constraint firstItem="y2X-CL-0qc" firstAttribute="bottom" secondItem="CFu-YT-YJN" secondAttribute="bottom" constant="16" id="QhS-5n-ZJt"/>
-                            <constraint firstItem="CFu-YT-YJN" firstAttribute="leading" secondItem="y2X-CL-0qc" secondAttribute="leading" constant="16" id="SOj-1N-mXe"/>
-                            <constraint firstItem="CFu-YT-YJN" firstAttribute="top" secondItem="J0N-lv-gil" secondAttribute="bottom" constant="8" id="luF-8D-mOQ"/>
-                            <constraint firstItem="S65-61-jC0" firstAttribute="centerX" secondItem="Xfn-qy-Zca" secondAttribute="centerX" id="xKe-Hm-iA7"/>
-                            <constraint firstItem="J0N-lv-gil" firstAttribute="centerX" secondItem="Xfn-qy-Zca" secondAttribute="centerX" id="xL5-gS-bem"/>
+                            <!-- Logo -->
+                            <constraint firstItem="S65-61-jC0" firstAttribute="top" secondItem="y2X-CL-0qc" secondAttribute="top" constant="8" id="req-logo-top"/>
+                            <constraint firstItem="S65-61-jC0" firstAttribute="centerX" secondItem="Xfn-qy-Zca" secondAttribute="centerX" id="req-logo-cx"/>
+                            <!-- Title -->
+                            <constraint firstItem="J0N-lv-gil" firstAttribute="top" secondItem="S65-61-jC0" secondAttribute="bottom" constant="8" id="req-title-top"/>
+                            <constraint firstItem="J0N-lv-gil" firstAttribute="centerX" secondItem="Xfn-qy-Zca" secondAttribute="centerX" id="req-title-cx"/>
+                            <!-- Table View -->
+                            <constraint firstItem="requests-table" firstAttribute="top" secondItem="J0N-lv-gil" secondAttribute="bottom" constant="8" id="req-table-top"/>
+                            <constraint firstItem="requests-table" firstAttribute="leading" secondItem="Xfn-qy-Zca" secondAttribute="leading" id="req-table-lead"/>
+                            <constraint firstItem="requests-table" firstAttribute="trailing" secondItem="Xfn-qy-Zca" secondAttribute="trailing" id="req-table-trail"/>
+                            <constraint firstItem="y2X-CL-0qc" firstAttribute="bottom" secondItem="requests-table" secondAttribute="bottom" id="req-table-bot"/>
+                            <!-- Activity Indicator -->
+                            <constraint firstItem="requests-activity" firstAttribute="centerX" secondItem="Xfn-qy-Zca" secondAttribute="centerX" id="req-activity-cx"/>
+                            <constraint firstItem="requests-activity" firstAttribute="centerY" secondItem="requests-table" secondAttribute="centerY" id="req-activity-cy"/>
+                            <!-- Add Button -->
                             <constraint firstItem="y2X-CL-0qc" firstAttribute="trailing" secondItem="addBtn-001" secondAttribute="trailing" constant="24" id="addBtn-trail"/>
-                            <constraint firstItem="y2X-CL-0qc" firstAttribute="bottom" secondItem="addBtn-001" secondAttribute="bottom" constant="112" id="addBtn-bot"/>
+                            <constraint firstItem="y2X-CL-0qc" firstAttribute="bottom" secondItem="addBtn-001" secondAttribute="bottom" constant="28" id="addBtn-bot"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="" id="9Qm-wT-Nbi">
@@ -86,6 +101,8 @@
                     </tabBarItem>
                     <connections>
                         <outlet property="addButton" destination="addBtn-001" id="addBtn-outlet"/>
+                        <outlet property="tableView" destination="requests-table" id="req-table-outlet"/>
+                        <outlet property="activityIndicator" destination="requests-activity" id="req-activity-outlet"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pis-7f-ddf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

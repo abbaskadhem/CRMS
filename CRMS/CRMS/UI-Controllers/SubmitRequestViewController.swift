@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import FirebaseStorage
 
 final class SubmitRequestViewController: UIViewController {
 
@@ -96,7 +95,7 @@ final class SubmitRequestViewController: UIViewController {
         button.setTitleColor(AppColors.placeholder, for: .normal)
         button.contentHorizontalAlignment = .left
         button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
-        button.layer.cornerRadius = 8
+        button.layer.cornerRadius = AppSize.cornerRadius
         button.layer.borderWidth = 1
         button.layer.borderColor = AppColors.inputBorder.cgColor
 
@@ -111,11 +110,11 @@ final class SubmitRequestViewController: UIViewController {
 
     private func styleTextView(_ textView: UITextView) {
         textView.backgroundColor = AppColors.inputBackground
-        textView.layer.cornerRadius = 8
+        textView.layer.cornerRadius = AppSize.cornerRadius
         textView.layer.borderWidth = 1
         textView.layer.borderColor = AppColors.inputBorder.cgColor
         textView.textContainerInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
-        textView.font = UIFont.systemFont(ofSize: 16)
+        textView.font = AppTypography.body
         textView.text = placeholderText
         textView.textColor = AppColors.placeholder
     }
@@ -123,17 +122,17 @@ final class SubmitRequestViewController: UIViewController {
     private func styleOutlinedButton(_ button: UIButton) {
         button.backgroundColor = .clear
         button.setTitleColor(AppColors.text, for: .normal)
-        button.layer.cornerRadius = 8
+        button.layer.cornerRadius = AppSize.cornerRadius
         button.layer.borderWidth = 1
         button.layer.borderColor = AppColors.inputBorder.cgColor
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        button.titleLabel?.font = AppTypography.callout
     }
 
     private func styleFilledButton(_ button: UIButton) {
         button.backgroundColor = AppColors.primary
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 8
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.layer.cornerRadius = AppSize.cornerRadius
+        button.titleLabel?.font = AppTypography.headline
     }
 
     private func setupImageActionButtons() {
@@ -417,15 +416,14 @@ final class SubmitRequestViewController: UIViewController {
 
         Task {
             do {
-                // Upload images first if any
+                // Upload images first if any using RequestController
                 var imageURLs: [String] = []
                 if !selectedImages.isEmpty {
-                    imageURLs = try await uploadImages()
+                    imageURLs = try await RequestController.shared.uploadImages(selectedImages)
                 }
 
-                // Submit request
-                let requestController = RequestController()
-                try await requestController.submitRequest(
+                // Submit request using shared RequestController
+                try await RequestController.shared.submitRequest(
                     requestCategoryRef: mainCategory.id,
                     requestSubcategoryRef: subCategory.id,
                     buildingRef: building.id,
@@ -436,7 +434,9 @@ final class SubmitRequestViewController: UIViewController {
 
                 await MainActor.run {
                     self.activityIndicator.stopAnimating()
-                    self.showSuccessAlert()
+                    self.showAlert(title: "Success", message: "Your request has been submitted successfully.") { [weak self] in
+                        self?.dismiss(animated: true)
+                    }
                 }
             } catch {
                 await MainActor.run {
@@ -454,65 +454,7 @@ final class SubmitRequestViewController: UIViewController {
         view.endEditing(true)
     }
 
-    private func uploadImages() async throws -> [String] {
-        var urls: [String] = []
-        let storage = Storage.storage()
-
-        for (index, image) in selectedImages.enumerated() {
-            guard let imageData = image.jpegData(compressionQuality: 0.7) else { continue }
-
-            let imageName = "\(UUID().uuidString)_\(index).jpg"
-            let storageRef = storage.reference().child("request_images/\(imageName)")
-
-            // Create metadata
-            let metadata = StorageMetadata()
-            metadata.contentType = "image/jpeg"
-
-            // Upload using completion handler converted to async
-            let url = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
-                storageRef.putData(imageData, metadata: metadata) { metadata, error in
-                    if let error = error {
-                        continuation.resume(throwing: error)
-                        return
-                    }
-
-                    // Get download URL after successful upload
-                    storageRef.downloadURL { url, error in
-                        if let error = error {
-                            continuation.resume(throwing: error)
-                            return
-                        }
-
-                        if let downloadURL = url {
-                            continuation.resume(returning: downloadURL.absoluteString)
-                        } else {
-                            continuation.resume(throwing: NSError(domain: "UploadError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to get download URL"]))
-                        }
-                    }
-                }
-            }
-
-            urls.append(url)
-        }
-
-        return urls
-    }
-
     // MARK: - Alerts
-
-    private func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
-    }
-
-    private func showSuccessAlert() {
-        let alert = UIAlertController(title: "Success", message: "Your request has been submitted successfully.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default) { [weak self] _ in
-            self?.dismiss(animated: true)
-        })
-        present(alert, animated: true)
-    }
 
     private func showSelectionSheet(title: String, items: [String], completion: @escaping (Int) -> Void) {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)

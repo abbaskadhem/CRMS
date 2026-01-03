@@ -15,19 +15,19 @@ final class RequestCardCell: UITableViewCell {
 
     private let cardView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
-        view.layer.cornerRadius = 12
+        view.backgroundColor = AppColors.inputBackground
+        view.layer.cornerRadius = AppSize.cornerRadiusMedium
         view.layer.shadowColor = UIColor.black.cgColor
-        view.layer.shadowOpacity = 0.05
-        view.layer.shadowOffset = CGSize(width: 0, height: 2)
-        view.layer.shadowRadius = 4
+        view.layer.shadowOpacity = AppSize.shadowOpacity
+        view.layer.shadowOffset = AppSize.shadowOffset
+        view.layer.shadowRadius = AppSize.shadowRadius
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
     private let requestNoLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        label.font = AppTypography.headline
         label.textColor = AppColors.text
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -35,14 +35,14 @@ final class RequestCardCell: UITableViewCell {
 
     private let statusDot: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 5
+        view.layer.cornerRadius = AppSize.statusDot / 2
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
     private let statusLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.font = AppTypography.subheadline
         label.textColor = AppColors.text
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -50,14 +50,14 @@ final class RequestCardCell: UITableViewCell {
 
     private let priorityLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = AppTypography.callout
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
     private let locationLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = AppTypography.callout
         label.textColor = AppColors.text
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -65,7 +65,7 @@ final class RequestCardCell: UITableViewCell {
 
     private let categoryLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = AppTypography.callout
         label.textColor = AppColors.text
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -73,7 +73,7 @@ final class RequestCardCell: UITableViewCell {
 
     private let dateLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = AppTypography.callout
         label.textColor = AppColors.text
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -154,6 +154,7 @@ final class RequestCardCell: UITableViewCell {
             // Date
             dateLabel.topAnchor.constraint(equalTo: categoryLabel.bottomAnchor, constant: 4),
             dateLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
+            dateLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
 
             // Chevron
             chevronImageView.centerYAnchor.constraint(equalTo: cardView.centerYAnchor),
@@ -165,60 +166,44 @@ final class RequestCardCell: UITableViewCell {
 
     // MARK: - Configure
 
+    /// Configures the cell with request display data
+    /// - Parameter model: The request display model containing all display data
     func configure(with model: RequestDisplayModel) {
         requestNoLabel.text = model.requestNo
-        statusLabel.text = model.statusString
+        statusLabel.text = model.status.displayString
         locationLabel.text = model.locationString
         categoryLabel.text = model.categoryString
         dateLabel.text = model.formattedDate
 
-        // Priority with color
+        // Priority with color - using Priority extension
         let priorityText = NSMutableAttributedString(string: "Priority: ", attributes: [
             .foregroundColor: AppColors.text,
-            .font: UIFont.systemFont(ofSize: 14)
+            .font: AppTypography.callout
         ])
-        let priorityValue = NSAttributedString(string: model.priorityString, attributes: [
-            .foregroundColor: priorityColor(for: model.priority),
-            .font: UIFont.systemFont(ofSize: 14, weight: .medium)
+        let priorityColor = model.priority?.displayColor ?? AppColors.secondary
+        let priorityString = model.priority?.displayString ?? "Not Set"
+        let priorityValue = NSAttributedString(string: priorityString, attributes: [
+            .foregroundColor: priorityColor,
+            .font: AppTypography.subheadline
         ])
         priorityText.append(priorityValue)
         priorityLabel.attributedText = priorityText
 
-        // Status dot color
-        statusDot.backgroundColor = statusColor(for: model.status)
+        // Status dot color - using Status extension
+        statusDot.backgroundColor = model.status.displayColor
+
+        // Configure accessibility
+        configureAccessibility(with: model)
     }
 
-    private func priorityColor(for priority: Priority?) -> UIColor {
-        guard let priority = priority else {
-            return AppColors.secondary
-        }
-        switch priority {
-        case .low:
-            return UIColor.systemGreen
-        case .moderate:
-            return UIColor.systemOrange
-        case .high:
-            return UIColor.systemRed
-        }
-    }
-
-    private func statusColor(for status: Status) -> UIColor {
-        switch status {
-        case .submitted:
-            return AppColors.statusSubmitted
-        case .assigned:
-            return AppColors.statusAssigned
-        case .inProgress:
-            return AppColors.statusInProgress
-        case .onHold:
-            return AppColors.statusOnHold
-        case .cancelled:
-            return AppColors.statusCancelled
-        case .delayed:
-            return AppColors.statusDelayed
-        case .completed:
-            return AppColors.statusCompleted
-        }
+    /// Configures VoiceOver accessibility for the cell
+    private func configureAccessibility(with model: RequestDisplayModel) {
+        isAccessibilityElement = true
+        accessibilityLabel = "Request \(model.requestNo)"
+        let priorityString = model.priority?.displayString ?? "Not Set"
+        accessibilityValue = "\(model.status.displayString), Priority \(priorityString), \(model.locationString), \(model.categoryString), submitted \(model.formattedDate)"
+        accessibilityHint = "Double tap to view request details"
+        accessibilityTraits = .button
     }
 
     override func prepareForReuse() {

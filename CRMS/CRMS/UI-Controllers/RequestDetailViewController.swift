@@ -60,17 +60,17 @@ final class RequestDetailViewController: UIViewController {
 
         // Title styling
         titleLabel?.textColor = AppColors.text
-        titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        titleLabel?.font = AppTypography.title2
 
         // Back button
         backButton?.tintColor = AppColors.text
 
         // Status dot
-        statusDot?.layer.cornerRadius = 5
+        statusDot?.layer.cornerRadius = AppSize.statusDot / 2  // Half of status dot diameter for circular shape
 
         // Description text view
         descriptionTextView?.backgroundColor = AppColors.inputBackground
-        descriptionTextView?.layer.cornerRadius = 8
+        descriptionTextView?.layer.cornerRadius = AppSize.cornerRadius
         descriptionTextView?.layer.borderWidth = 1
         descriptionTextView?.layer.borderColor = AppColors.inputBorder.cgColor
         descriptionTextView?.textColor = AppColors.text
@@ -84,7 +84,9 @@ final class RequestDetailViewController: UIViewController {
 
     private func fetchRequestDetails() {
         guard let requestId = requestId else {
-            showAlert(title: "Error", message: "No request ID provided")
+            showAlert(title: "Error", message: "No request ID provided") { [weak self] in
+                self?.dismiss(animated: true)
+            }
             return
         }
 
@@ -99,13 +101,17 @@ final class RequestDetailViewController: UIViewController {
                         self.requestModel = model
                         self.populateData()
                     } else {
-                        self.showAlert(title: "Error", message: "Request not found")
+                        self.showAlert(title: "Error", message: "Request not found") { [weak self] in
+                            self?.dismiss(animated: true)
+                        }
                     }
                 }
             } catch {
                 await MainActor.run {
                     self.activityIndicator?.stopAnimating()
-                    self.showAlert(title: "Error", message: error.localizedDescription)
+                    self.showAlert(title: "Error", message: error.localizedDescription) { [weak self] in
+                        self?.dismiss(animated: true)
+                    }
                 }
             }
         }
@@ -116,17 +122,19 @@ final class RequestDetailViewController: UIViewController {
 
         // Request Info
         requestNoLabel?.text = model.requestNo
-        statusLabel?.text = model.statusString
-        statusDot?.backgroundColor = statusColor(for: model.status)
+        statusLabel?.text = model.status.displayString
+        statusDot?.backgroundColor = model.status.displayColor
 
-        // Priority
+        // Priority - using Priority extension
         let priorityText = NSMutableAttributedString(string: "Priority: ", attributes: [
             .foregroundColor: AppColors.text,
-            .font: UIFont.systemFont(ofSize: 14)
+            .font: AppTypography.callout
         ])
-        let priorityValue = NSAttributedString(string: model.priorityString, attributes: [
-            .foregroundColor: priorityColor(for: model.priority),
-            .font: UIFont.systemFont(ofSize: 14, weight: .medium)
+        let priorityColor = model.priority?.displayColor ?? AppColors.secondary
+        let priorityString = model.priority?.displayString ?? "Not Set"
+        let priorityValue = NSAttributedString(string: priorityString, attributes: [
+            .foregroundColor: priorityColor,
+            .font: AppTypography.subheadline
         ])
         priorityText.append(priorityValue)
         priorityLabel?.attributedText = priorityText
@@ -164,7 +172,7 @@ final class RequestDetailViewController: UIViewController {
             let imageView = UIImageView()
             imageView.contentMode = .scaleAspectFill
             imageView.clipsToBounds = true
-            imageView.layer.cornerRadius = 8
+            imageView.layer.cornerRadius = AppSize.cornerRadius
             imageView.backgroundColor = AppColors.inputBorder
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.widthAnchor.constraint(equalToConstant: 80).isActive = true
@@ -202,7 +210,7 @@ final class RequestDetailViewController: UIViewController {
         let placeholderLabel = UILabel()
         placeholderLabel.text = "Actions will be available based on request status"
         placeholderLabel.textColor = AppColors.secondary
-        placeholderLabel.font = UIFont.systemFont(ofSize: 14)
+        placeholderLabel.font = AppTypography.callout
         placeholderLabel.textAlignment = .center
         actionButtonsStackView?.addArrangedSubview(placeholderLabel)
     }
@@ -214,47 +222,4 @@ final class RequestDetailViewController: UIViewController {
     }
 
     // MARK: - Helpers
-
-    private func priorityColor(for priority: Priority?) -> UIColor {
-        guard let priority = priority else {
-            return AppColors.secondary
-        }
-        switch priority {
-        case .low:
-            return UIColor.systemGreen
-        case .moderate:
-            return UIColor.systemOrange
-        case .high:
-            return UIColor.systemRed
-        }
-    }
-
-    private func statusColor(for status: Status) -> UIColor {
-        switch status {
-        case .submitted:
-            return UIColor.systemYellow
-        case .assigned:
-            return UIColor.systemBlue
-        case .inProgress:
-            return UIColor.systemBlue
-        case .onHold:
-            return UIColor.systemGray
-        case .cancelled:
-            return UIColor.systemRed
-        case .delayed:
-            return UIColor.systemOrange
-        case .completed:
-            return UIColor.systemGreen
-        }
-    }
-
-    private func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default) { [weak self] _ in
-            if title == "Error" {
-                self?.dismiss(animated: true)
-            }
-        })
-        present(alert, animated: true)
-    }
 }
