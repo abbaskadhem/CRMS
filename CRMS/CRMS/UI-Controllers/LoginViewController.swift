@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import LocalAuthentication
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
 
@@ -18,7 +19,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var rememberMeButton: UIButton!
     @IBOutlet weak var loginButton: UIButton!
 
-    // Remove window property - SceneDelegate handles this
+    @IBOutlet weak var biometrics: UILabel!
+
     
     //property to disable the login button ONLY if both text fields are empty
     var isLoginButtonEnabled: Bool {
@@ -46,7 +48,16 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(forgotPasswordTapped))
         forgotPassword.isUserInteractionEnabled = true
         forgotPassword.addGestureRecognizer(tapGesture)
+        
+        //making "Login by biometrics" tappable
+        let tapGesture2 = UITapGestureRecognizer(target: self, action: #selector(biometricsTapped))
+        biometrics.isUserInteractionEnabled = true
+        biometrics.addGestureRecognizer(tapGesture2)
+        
+        //updateBiometricLabelVisibility
+        updateBiometricLabelVisibility()
     }
+    
     
     //showing cursor
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -81,6 +92,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBAction func rememberMeButtonTapped(_ sender: UIButton){
         rememberMeButton.isSelected.toggle()
     }
+    
     
     @IBAction func loginButtonTapped(_ sender: UIButton){
         guard let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
@@ -122,10 +134,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             }
             
             UserDefaults.standard.set(user.uid, forKey: "userID")
+            self?.updateBiometricLabelVisibility()
             self?.checkUserRole(for: user)
         }
     }
-
     
     //Checks the user role via SessionManager and navigates to the appropriate storyboard
     private func checkUserRole(for user: FirebaseAuth.User) {
@@ -170,7 +182,61 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             }
         }
     }
+    
+    
+    @objc private func biometricsTapped(){
+        
+        //check for previous session
+        guard let user = Auth.auth().currentUser else {
+            showAlert(title: "Not Logged In", message: "Plaese login with email & password first")
+            return
+        }
 
+        let context = LAContext()
+        var error: NSError?
+        let reason = "Authentication is required to continue"
+        
+        guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
+            let msg = error?.localizedDescription ?? "Face ID / Touch ID is not available"
+            showAlert(title: "Unavailable", message: msg)
+            return
+        }
+        
+        context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason){
+            [weak self] success, evaluateError in
+            guard let self else {
+                return
+            }
+            
+            DispatchQueue.main.async{
+                if success {
+                    UserDefaults.standard.set(user.uid, forKey: "userID")
+                    //navigate to correct home page
+                    self.checkUserRole(for: user)
+                }
+                else {
+                    let msg = (evaluateError as NSError?)?.localizedDescription ?? "Authentication Failed"
+                    self.showAlert(title: "Authentication Failed", message: msg)
+                }
+            }
+        }
+    }
+    
+    //show/hide face id label
+    private func updateBiometricLabelVisibility(){
+        
+        //checking if the device supports Face ID / Touch ID
+        let context = LAContext()
+        var error: NSError?
+        let available = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+        
+        let loggedin = (Auth.auth().currentUser != nil)
+        
+        //showing label only if user have a firebase session & device supports biometrics
+        biometrics.isHidden = !(available && loggedin)
+    }
+
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         backgroundLogin.layer.cornerRadius = 200  // Large custom radius for background design
