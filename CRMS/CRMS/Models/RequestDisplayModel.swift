@@ -57,3 +57,14 @@ struct RequestDisplayModel {
         return formatter.string(from: createdOn)
     }
 }
+
+// MARK: - RequestHistoryDisplayModel
+/// A display model for request history records with formatted data for table view presentation
+struct RequestHistoryDisplayModel {
+    let history: RequestHistory
+    let actionString: String
+    let createdByName: String
+    let dateString: String
+    let hasReason: Bool
+    let reasonText: String?
+}

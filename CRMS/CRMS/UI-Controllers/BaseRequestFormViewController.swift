@@ -35,6 +35,7 @@ final class BaseRequestFormViewController: UIViewController {
     private let statusLabel = UILabel()
     private let priorityLabel = UILabel()
     private let technicianLabel = UILabel()
+    private let historyButton = UIButton(type: .system)
     private let deleteButton = UIButton(type: .system)
 
     // MARK: - UI Components - Form
@@ -440,6 +441,13 @@ final class BaseRequestFormViewController: UIViewController {
         headerContainerView.addSubview(technicianLabel)
         technicianLabel.translatesAutoresizingMaskIntoConstraints = false
 
+        // History Button
+        historyButton.setImage(UIImage(systemName: "clock"), for: .normal)
+        historyButton.tintColor = AppColors.text
+        historyButton.addTarget(self, action: #selector(historyButtonTapped), for: .touchUpInside)
+        headerContainerView.addSubview(historyButton)
+        historyButton.translatesAutoresizingMaskIntoConstraints = false
+
         // Delete Button
         deleteButton.setImage(UIImage(systemName: "trash"), for: .normal)
         deleteButton.tintColor = AppColors.text
@@ -450,7 +458,12 @@ final class BaseRequestFormViewController: UIViewController {
         NSLayoutConstraint.activate([
             requestNumberLabel.topAnchor.constraint(equalTo: headerContainerView.topAnchor),
             requestNumberLabel.leadingAnchor.constraint(equalTo: headerContainerView.leadingAnchor),
-            requestNumberLabel.trailingAnchor.constraint(equalTo: deleteButton.leadingAnchor, constant: -AppSpacing.md),
+            requestNumberLabel.trailingAnchor.constraint(equalTo: historyButton.leadingAnchor, constant: -AppSpacing.md),
+
+            historyButton.centerYAnchor.constraint(equalTo: requestNumberLabel.centerYAnchor),
+            historyButton.trailingAnchor.constraint(equalTo: deleteButton.leadingAnchor, constant: -AppSpacing.sm),
+            historyButton.widthAnchor.constraint(equalToConstant: AppSize.icon),
+            historyButton.heightAnchor.constraint(equalToConstant: AppSize.icon),
 
             deleteButton.centerYAnchor.constraint(equalTo: requestNumberLabel.centerYAnchor),
             deleteButton.trailingAnchor.constraint(equalTo: headerContainerView.trailingAnchor),
@@ -765,14 +778,17 @@ final class BaseRequestFormViewController: UIViewController {
         switch mode {
         case .create:
             isReadOnly = false
+            historyButton.isHidden = true
             deleteButton.isHidden = true
         case .view:
             isReadOnly = true
+            historyButton.isHidden = false
             // Delete button visibility based on user type (only for admin)
             deleteButton.isHidden = userType != .admin
         case .edit:
             // Edit mode - only for requesters when status is submitted
             isReadOnly = false
+            historyButton.isHidden = false
             deleteButton.isHidden = false // Show delete for requester
         }
 
@@ -1186,6 +1202,18 @@ final class BaseRequestFormViewController: UIViewController {
                 }
             }
         }
+    }
+
+    @objc private func historyButtonTapped() {
+        guard let requestId = requestModel?.request.id else { return }
+
+        let historyVC = RequestHistoryViewController(requestId: requestId)
+        historyVC.modalPresentationStyle = .pageSheet
+        if let sheet = historyVC.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+        }
+        present(historyVC, animated: true)
     }
 
     @objc private func deleteButtonTapped() {
