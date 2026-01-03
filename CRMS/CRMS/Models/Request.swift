@@ -46,7 +46,7 @@ extension Priority {
 // MARK: - Status Enum
 
 /// Request status values representing the lifecycle of a request
-enum Status: Int, Codable {
+enum Status: Int, Codable, CaseIterable{
     case submitted = 1000
     case assigned = 1001
     case inProgress = 1002

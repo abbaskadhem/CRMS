@@ -1,0 +1,27 @@
+// Fetch role type
+let role = snapshot.get("type") as? Int ?? -1
+
+var vc: UIViewController?
+
+switch role {
+case 1000: // admin
+    vc = UIStoryboard(name: "Admin", bundle: nil).instantiateInitialViewController()
+
+case 1002: // servicer / technician
+    vc = UIStoryboard(name: "Servicer", bundle: nil).instantiateInitialViewController()
+    // لو ما عندكم Servicer storyboard حاليا، خليها Admin مؤقتًا:
+    // vc = UIStoryboard(name: "Admin", bundle: nil).instantiateInitialViewController()
+
+case 1001: // requester
+    vc = UIStoryboard(name: "Requester", bundle: nil).instantiateInitialViewController()
+
+default:
+    self.showAlert(title: "Invalid Role", message: "Unknown user role.")
+    self.fallbackToLogin()
+    return
+}
+
+if let vc = vc {
+    self.window?.rootViewController = vc
+    self.window?.makeKeyAndVisible()
+}

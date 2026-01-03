@@ -72,17 +72,35 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 var vc: UIViewController?
 
                 // Navigate based on user role
+
+                // Fetch role type
+
                 switch role {
                 case 1000: // admin
-                    vc = adminStoryboard.instantiateInitialViewController()
-                case 1002: // servicer
-                    vc = adminStoryboard.instantiateInitialViewController()
+                    vc = UIStoryboard(name: "Admin", bundle: nil).instantiateInitialViewController()
+
+                case 1002: // servicer / technician
+                    vc = UIStoryboard(name: "Servicer", bundle: nil).instantiateInitialViewController()
+                  
+                    // vc = UIStoryboard(name: "Admin", bundle: nil).instantiateInitialViewController()
+
                 case 1001: // requester
-                    vc = adminStoryboard.instantiateInitialViewController()
+                    vc = UIStoryboard(name: "Requester", bundle: nil).instantiateInitialViewController()
+
                 default:
                     self.showAlert(title: "Invalid Role", message: "Unknown user role.")
                     self.fallbackToLogin()
                     return
+                }
+
+                if let vc = vc {
+                    self.window?.rootViewController = vc
+                    self.window?.makeKeyAndVisible()
+                }
+
+                if let vc = vc {
+                    self.window?.rootViewController = vc
+                    self.window?.makeKeyAndVisible()
                 }
                 
                 if let vc = vc {
