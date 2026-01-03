@@ -31,6 +31,7 @@
                                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Email" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="3eD-VV-FTZ">
                                                 <rect key="frame" x="0.0" y="33.333333333333314" width="323" height="34"/>
                                                 <color key="backgroundColor" red="0.96078431369999995" green="0.93725490199999995" blue="0.92156862750000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="tintColor" red="0.1411764771" green="0.1058823466" blue="0.32549020649999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="34" id="iLP-0h-hgB"/>
                                                 </constraints>
@@ -58,6 +59,7 @@
                                                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Password" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="gX4-jd-h7C">
                                                         <rect key="frame" x="0.0" y="29.333333333333314" width="323" height="34"/>
                                                         <color key="backgroundColor" red="0.96078431369999995" green="0.93725490199999995" blue="0.92156862750000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <color key="tintColor" red="0.1411764771" green="0.1058823466" blue="0.32549020649999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="34" id="TLt-J1-4cH"/>
                                                         </constraints>

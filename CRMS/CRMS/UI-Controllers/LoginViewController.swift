@@ -8,7 +8,7 @@
 import UIKit
 import FirebaseAuth
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController, UITextFieldDelegate {
 
     //IBOutlets
     @IBOutlet weak var backgroundLogin: UIView!
@@ -33,7 +33,10 @@ class LoginViewController: UIViewController {
         
         print("login view controller")
         navigationItem.hidesBackButton = true
-
+        
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
+        
         loginButton.isEnabled = false
         loginButton.alpha = 0.75
 
@@ -43,6 +46,17 @@ class LoginViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(forgotPasswordTapped))
         forgotPassword.isUserInteractionEnabled = true
         forgotPassword.addGestureRecognizer(tapGesture)
+    }
+    
+    //showing cursor
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == emailTextField {
+            passwordTextField.becomeFirstResponder() //move cursor to password textField
+        }
+        else {
+            textField.resignFirstResponder() //hide keyboard
+        }
+        return true
     }
 
     @objc private func textFieldsDidChange(){
@@ -113,7 +127,7 @@ class LoginViewController: UIViewController {
     }
 
     
-    /// Checks the user role via SessionManager and navigates to the appropriate storyboard
+    //Checks the user role via SessionManager and navigates to the appropriate storyboard
     private func checkUserRole(for user: FirebaseAuth.User) {
         Task {
             do {
