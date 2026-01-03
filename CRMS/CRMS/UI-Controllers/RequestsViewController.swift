@@ -85,9 +85,8 @@ class RequestsViewController: UIViewController {
     // MARK: - IBActions
 
     @IBAction func addButtonTapped(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "Requests", bundle: nil)
-        let submitVC = storyboard.instantiateViewController(withIdentifier: "SubmitRequestViewController")
-
+        // Use BaseRequestFormViewController in create mode
+        let submitVC = BaseRequestFormViewController(mode: .create)
         submitVC.modalPresentationStyle = .fullScreen
         present(submitVC, animated: true)
     }
@@ -115,12 +114,9 @@ extension RequestsViewController: UITableViewDelegate, UITableViewDataSource {
 
         let request = requests[indexPath.row]
 
-        // Use the AdminRequests storyboard for request detail (same detail view)
-        let storyboard = UIStoryboard(name: "AdminRequests", bundle: nil)
-        if let detailVC = storyboard.instantiateViewController(withIdentifier: "RequestDetailViewController") as? RequestDetailViewController {
-            detailVC.requestId = request.request.id
-            detailVC.modalPresentationStyle = .fullScreen
-            present(detailVC, animated: true)
-        }
+        // Use BaseRequestFormViewController in view mode
+        let detailVC = BaseRequestFormViewController(mode: .view(requestId: request.request.id))
+        detailVC.modalPresentationStyle = .fullScreen
+        present(detailVC, animated: true)
     }
 }

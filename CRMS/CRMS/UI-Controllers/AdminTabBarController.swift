@@ -19,7 +19,7 @@ final class AdminTabBarController: UITabBarController {
         tabBar.backgroundColor = AppColors.background
         tabBar.barTintColor = AppColors.background
         tabBar.tintColor = AppColors.primary
-        tabBar.unselectedItemTintColor = AppColors.secondary
+        tabBar.unselectedItemTintColor = AppColors.tabBarUnselected
 
         // Remove top border line
         tabBar.shadowImage = UIImage()
@@ -34,7 +34,7 @@ final class AdminTabBarController: UITabBarController {
 
             // Configure item appearance
             let itemAppearance = UITabBarItemAppearance()
-            itemAppearance.normal.iconColor = AppColors.secondary
+            itemAppearance.normal.iconColor = AppColors.tabBarUnselected
             itemAppearance.selected.iconColor = AppColors.primary
 
             appearance.stackedLayoutAppearance = itemAppearance

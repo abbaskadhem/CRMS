@@ -59,19 +59,6 @@ final class RequestController {
     private var buildingsCache: [UUID: Building] = [:]
     private var roomsCache: [UUID: Room] = [:]
     private var categoriesCache: [UUID: RequestCategory] = [:]
-    
-// MARK: - Get Priority
-
-    /// Determines the priority level based on category and subcategory
-    /// - Parameters:
-    ///   - requestCategoryRef: UUID of the main category
-    ///   - requestSubcategoryRef: UUID of the subcategory
-    /// - Returns: The appropriate Priority level for the request
-    /// - Note: Currently returns .low as placeholder. TODO: Implement priority logic based on category rules.
-    func getPriority(requestCategoryRef: UUID, requestSubcategoryRef: UUID) -> Priority {
-        // TODO: Implement logic to determine priority based on category and subcategory
-        return .low
-    }
 
 // MARK: - Autonumber Generation
 
@@ -139,7 +126,104 @@ final class RequestController {
         } catch {
             throw NetworkError.serverUnavailable
         }
-       
+
+    }
+
+    /// Fetches all history records for a specific request, ordered by creation date
+    /// - Parameter requestId: The UUID of the request
+    /// - Returns: Array of RequestHistoryDisplayModel with user names and formatted data
+    /// - Throws: NetworkError if offline or server unavailable
+    func getRequestHistory(requestId: UUID) async throws -> [RequestHistoryDisplayModel] {
+        guard await hasInternetConnection() else {
+            throw NetworkError.noInternet
+        }
+
+        // Fetch all history records for the request
+        let snapshot = try await db.collection("RequestHistory")
+            .whereField("requestRef", isEqualTo: requestId.uuidString)
+            .order(by: "createdOn", descending: false)
+            .getDocuments()
+
+        var displayModels: [RequestHistoryDisplayModel] = []
+
+        for document in snapshot.documents {
+            guard let history = try? document.data(as: RequestHistory.self) else {
+                continue
+            }
+
+            // Fetch user name
+            let userName = await getUserName(userId: history.createdBy)
+
+            // Format date
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .medium
+            dateFormatter.timeStyle = .short
+            let dateString = dateFormatter.string(from: history.createdOn)
+
+            // Get action string
+            let actionString = getActionString(for: history.action)
+
+            // Determine if there's a reason
+            let hasReason = history.action == .reassigned || history.action == .sentBack
+            let reasonText: String?
+            if history.action == .reassigned {
+                reasonText = history.reassignReason
+            } else if history.action == .sentBack {
+                reasonText = history.sentBackReason
+            } else {
+                reasonText = nil
+            }
+
+            let model = RequestHistoryDisplayModel(
+                history: history,
+                actionString: actionString,
+                createdByName: userName,
+                dateString: dateString,
+                hasReason: hasReason,
+                reasonText: reasonText
+            )
+
+            displayModels.append(model)
+        }
+
+        return displayModels
+    }
+
+    /// Helper method to get user name from user ID
+    private func getUserName(userId: String) async -> String {
+        do {
+            let userDoc = try await db.collection("User").document(userId).getDocument()
+            if let userName = userDoc.data()?["fullName"] as? String {
+                return userName
+            }
+        } catch {
+            // Silently fail and return the user ID instead
+        }
+        return userId
+    }
+
+    /// Helper method to convert Action enum to display string
+    private func getActionString(for action: Action) -> String {
+        switch action {
+        case .submitted:
+            return "Request Submitted"
+        case .assigned:
+            return "Servicer Assigned"
+        case .sentBack:
+            return "Request Sent Back"
+        case .scheduled:
+            return "Work Scheduled"
+        case .started:
+            return "Work Started"
+        case .completed:
+            return "Work Completed"
+        case .delayed:
+            return "Work Delayed"
+        case .reassigned:
+            return "Servicer Reassigned"
+        case .priorityChanged:
+            return "Priority Assigned"
+        }
     }
 
 // MARK: - Submitting a Request
@@ -178,7 +262,7 @@ final class RequestController {
             roomRef: roomRef,
             description: description,
             images: images,
-            priority: getPriority(requestCategoryRef: requestCategoryRef,requestSubcategoryRef: requestSubcategoryRef),
+            priority: nil,
             status: .submitted,
             ownerId: userId,
 
@@ -519,52 +603,68 @@ final class RequestController {
     }
 
 // MARK: - Image Upload
-    /// Uploads images to Firebase Storage and returns their download URLs
-    /// - Parameter images: Array of UIImage objects to upload
-    /// - Returns: Array of download URL strings for the uploaded images
+    /// Converts images to Base64 strings for storage in Firestore
+    /// - Parameter images: Array of UIImage objects to convert
+    /// - Returns: Array of Base64 encoded strings
+    /// - Note: Using Base64 encoding instead of Firebase Storage due to access restrictions
     func uploadImages(_ images: [UIImage]) async throws -> [String] {
-        var urls: [String] = []
-        let storage = Storage.storage()
+        var base64Strings: [String] = []
 
         for (index, image) in images.enumerated() {
-            guard let imageData = image.jpegData(compressionQuality: 0.7) else { continue }
-
-            let imageName = "\(UUID().uuidString)_\(index).jpg"
-            let storageRef = storage.reference().child("request_images/\(imageName)")
-
-            // Create metadata
-            let metadata = StorageMetadata()
-            metadata.contentType = "image/jpeg"
-
-            // Upload using completion handler converted to async
-            let url = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
-                storageRef.putData(imageData, metadata: metadata) { metadata, error in
-                    if let error = error {
-                        continuation.resume(throwing: error)
-                        return
-                    }
-
-                    // Get download URL after successful upload
-                    storageRef.downloadURL { url, error in
-                        if let error = error {
-                            continuation.resume(throwing: error)
-                            return
-                        }
-
-                        if let downloadURL = url {
-                            continuation.resume(returning: downloadURL.absoluteString)
-                        } else {
-                            continuation.resume(throwing: NSError(domain: "UploadError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to get download URL"]))
-                        }
-                    }
-                }
+            // Compress image to reduce size (0.5 quality for Base64 to stay within Firestore limits)
+            guard let imageData = image.jpegData(compressionQuality: 0.5) else {
+                print("⚠️ Failed to convert image \(index) to JPEG data")
+                continue
             }
 
-            urls.append(url)
+            // Check size (Firestore has 1MB document limit, warn if image is too large)
+            let sizeInKB = Double(imageData.count) / 1024.0
+            print("📦 Image \(index) size: \(String(format: "%.2f", sizeInKB)) KB")
+
+            if imageData.count > 500_000 { // Warn if larger than 500KB
+                print("⚠️ Warning: Image \(index) is large (\(String(format: "%.2f", sizeInKB)) KB). Consider reducing quality.")
+            }
+
+            // Convert to Base64 string
+            let base64String = imageData.base64EncodedString()
+
+            // Add data URI prefix to make it a proper image data URL
+            let dataURL = "data:image/jpeg;base64,\(base64String)"
+            base64Strings.append(dataURL)
+
+            print("✅ Converted image \(index) to Base64 (size: \(String(format: "%.2f", sizeInKB)) KB)")
         }
 
-        return urls
+        return base64Strings
     }
+
+    /// Converts a Base64 data URL back to UIImage
+    /// - Parameter base64String: Base64 encoded image string (with or without data URI prefix)
+    /// - Returns: UIImage if conversion successful, nil otherwise
+    func base64ToImage(_ base64String: String) -> UIImage? {
+        // Remove data URI prefix if present
+        let base64Data: String
+        if base64String.hasPrefix("data:image") {
+            // Extract just the base64 part after the comma
+            if let commaIndex = base64String.firstIndex(of: ",") {
+                base64Data = String(base64String[base64String.index(after: commaIndex)...])
+            } else {
+                return nil
+            }
+        } else {
+            base64Data = base64String
+        }
+
+        // Decode Base64 to Data
+        guard let imageData = Data(base64Encoded: base64Data, options: .ignoreUnknownCharacters) else {
+            print("❌ Failed to decode Base64 string")
+            return nil
+        }
+
+        // Convert Data to UIImage
+        return UIImage(data: imageData)
+    }
+
 
 // MARK: - Get Servicers
     /// Fetches all servicer users from the database for admin to select from when assigning requests
@@ -588,12 +688,19 @@ final class RequestController {
         return snapshot.documents.compactMap { doc -> User? in
             let data = doc.data()
 
-            guard let id = data["id"] as? String,
-                  let fullName = data["fullName"] as? String,
+            // Use document ID as user ID (Firebase Auth UID)
+            let id = doc.documentID
+
+            guard let fullName = data["fullName"] as? String,
                   let typeRaw = data["type"] as? Int,
                   let type = UserType(rawValue: typeRaw),
                   let email = data["email"] as? String
             else { return nil }
+
+            // Skip inactive users if the field exists
+            if let inactive = data["inactive"] as? Bool, inactive == true {
+                return nil
+            }
 
             let subtypeRaw = data["subtype"] as? Int
             let subtype = subtypeRaw.flatMap { SubType(rawValue: $0) }
@@ -977,5 +1084,59 @@ final class RequestController {
 
         // Create history record for the reassignment
         try await createHistoryRecord(requestRef: requestId, action: .reassigned, sentBackReason: nil, reassignReason: reason)
+    }
+
+// MARK: - Assign Priority
+
+    /// Allows an admin to assign priority to a request (one-time only, when request is first submitted)
+    /// - Parameters:
+    ///   - requestId: The UUID of the request
+    ///   - priority: The priority level to assign (Low/Moderate/High)
+    /// - Throws: RequestError or NetworkError if validation fails
+    func assignPriority(requestId: UUID, priority: Priority) async throws {
+        guard await hasInternetConnection() else {
+            throw NetworkError.noInternet
+        }
+
+        let userId = try session.requireUserId()
+
+        // Validate that the current user is an admin
+        let userType = try await session.getUserType()
+        guard userType == UserType.admin.rawValue else {
+            throw RequestError.unauthorizedAction
+        }
+
+        // Fetch the request and validate
+        let requestDoc = try await db.collection("Request").document(requestId.uuidString).getDocument()
+        guard let requestData = requestDoc.data() else {
+            throw RequestError.requestNotFound
+        }
+
+        // Validate request status is submitted
+        guard let statusRaw = requestData["status"] as? Int,
+              let status = Status(rawValue: statusRaw),
+              status == .submitted else {
+            throw RequestError.invalidRequestStatus
+        }
+
+        // Validate priority is currently nil (not already assigned)
+        if let existingPriority = requestData["priority"] as? Int, existingPriority != 0 {
+            throw RequestError.invalidRequestStatus
+        }
+
+        // Validate servicer is not yet assigned
+        if let servicerRef = requestData["servicerRef"] as? String, !servicerRef.isEmpty {
+            throw RequestError.requestAlreadyAssigned
+        }
+
+        // Update the request with the new priority
+        try await db.collection("Request").document(requestId.uuidString).updateData([
+            "priority": priority.rawValue,
+            "modifiedOn": Timestamp(date: Date()),
+            "modifiedBy": userId
+        ])
+
+        // Create history record for the priority assignment
+        try await createHistoryRecord(requestRef: requestId, action: .priorityChanged, sentBackReason: nil, reassignReason: nil)
     }
 }
