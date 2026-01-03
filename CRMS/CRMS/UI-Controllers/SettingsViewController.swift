@@ -41,7 +41,6 @@ class SettingsViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupUI()
         setupSwitches()
         fetchUserProfile()
