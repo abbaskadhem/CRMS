@@ -1,22 +1,24 @@
 //
 //  ReqCategory.swift
-//  CRMS
+//  Inventory
 //
 //  Created by BP-36-201-10 on 01/12/2025.
 //
 
 import Foundation
+import UIKit
 
 struct ItemCategoryModel: Codable, Identifiable {
-    var id: UUID                  // UUID
-    var name: String              // Name
-    var isParent: Bool            // Is Parent
-    var parentCategoryRef: UUID?  // Parent Category Ref.
-
-    // Default Common Fields
-    var createdOn: Date           // Created on
-    var createdBy: String         // Created by (Firebase Auth UID)
-    var modifiedOn: Date?         // Modified on
-    var modifiedBy: String?       // Modified by (Firebase Auth UID)
-    var inactive: Bool            // Inactive
+    var id: String
+    var name: String
+    var isParent: Bool
+    var parentCategoryRef: String?
+    var createdOn: Date
+    var createdBy: String
+    var modifiedOn: Date?
+    var modifiedBy: String?
+    var inactive: Bool
+    
+    // UI state
+    var isExpanded: Bool = true
 }

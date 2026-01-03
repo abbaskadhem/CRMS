@@ -26,8 +26,7 @@ final class NotificationController {
         return snapshot.documents.compactMap { doc -> NotificationModel? in
             let data = doc.data()
 
-            guard let idString = data["id"] as? String,
-                  let id = UUID(uuidString: idString),
+            guard let id = data["id"] as? String,
                   let title = data["title"] as? String,
                   let toWho = data["toWho"] as? [String],
                   let typeRaw = data["type"] as? Int,
@@ -39,8 +38,7 @@ final class NotificationController {
             }
 
             let description = data["description"] as? String
-            let requestRefString = data["requestRef"] as? String
-            let requestRef = requestRefString.flatMap { UUID(uuidString: $0) }
+            let requestRef = data["requestRef"] as? String
             let modifiedOn = (data["modifiedOn"] as? Timestamp)?.dateValue()
             let modifiedBy = data["modifiedBy"] as? String
 
