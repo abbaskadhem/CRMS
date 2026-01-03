@@ -14,18 +14,26 @@ enum UserType: Int, Codable {
 }
 
 enum SubType: Int, Codable {
-    case student = 1000
-    case staff = 1001
-    case maintenance = 1002
-    case technician = 1003
+    case admin = 1000
+    case student = 1001
+    case staff = 1002
+    case maintenance = 1003
+    case technician = 1004
 }
 
 // MARK: - User
 /// User document in Firestore. The document ID is the Firebase Auth UID.
 struct User: Codable, Identifiable {
-    var id: String               // Firebase Auth UID (document ID)
+    var id: String                 // UUID
+    var userNo: String           // User No.
     var fullName: String         // Full Name
     var type: UserType           // Type (Admin/Requester/Servicer)
     var subtype: SubType?        // Subtype (optional)
     var email: String            // Email
+    // Default Common Fields
+    var createdOn: Date          // Created on
+    var createdBy: String          // Created by
+    var modifiedOn: Date?        // Modified on
+    var modifiedBy: String?        // Modified by
+    var inactive: Bool           // Inactive
 }

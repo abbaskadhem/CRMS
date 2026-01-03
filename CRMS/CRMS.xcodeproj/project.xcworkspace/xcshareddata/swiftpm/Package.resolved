@@ -1,5 +1,5 @@
 {
-  "originHash" : "25f46e2597159487d27d9b637cf7c58c11a039ac8eb98e7712de3b2e6949f75a",
+  "originHash" : "7170ad552a5794909b1bd58582aaa583d47959039a2199451770ef0b2aa47662",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -20,12 +20,12 @@
       }
     },
     {
-      "identity" : "calendarkit",
+      "identity" : "charts",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/richardtop/CalendarKit.git",
+      "location" : "https://github.com/danielgindi/Charts.git",
       "state" : {
-        "revision" : "89e02a1472e9ad815ae72b62fd15430144fd1c4c",
-        "version" : "1.1.11"
+        "revision" : "dd9c72e3d7e751e769971092a6bd72d39198ae63",
+        "version" : "5.1.0"
       }
     },
     {
@@ -35,15 +35,6 @@
       "state" : {
         "revision" : "087bb95235f676c1a37e928769a5b6645dcbd325",
         "version" : "12.6.0"
-      }
-    },
-    {
-      "identity" : "fscalendar",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/WenchaoD/FSCalendar",
-      "state" : {
-        "revision" : "0fbdec5172fccb90f707472eeaea4ffe095278f6",
-        "version" : "2.8.4"
       }
     },
     {

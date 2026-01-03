@@ -231,12 +231,12 @@ class CategoryCell: UITableViewCell {
         selectionStyle = .none
         backgroundColor = .clear
 
-        containerView.backgroundColor = UIColor(red: 0.7, green: 0.8, blue: 0.85, alpha: 1.0)
-        containerView.layer.cornerRadius = 8
+        containerView.backgroundColor = AppColors.chartContainerBackground
+        containerView.layer.cornerRadius = AppSize.cornerRadius
         containerView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(containerView)
 
-        nameLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        nameLabel.font = AppTypography.headline
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(nameLabel)
 
@@ -290,14 +290,14 @@ class SubCategoryCell: UITableViewCell {
         selectionStyle = .none
         backgroundColor = .clear
 
-        containerView.backgroundColor = .white
-        containerView.layer.cornerRadius = 8
-        containerView.layer.borderWidth = 1
-        containerView.layer.borderColor = UIColor.lightGray.cgColor
+        containerView.backgroundColor = AppColors.inputBackground
+        containerView.layer.cornerRadius = AppSize.cornerRadius
+        containerView.layer.borderWidth = AppSize.borderWidth
+        containerView.layer.borderColor = AppColors.inputBorder.cgColor
         containerView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(containerView)
 
-        nameLabel.font = UIFont.systemFont(ofSize: 15)
+        nameLabel.font = AppTypography.body
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(nameLabel)
 
@@ -388,7 +388,7 @@ class AddCategoryViewController: UIViewController {
         let name = nameTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !name.isEmpty else { return }
 
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
         let confirmVC = sb.instantiateViewController(
             withIdentifier: "ConfirmAddCategory"
             )as! ConfirmAddCategory
@@ -404,7 +404,7 @@ class AddCategoryViewController: UIViewController {
 
     @IBAction func cancelButtonTapped(_ sender: Any) {
 
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "CancelAddCategory") as! CancelAddCategory
 
           vc.modalPresentationStyle = .overFullScreen
@@ -518,7 +518,7 @@ class ConfirmAddCategory: UIViewController {
     }
 
     private func showSuccessThenCloseAll() {
-            let sb = UIStoryboard(name: "Main", bundle: nil)
+            let sb = UIStoryboard(name: "Faq", bundle: nil)
             let successVC = sb.instantiateViewController(
                 withIdentifier: "CategoryAddSuccess"
             ) as! CategoryAddSuccess

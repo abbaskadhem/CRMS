@@ -64,6 +64,15 @@ struct AppTypography {
     /// Caption 2 - 11pt medium (for emphasized captions)
     static let caption2 = UIFont.systemFont(ofSize: 11, weight: .medium)
 
+<<<<<<< HEAD
+=======
+    /// Chart label - 10pt medium (for chart value labels and small UI text)
+    static let chartLabel = UIFont.systemFont(ofSize: 10, weight: .medium)
+
+    /// Chart label footnote - 10pt regular (for small chart annotations)
+    static let chartLabelFootnote = UIFont.systemFont(ofSize: 10, weight: .regular)
+
+>>>>>>> ddcb8be422fc5dc6addba10b23bfdfc7afaf679a
     // MARK: - Dynamic Type Fonts (Accessibility Support)
 
     /// Returns a font that scales with user's Dynamic Type settings

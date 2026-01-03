@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="6eg-Io-pg1">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
@@ -208,7 +208,7 @@
         <!--Title-->
         <scene sceneID="hHS-Kx-MOq">
             <objects>
-                <viewController storyboardIdentifier="NewFAQViewController" modalPresentationStyle="overFullScreen" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Bnz-zx-Hwt" customClass="NewFAQViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NewFAQViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Bnz-zx-Hwt" customClass="NewFAQViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="gYI-zf-Vs9">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -383,7 +383,6 @@
         <scene sceneID="wNi-qR-WHh">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="q1d-rN-XaX" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" image="tab_bar_admin" selectedImage="Icon (2)" id="Tgn-vs-q4k"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="ybt-Ly-5Xe">
                         <autoresizingMask key="autoresizingMask"/>
@@ -1459,7 +1458,6 @@
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" image="Chevron_Left"/>
                                                 <connections>
-                                                    <action selector="backButtonAction:" destination="DrI-pI-RSJ" eventType="touchUpInside" id="hlV-RF-e4M"/>
                                                     <action selector="backButtonTapped:" destination="Jmn-tx-AHs" eventType="touchUpInside" id="Hbj-fT-Ql4"/>
                                                 </connections>
                                             </button>
@@ -1594,7 +1592,7 @@
         <!--Add Catogry View Controller-->
         <scene sceneID="Wal-Yo-sFE">
             <objects>
-                <viewController storyboardIdentifier="AddCatogryViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="MP4-fJ-I3P" customClass="AddCatogryViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddCategoryViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="MP4-fJ-I3P" customClass="AddCategoryViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="GII-PR-dHw">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1969,7 +1967,7 @@
         <!--Add Sub Catogry View Controller-->
         <scene sceneID="8ZH-pm-d0o">
             <objects>
-                <viewController storyboardIdentifier="AddSubCatogryViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="FBU-BU-vWF" customClass="AddSubCatogryViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddSubCategoryViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="FBU-BU-vWF" customClass="AddSubCategoryViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="up9-dh-Wmi">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2459,10 +2457,10 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGreenColor">
-            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

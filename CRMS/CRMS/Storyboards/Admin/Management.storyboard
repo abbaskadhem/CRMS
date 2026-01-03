@@ -47,26 +47,11 @@
                             <constraint firstItem="0Jm-ly-Yxd" firstAttribute="top" secondItem="bkQ-5I-uEP" secondAttribute="bottom" constant="3" id="zkc-vM-gxF"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="" id="emb-gi-Blk">
-                        <imageReference key="image" image="person" catalog="system" renderingMode="hierarchical">
-                            <hierarchicalColors>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                            </hierarchicalColors>
-                        </imageReference>
-                        <imageReference key="selectedImage" image="person" catalog="system" renderingMode="hierarchical">
-                            <hierarchicalColors>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color red="0.34509804840000002" green="0.40784314269999999" blue="0.49411764740000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                            </hierarchicalColors>
-                        </imageReference>
-                    </tabBarItem>
+                    <tabBarItem key="tabBarItem" title="" image="person" catalog="system" id="emb-gi-Blk"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2pQ-Ce-bTX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3737" y="134"/>
+            <point key="canvasLocation" x="3736.6412213740455" y="133.80281690140845"/>
         </scene>
     </scenes>
     <resources>
