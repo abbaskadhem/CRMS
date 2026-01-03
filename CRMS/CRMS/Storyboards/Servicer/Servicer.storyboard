@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="CUj-7o-dhV">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Servicer Tab Bar Controller-->
+        <scene sceneID="7CF-SN-f90">
+            <objects>
+                <tabBarController storyboardIdentifier="ServicerTabBarController" automaticallyAdjustsScrollViewInsets="NO" id="CUj-7o-dhV" customClass="ServicerTabBarController" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" backgroundImage="gearshape" catalog="system" id="XlN-6G-4XN">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <tabBarAppearance key="scrollEdgeAppearance"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="LRA-hD-AO6" kind="relationship" relationship="viewControllers" id="okF-q5-RL8"/>
+                        <segue destination="qfN-r8-JOO" kind="relationship" relationship="viewControllers" id="3xd-6Y-7uw"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OwA-ba-nls" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="20.610687022900763" y="3.5211267605633805"/>
+        </scene>
+        <!--Calendar-->
+        <scene sceneID="Luc-bt-3FV">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Calendar" id="LRA-hD-AO6" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" image="calendar" catalog="system" selectedImage="calendar" id="XI1-fB-sMP"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="naF-WM-GCV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-937" y="439"/>
+        </scene>
+        <!--Settings-->
+        <scene sceneID="U3e-OM-Uh9">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Settings" id="qfN-r8-JOO" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" image="gearshape" catalog="system" id="VcH-Pb-2N2"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4rT-U6-r03" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="718" y="431"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="calendar" catalog="system" width="128" height="107"/>
+        <image name="gearshape" catalog="system" width="128" height="123"/>
+    </resources>
+</document>
