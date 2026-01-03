@@ -2,46 +2,69 @@
 //  AboutAppViewController.swift
 //  CRMS
 //
-//  Created by Maryam Abdulla on 18/12/2025.
+//  Created by Maryam Abdulla
+//  Display App's information
 //
 
 import UIKit
 
-// About App screen controller
-// Displays app logo and static app information
-class AboutAppViewController: UIViewController,
-                              UITableViewDelegate,
-                              UITableViewDataSource {
+final class AboutAppViewController: UIViewController,
+                                   UITableViewDelegate,
+                                   UITableViewDataSource {
 
     // MARK: - Outlets
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var logoImageView: UIImageView!
 
-    // MARK: - Static App Information
-    private let appInfo: [(icon: String, title: String, value: String)] = [
-        ("text.document", "Developer", "CRMS Team"),
-        ("globe", "Website", "www.crms.bh"),
-        ("envelope", "Support", "support@crms.bh")
+    // MARK: - Data Source
+    //Displayed in a table view form
+    private let appInfo: [(icon: String, title: String, value: String, action: (() -> Void)?)] = [
+        ("doc.text", "Developer", "CRMS Team", nil),
+        ("globe", "Website", "www.crms.bh", {
+            if let url = URL(string: "https://www.crms.bh") {
+                UIApplication.shared.open(url)
+            }
+        }),
+        ("envelope", "Support", "support@crms.bh", {
+            if let url = URL(string: "mailto:support@crms.bh") {
+                UIApplication.shared.open(url)
+            }
+        })
     ]
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Round logo
-        logoImageView.layer.cornerRadius = logoImageView.frame.width / 2
-        logoImageView.clipsToBounds = true
-
-        // TableView setup
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.separatorStyle = .none
-        tableView.backgroundColor = .clear
-        tableView.rowHeight = 64
-        tableView.contentInset = UIEdgeInsets(top: 16, left: 16, bottom: 40, right: 16)
+        title = "About App"
+        view.backgroundColor = AppColors.background
+        setupLogo()
+        setupTableView()
     }
 
-    // MARK: - TableView DataSource
+    // MARK: - UI Setup
+    //Configure the appearance of the app logo
+    private func setupLogo() {
+        logoImageView.tintColor = AppColors.text
+        logoImageView.clipsToBounds = true
+    }
+    //Configure table view appearance and behavior
+    private func setupTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
+        tableView.isScrollEnabled = false
+
+        // spacing around the card
+        tableView.contentInset = UIEdgeInsets(
+            top: 16,
+            left: 16,
+            bottom: 32,
+            right: 16
+        )
+    }
+
+    // MARK: - Table Data
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -54,53 +77,53 @@ class AboutAppViewController: UIViewController,
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        let info = appInfo[indexPath.row]
+        let item = appInfo[indexPath.row]
+
         let cell = tableView.dequeueReusableCell(
             withIdentifier: "AppInfoCell",
             for: indexPath
         )
-
-        // Modern cell configuration
+        //Configure cell content
         var config = UIListContentConfiguration.subtitleCell()
-        config.text = info.title
-
-        // Website & Support styled as blue underlined text
-        if info.title == "Website" || info.title == "Support" {
+        config.text = item.title
+        config.textProperties.color = AppColors.text
+        
+        //If row has an action, style it as a link
+        if item.action != nil {
             config.secondaryAttributedText = NSAttributedString(
-                string: info.value,
+                string: item.value,
                 attributes: [
-                    .foregroundColor: UIColor.systemBlue,
+                    .foregroundColor: AppColors.secondary,
                     .underlineStyle: NSUnderlineStyle.single.rawValue
                 ]
             )
         } else {
-            config.secondaryText = info.value
+            config.secondaryText = item.value
+            config.secondaryTextProperties.color = AppColors.text.withAlphaComponent(0.7)
         }
 
-        // Icon
-        if let image = UIImage(systemName: info.icon) {
-            config.image = image
-            config.imageProperties.tintColor = .label
-        }
+        config.image = UIImage(systemName: item.icon)
+        config.imageProperties.tintColor = AppColors.text
 
         cell.contentConfiguration = config
+        cell.selectionStyle = item.action == nil ? .none : .default
 
-        // Card-style background
-        let backgroundView = UIView()
-        backgroundView.backgroundColor = UIColor(named: "primcolorsec")
-            ?? UIColor.secondarySystemBackground
-        backgroundView.layer.cornerRadius = 14
-        backgroundView.clipsToBounds = true
-        cell.backgroundView = backgroundView
-
-        cell.selectionStyle = .none
+    
         return cell
     }
 
-    // MARK: - UITableViewDelegate
+    // MARK: - Row Height
+    ///Fixed height for each info row
+    func tableView(_ tableView: UITableView,
+                   heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 90
+    }
+
+    // MARK: - Selection
+    ///Handles row selection and triggers optional actions
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        // Informational only
+        appInfo[indexPath.row].action?()
     }
 }

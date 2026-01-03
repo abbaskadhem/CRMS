@@ -1,111 +1,109 @@
+//
+//  SettingsViewController.swift
+//  CRMS
+//
+//Created by Maryam Abdulla
+//Handels user settings including profile, preferences, support & information and logout functionality
+//
 import UIKit
 import FirebaseAuth
 import FirebaseFirestore
 
-final class SettingsViewController: UIViewController,
-                                    UITableViewDelegate,
-                                    UITableViewDataSource {
 
-    // MARK: - Outlet
-    @IBOutlet weak var tableView: UITableView!
+class SettingsViewController: UIViewController {
 
-    // MARK: - Switches
-    private let notificationSwitch = UISwitch()
-    private let appearanceSwitch = UISwitch()
-
-    // MARK: - UserDefaults
+// MARK: - Outlet
+    //Profile
+    @IBOutlet weak var name: UILabel!
+    @IBOutlet weak var email: UILabel!
+    @IBOutlet weak var role: UILabel!
+    @IBOutlet weak var img: UIImageView!
+    @IBOutlet weak var profile: UIView!
+    
+    //Toggles
+    @IBOutlet weak var mode: UISwitch!
+    @IBOutlet weak var notification: UISwitch!
+    
+   //About App, FAQ and Logout
+    @IBOutlet var aboutApp: UIView!
+    @IBOutlet weak var faq: UIView!
+    @IBOutlet weak var logOut: UIView!
+   
+    
+    // MARK: - UserDefaults Keys
     private let notificationsKey = "notificationsEnabled"
     private let darkModeKey = "darkModeEnabled"
 
     // MARK: - Firestore
     private let db = Firestore.firestore()
-
-    // MARK: - User Data
-    private var fullName = ""
-    private var email = ""
-    private var roleText = ""
-
+    
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        view.backgroundColor = AppColors.background
-
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.separatorStyle = .none
-        tableView.backgroundColor = .clear
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 120
-        tableView.contentInset = UIEdgeInsets(
-            top: AppSpacing.lg,
-            left: 0,
-            bottom: AppSpacing.xl,
-            right: 0
-        )
-
+        
+        setupUI()
         setupSwitches()
         fetchUserProfile()
-        // Style labels
-        nameLabel?.textColor = AppColors.text
-        emailLabel?.textColor = AppColors.secondary
 
-        // Style logout button
-        logoutButton?.backgroundColor = AppColors.error
-        logoutButton?.setTitleColor(.white, for: .normal)
-        logoutButton?.layer.cornerRadius = AppSize.cornerRadius
     }
-
+    
+    // MARK: - UI Setup
+    ///Configure static UI e;ements and gesture recognizers
+    private func setupUI() {
+        view.backgroundColor = AppColors.background
+        
+        //Profile image styling
+        img.image = UIImage(systemName: "person.fill")
+        img.tintColor = .white
+        img.backgroundColor = .systemGray2
+        img.contentMode = .scaleAspectFit
+        img.layer.cornerRadius = 50
+        img.clipsToBounds = true
+        
+        //About App tab gesture
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(aboutAppTapped))
+        aboutApp.isUserInteractionEnabled = true
+        aboutApp.addGestureRecognizer(tapGesture)
+        
+        //FAQ tab gesture
+        /*
+        let tapGesture2 = UITapGestureRecognizer(target: self, action: #selector(faqTapped))
+        faq.isUserInteractionEnabled = true
+        faq.addGestureRecognizer(tapGesture2)
+         */
+    
+        //Logout tab gesture
+        let tapGesture3 = UITapGestureRecognizer(target: self, action: #selector(logoutTapped))
+        logOut.isUserInteractionEnabled = true
+        logOut.addGestureRecognizer(tapGesture3)
+    }
     // MARK: - Switch Setup
+    ///Loads saved switches states and applies them
     private func setupSwitches() {
-        notificationSwitch.isOn = UserDefaults.standard.bool(forKey: notificationsKey)
-        appearanceSwitch.isOn = UserDefaults.standard.bool(forKey: darkModeKey)
+        notification.isOn = UserDefaults.standard.bool(forKey: notificationsKey)
+        mode.isOn = UserDefaults.standard.bool(forKey: darkModeKey)
 
-        notificationSwitch.onTintColor = AppColors.secondary
-        appearanceSwitch.onTintColor = AppColors.secondary
+        notification.onTintColor = AppColors.secondary
+        mode.onTintColor = AppColors.secondary
 
-        notificationSwitch.addTarget(self,
-                                     action: #selector(notificationSwitchChanged),
-                                     for: .valueChanged)
-
-        appearanceSwitch.addTarget(self,
-                                   action: #selector(appearanceSwitchChanged),
-                                   for: .valueChanged)
-
-        applyInterfaceStyle(dark: appearanceSwitch.isOn)
+        applyInterfaceStyle(dark: mode.isOn)
     }
 
     // MARK: - Fetch Profile
+    ///Fetch user profile information from Firestore
     private func fetchUserProfile() {
-        Task {
-            do {
-                guard await hasInternetConnection() else {
-                    throw NetworkError.noInternet
-                }
+        guard let uid = Auth.auth().currentUser?.uid else { return }
 
-                let uid = try SessionManager.shared.requireUserId()
+        db.collection("User").document(uid).getDocument { [weak self] snapshot, _ in
+            guard let data = snapshot?.data() else { return }
 
-                let snapshot = try await db
-                    .collection("User")
-                    .document(uid)
-                    .getDocument()
-
-                guard let data = snapshot.data() else { return }
-
-                fullName = data["fullName"] as? String ?? ""
-                email = data["email"] as? String ?? ""
-                roleText = mapRole(from: data["type"] as? Int ?? -1)
-
-                await MainActor.run {
-                    self.tableView.reloadData()
-                }
-
-            } catch {
-                print("Settings fetch error:", error.localizedDescription)
-            }
+            self?.name.text = data["fullName"] as? String ?? ""
+            self?.email.text = data["email"] as? String ?? ""
+            self?.role.text = self?.mapRole(from: data["type"] as? Int ?? -1)
         }
     }
-
+    //Convert numeric role value to readable text
     private func mapRole(from role: Int) -> String {
         switch role {
         case 1000: return "Admin"
@@ -114,188 +112,45 @@ final class SettingsViewController: UIViewController,
         default: return "Unknown"
         }
     }
+    
 
-    // MARK: - Sections
-    func numberOfSections(in tableView: UITableView) -> Int { 4 }
-
-    func tableView(_ tableView: UITableView,
-                   numberOfRowsInSection section: Int) -> Int {
-        [1, 2, 2, 1][section]
-    }
-
-    // MARK: - Headers
-    func tableView(_ tableView: UITableView,
-                   titleForHeaderInSection section: Int) -> String? {
-        switch section {
-        case 0: return "Profile"
-        case 1: return "Preferences"
-        case 2: return "Support"
-        case 3: return "Logout"
-        default: return nil
-        }
-    }
-
-    func tableView(_ tableView: UITableView,
-                   willDisplayHeaderView view: UIView,
-                   forSection section: Int) {
-        if let header = view as? UITableViewHeaderFooterView {
-            header.textLabel?.font = AppTypography.dynamicCaption2
-            header.textLabel?.textColor = .secondaryLabel
-        }
-    }
-
-    // MARK: - Cells
-    func tableView(_ tableView: UITableView,
-                   cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        let cell: UITableViewCell
-
-        switch indexPath.section {
-
-        // PROFILE
-        case 0:
-            cell = tableView.dequeueReusableCell(withIdentifier: "Profile", for: indexPath)
-            configureProfileCell(cell)
-
-        // PREFERENCES
-        case 1:
-            cell = tableView.dequeueReusableCell(withIdentifier: "Preferences", for: indexPath)
-            cell.textLabel?.font = AppTypography.body
-            cell.textLabel?.textColor = AppColors.text
-
-            if indexPath.row == 0 {
-                cell.textLabel?.text = "Notifications"
-                cell.imageView?.image = UIImage(systemName: "bell")
-                cell.accessoryView = notificationSwitch
-            } else {
-                cell.textLabel?.text = "Dark / Light Mode"
-                cell.imageView?.image = UIImage(systemName: "moon")
-                cell.accessoryView = appearanceSwitch
-            }
-
-        // SUPPORT
-        case 2:
-            cell = tableView.dequeueReusableCell(withIdentifier: "SupportInfo", for: indexPath)
-            cell.textLabel?.text = indexPath.row == 0 ? "About App" : "FAQ"
-            cell.textLabel?.font = AppTypography.body
-            cell.imageView?.image = UIImage(systemName:
-                indexPath.row == 0 ? "info.circle" : "questionmark.circle")
-            cell.accessoryType = .disclosureIndicator
-
-        // LOGOUT
-        case 3:
-            cell = tableView.dequeueReusableCell(withIdentifier: "Logout", for: indexPath)
-            cell.textLabel?.text = "Logout"
-            cell.textLabel?.font = AppTypography.headline
-            cell.imageView?.image = UIImage(systemName: "arrow.backward.square")
-            cell.selectionStyle = .default   
-
-        default:
-            cell = UITableViewCell()
-        }
-
-        styleCell(cell)
-        applyRoundedCorners(to: cell, at: indexPath)
-        return cell
-    }
-
-    // MARK: - Profile Cell
-    private func configureProfileCell(_ cell: UITableViewCell) {
-        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
-
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "person.fill")
-        imageView.tintColor = .white
-        imageView.backgroundColor = .systemGray2
-        imageView.contentMode = .scaleAspectFit
-        imageView.layer.cornerRadius = 50
-        imageView.clipsToBounds = true
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-
-        let nameLabel = UILabel()
-        nameLabel.text = fullName
-        nameLabel.font = AppTypography.dynamicTitle3
-        nameLabel.textColor = AppColors.text
-
-        let emailLabel = UILabel()
-        emailLabel.text = email
-        emailLabel.font = AppTypography.dynamicSubheadline
-        emailLabel.textColor = .secondaryLabel
-
-        let roleLabel = UILabel()
-        roleLabel.text = roleText
-        roleLabel.font = AppTypography.dynamicCaption1
-        roleLabel.textColor = .secondaryLabel
-
-        let stack = UIStackView(arrangedSubviews: [nameLabel, emailLabel, roleLabel])
-        stack.axis = .vertical
-        stack.spacing = AppSpacing.sm
-        stack.translatesAutoresizingMaskIntoConstraints = false
-
-        cell.contentView.addSubview(imageView)
-        cell.contentView.addSubview(stack)
-
-        NSLayoutConstraint.activate([
-            imageView.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor, constant: AppSpacing.lg),
-            imageView.centerYAnchor.constraint(equalTo: cell.contentView.centerYAnchor),
-            imageView.widthAnchor.constraint(equalToConstant: 100),
-            imageView.heightAnchor.constraint(equalToConstant: 100),
-
-            stack.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: AppSpacing.lg),
-            stack.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor, constant: -AppSpacing.lg),
-            stack.centerYAnchor.constraint(equalTo: cell.contentView.centerYAnchor)
-        ])
-    }
-
-    // MARK: - Selection
-    func tableView(_ tableView: UITableView,
-                   didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        if indexPath.section == 3 {
-            showLogoutPopup()
-        }
-    }
-
-    // MARK: - Heights & Spacing
-    func tableView(_ tableView: UITableView,
-                   heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 { return 140 }
-        if indexPath.section == 3 { return 70 }
-        return UITableView.automaticDimension
-    }
-
-    func tableView(_ tableView: UITableView,
-                   heightForFooterInSection section: Int) -> CGFloat {
-        AppSpacing.xl
-    }
-
-    // MARK: - Styling
-    private func styleCell(_ cell: UITableViewCell) {
-        cell.selectionStyle = .none
-        cell.backgroundColor = .clear
-
-        let bg = UIView()
-        bg.backgroundColor = AppColors.primary.withAlphaComponent(0.15)
-        bg.layer.masksToBounds = true
-        bg.isUserInteractionEnabled = false
-        cell.backgroundView = bg
-
-        cell.contentView.isUserInteractionEnabled = true
-        cell.textLabel?.textColor = AppColors.text
-        cell.imageView?.tintColor = AppColors.text
-    }
-
-    // MARK: - Toggles
-    @objc private func notificationSwitchChanged(_ sender: UISwitch) {
+    // MARK: - Switch Actions
+    ///Saves notification preference
+    @IBAction func notificationChanged(_ sender: UISwitch) {
         UserDefaults.standard.set(sender.isOn, forKey: notificationsKey)
     }
 
-    @objc private func appearanceSwitchChanged(_ sender: UISwitch) {
+    //Saves theme preference and  applies UI style
+    @IBAction func darkModeChanged(_ sender: UISwitch) {
         UserDefaults.standard.set(sender.isOn, forKey: darkModeKey)
         applyInterfaceStyle(dark: sender.isOn)
     }
 
+    //MARK: - Navigation Actions
+    ///Navigate to About App screen
+    @objc private func aboutAppTapped() {
+        let storyboard = UIStoryboard(name: "AboutApp", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "AboutAppController")
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    ///Navigate to FAQ screen
+/*
+    @objc private func faqTapped() {
+        guard let vc = storyboard?.instantiateViewController(withIdentifier: "FAQViewControllers") else {
+            return
+        }
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    **/
+    
+    //Triggers logout confirmation dialog
+    @objc private func logoutTapped(){
+        showLogoutPopup()
+    }
+
+
+    // MARK: - Dark Mode
+    ///Apply dark or light interface
     private func applyInterfaceStyle(dark: Bool) {
         let style: UIUserInterfaceStyle = dark ? .dark : .light
         UIApplication.shared.connectedScenes
@@ -305,6 +160,7 @@ final class SettingsViewController: UIViewController,
     }
 
     // MARK: - Logout
+    ///Display logout confirmation alert
     private func showLogoutPopup() {
         let alert = UIAlertController(
             title: "Logout",
@@ -319,59 +175,29 @@ final class SettingsViewController: UIViewController,
 
         present(alert, animated: true)
     }
-
+    //Signs out user and reset app to login screen
     private func performLogout() {
         do {
             try Auth.auth().signOut()
+
         } catch {
-            print("❌ Firebase sign out failed:", error.localizedDescription)
             return
         }
 
-        navigateToLogin()
-    }
-
-    private func navigateToLogin() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginViewController")
         let nav = UINavigationController(rootViewController: loginVC)
         nav.modalPresentationStyle = .fullScreen
 
         guard
-            let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-            let window = windowScene.windows.first
+            let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+            let window = scene.windows.first
         else { return }
 
         window.rootViewController = nav
         window.makeKeyAndVisible()
     }
+    
 
-    // MARK: - Rounded Corners
-    private func applyRoundedCorners(to cell: UITableViewCell,
-                                     at indexPath: IndexPath) {
-
-        let rows = tableView.numberOfRows(inSection: indexPath.section)
-        let radius = AppSize.cornerRadiusLarge
-
-        cell.backgroundView?.layer.cornerRadius = 0
-        cell.backgroundView?.layer.maskedCorners = []
-
-        if rows == 1 {
-            cell.backgroundView?.layer.cornerRadius = radius
-            cell.backgroundView?.layer.maskedCorners = [
-                .layerMinXMinYCorner, .layerMaxXMinYCorner,
-                .layerMinXMaxYCorner, .layerMaxXMaxYCorner
-            ]
-        } else if indexPath.row == 0 {
-            cell.backgroundView?.layer.cornerRadius = radius
-            cell.backgroundView?.layer.maskedCorners = [
-                .layerMinXMinYCorner, .layerMaxXMinYCorner
-            ]
-        } else if indexPath.row == rows - 1 {
-            cell.backgroundView?.layer.cornerRadius = radius
-            cell.backgroundView?.layer.maskedCorners = [
-                .layerMinXMaxYCorner, .layerMaxXMaxYCorner
-            ]
-        }
-    }
 }
+
