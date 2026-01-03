@@ -8,7 +8,10 @@
 import UIKit
 import FirebaseFirestore
 
-class NotificationsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class NotificationsViewController: UIViewController,
+                                    UITableViewDataSource,
+                                    UITableViewDelegate,
+                                   UISearchBarDelegate{
     
     //MARK: Variables
     var user : User?
@@ -21,12 +24,19 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
         user?.type == .admin
     }
 
+    //Date Filter
     private var filterFromDate: Date?
     private var filterToDate: Date?
 
+    //Search
+    private var isSearching = false
+    private var searchText = ""
 
+    @IBOutlet weak var searchField: UISearchBar!
+    
     @IBOutlet weak var tableView: UITableView!
     
+    @IBOutlet weak var addBtn: UIButton!
     
 
     func loadUser() async {
@@ -45,8 +55,18 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
         notificationService.startListening { [weak self] notifications in
             guard let self else { return }
 
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 self.notifications = notifications
+                
+                //clear search
+                self.searchField.text = ""
+                self.isSearching = false
+                self.searchText = ""
+                
+                //clear filter
+                self.filterFromDate = nil
+                self.filterToDate = nil
+                
                 self.applyVisibilityFilter()
             }
         }
@@ -75,6 +95,16 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        //clear search
+        searchField.text = ""
+            isSearching = false
+            searchText = ""
+        
+        //clear filter
+           filterFromDate = nil
+           filterToDate = nil
+        
         notificationService.stopListening()
     }
     
@@ -85,6 +115,11 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
         if !isAdmin {
             hideAddButton()
         }
+        
+        searchField.delegate = self
+        searchField.placeholder = "Search notifications"
+        searchField.autocapitalizationType = .none
+
 
         setupTableView()
     }
@@ -112,29 +147,50 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
             tableView.reloadData()
             return
         }
+        if !isAdmin{
+            hideAddButton()
+        }
 
         var result = notifications.filter { notification in
             switch notification.type {
 
             case .announcement:
+                print("announcement")
                 if isAdmin && notification.createdBy == user.id {
                     return true
                 }
                 return notification.toWho.contains(user.id)
 
             case .notification:
+                print("notification")
                 return notification.toWho.contains(user.id)
             }
         }
 
-        // Apply date filter if active
+        // Date filter
+        let calendar = Calendar.current
+
         if let from = filterFromDate {
-            result = result.filter { $0.createdOn >= from }
+            let startOfDay = calendar.startOfDay(for: from)
+            result = result.filter { $0.createdOn >= startOfDay }
         }
 
         if let to = filterToDate {
-            result = result.filter { $0.createdOn <= to }
+            let endOfDay = calendar.date(
+                byAdding: .day,
+                value: 1,
+                to: calendar.startOfDay(for: to)
+            )!
+            result = result.filter { $0.createdOn < endOfDay }
         }
+
+        if isSearching {
+            result = result.filter {
+                $0.title.lowercased().contains(searchText) ||
+                $0.description!.lowercased().contains(searchText)
+            }
+        }
+
 
         visibleNotifications = result
         tableView.reloadData()
@@ -142,9 +198,10 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
 
 
 
+
     //MARK: Hide Buttons
     private func hideAddButton() {
-        navigationItem.rightBarButtonItem = nil
+        addBtn.isHidden = true
     }
 
 
@@ -183,7 +240,7 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
             // Perform the segue
             performSegue(withIdentifier: "ShowNotifDetailSegue", sender: self)
         }else{
-            //go to the ticket itself
+            //go to the request page
             performSegue(withIdentifier: "ShowNotifSegue", sender: self)
         }
     }
@@ -230,6 +287,23 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
         applyVisibilityFilter()
     }
 
+    //MARK: Apply Search
+    func applySearch(_ text: String) {
+        searchText = text.lowercased()
+        isSearching = !searchText.isEmpty
+        applyVisibilityFilter()
+    }
+
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        applySearch(searchText)
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        applySearch("")
+    }
 
     
     // MARK: - Navigation
@@ -246,13 +320,11 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
                 vc.currentUser = user
             }
         
-        
-        //TODO: Navigate to the request detail page
-//        if segue.identifier == "ShowNotifSegue",
-//           let vc = segue.destination as? NotifViewController {
-//            vc.currentUser = user
-//            vc.reguestRef = selectedNotif.requestRef
-//        }
+        //TODO: Navigate to the requests page
+        if segue.identifier == "ShowNotifSegue",
+           let vc = segue.destination as? RequestsViewController {
+        }
+            
     }
 }
 
@@ -275,10 +347,7 @@ extension NotificationModel {
             return nil
         }
 
-        guard let description = data["description"] as? String else {
-            print("❌ description missing or not String")
-            return nil
-        }
+         let description = data["description"] as? String 
 
         let toWhoStrings = data["toWho"] as? [String] ?? []
 

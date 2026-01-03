@@ -54,8 +54,15 @@ class EscalationContainerViewController: UIViewController {
     private func showPieChart(escalated: Int, nonEscalated: Int){
         
         //calculating escalating rate
-        let total = escalated + nonEscalated
-        let rate = (escalated/total) * 100
+        var total = escalated + nonEscalated
+        let rate:Double
+        if total == 0{
+            rate = 0
+        }
+        else {
+          rate = (Double(escalated)/Double(total)) * 100
+        }
+        
         
         //removing any previous chart views from the container
         pieChart.subviews.forEach {
@@ -114,7 +121,7 @@ class EscalationContainerViewController: UIViewController {
         
         //write inside the hole
         chart.drawCenterTextEnabled = true
-        let text = "Escalation Rate\n\(rate)%"
+        let text = String(format:"Escalation Rate\n%.2f%%",rate)
         
         let style = NSMutableParagraphStyle()
         style.alignment = .center

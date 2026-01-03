@@ -111,6 +111,8 @@
                     </view>
                     <navigationItem key="navigationItem" id="cYz-p3-Gcc"/>
                     <connections>
+                        <outlet property="addBtn" destination="ycn-Xa-tKM" id="Jba-qr-9sv"/>
+                        <outlet property="searchField" destination="gxD-I2-nH8" id="bFm-bq-9pT"/>
                         <outlet property="tableView" destination="qcX-AR-W7M" id="8Yn-aK-2jF"/>
                         <segue destination="v9V-pV-mCC" kind="show" identifier="ShowNotifDetailSegue" id="wI7-o0-2io"/>
                         <segue destination="Ubm-wf-P1y" kind="show" identifier="ShowCreateSegue" id="RBB-nP-CcI"/>
@@ -155,15 +157,15 @@
             </objects>
             <point key="canvasLocation" x="-45.038167938931295" y="576.76056338028172"/>
         </scene>
-        <!--Storyboard Reference-->
+        <!--Requests-->
         <scene sceneID="h9a-st-xlJ">
             <objects>
-                <viewControllerPlaceholder id="7yx-lg-ZaD" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardName="Requests" id="7yx-lg-ZaD" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="uQc-Yo-8Bh"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ldM-WT-x9k" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="245" y="1162"/>
+            <point key="canvasLocation" x="189" y="1020"/>
         </scene>
         <!--Notif Detail View Controller-->
         <scene sceneID="lzr-BA-Y7R">
@@ -216,13 +218,13 @@
                                                                 <rect key="frame" x="315" y="0.0" width="54" height="20.333333333333332"/>
                                                                 <subviews>
                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pvL-uE-1uB">
-                                                                        <rect key="frame" x="0.0" y="-1" width="24" height="21.833333333333325"/>
+                                                                        <rect key="frame" x="0.0" y="-0.33333333333333215" width="24" height="21.333333333333329"/>
                                                                         <color key="tintColor" red="0.34117650989999998" green="0.40784314269999999" blue="0.49019610879999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                                         <imageReference key="image" image="pencil" catalog="system" symbolScale="large"/>
                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large" weight="regular"/>
                                                                     </imageView>
                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vFF-dC-cDV">
-                                                                        <rect key="frame" x="30" y="-5" width="24" height="28.333333333333346"/>
+                                                                        <rect key="frame" x="30" y="-4.6666666666666679" width="24" height="28"/>
                                                                         <color key="tintColor" red="0.34117650989999998" green="0.40784314269999999" blue="0.49019610879999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                                         <imageReference key="image" image="trash" catalog="system" symbolScale="large"/>
                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large" weight="regular"/>

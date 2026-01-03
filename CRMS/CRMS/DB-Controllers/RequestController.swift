@@ -118,12 +118,14 @@ final class RequestController {
             modifiedBy: nil,
             inactive: false
         )
-        
+
         do {
-            try db.collection("RequestHistory")
+            let historyData = try Firestore.Encoder().encode(history)
+            try await db.collection("RequestHistory")
                 .document(history.id.uuidString)
-                .setData(from: history)
+                .setData(historyData)
         } catch {
+            print("❌ Failed to create history record: \(error.localizedDescription)")
             throw NetworkError.serverUnavailable
         }
 
@@ -264,7 +266,6 @@ final class RequestController {
             images: images,
             priority: nil,
             status: .submitted,
-            ownerId: userId,
 
             // Default Common Fields
             createdOn: Date(),
@@ -274,15 +275,19 @@ final class RequestController {
             inactive: false
         )
         
-        try await createHistoryRecord(requestRef: request.id, action: .submitted, sentBackReason: nil, reassignReason: nil)
-        
-        do{
-            try db.collection("Request")
+        // Encode and write request to Firestore
+        do {
+            let requestData = try Firestore.Encoder().encode(request)
+            try await db.collection("Request")
                 .document(request.id.uuidString)
-                .setData(from: request)
-        } catch{
+                .setData(requestData)
+        } catch {
+            print("❌ Failed to submit request: \(error.localizedDescription)")
             throw NetworkError.serverUnavailable
         }
+
+        // Create history record after successful request write
+        try await createHistoryRecord(requestRef: request.id, action: .submitted, sentBackReason: nil, reassignReason: nil)
     }
 
 // MARK: - Fetch All Requests (Filtered by User Type)
@@ -341,7 +346,6 @@ final class RequestController {
                       let description = data["description"] as? String,
                       let statusRaw = data["status"] as? Int,
                       let status = Status(rawValue: statusRaw),
-                      let ownerId = data["ownerId"] as? String,
                       let createdOn = (data["createdOn"] as? Timestamp)?.dateValue(),
                       let createdBy = data["createdBy"] as? String,
                       let inactive = data["inactive"] as? Bool
@@ -375,7 +379,6 @@ final class RequestController {
                     estimatedEndDate: estimatedEndDate,
                     actualStartDate: actualStartDate,
                     actualEndDate: actualEndDate,
-                    ownerId: ownerId,
                     createdOn: createdOn,
                     createdBy: createdBy,
                     modifiedOn: modifiedOn,
@@ -546,7 +549,6 @@ final class RequestController {
               let description = data["description"] as? String,
               let statusRaw = data["status"] as? Int,
               let status = Status(rawValue: statusRaw),
-              let ownerId = data["ownerId"] as? String,
               let createdOn = (data["createdOn"] as? Timestamp)?.dateValue(),
               let createdBy = data["createdBy"] as? String,
               let inactive = data["inactive"] as? Bool
@@ -580,7 +582,6 @@ final class RequestController {
             estimatedEndDate: estimatedEndDate,
             actualStartDate: actualStartDate,
             actualEndDate: actualEndDate,
-            ownerId: ownerId,
             createdOn: createdOn,
             createdBy: createdBy,
             modifiedOn: modifiedOn,
@@ -666,61 +667,68 @@ final class RequestController {
     }
 
 
-// MARK: - Get Servicers
+    // MARK: - Get Servicers
     /// Fetches all servicer users from the database for admin to select from when assigning requests
     /// - Returns: Array of User objects with servicer type
     func getServicers() async throws -> [User] {
+        // Internet check
         guard await hasInternetConnection() else {
             throw NetworkError.noInternet
         }
 
-        // Validate that the current user is an admin
+        print("Has internet")
+
+        // Authorization check
         let userType = try await session.getUserType()
         guard userType == UserType.admin.rawValue else {
             throw RequestError.unauthorizedAction
         }
 
-        // Query users with servicer type (1002)
+        print("Is authorized")
+
+        // Firestore query
         let snapshot = try await db.collection("User")
             .whereField("type", isEqualTo: UserType.servicer.rawValue)
             .getDocuments()
 
+        print("Docs count:", snapshot.documents.count)
+
+        // Map documents → User
         return snapshot.documents.compactMap { doc -> User? in
             let data = doc.data()
 
-            guard let id = data["id"] as? String,
-                  let fullName = data["fullName"] as? String,
-                  let userNo = data["userNo"] as? String,
-                  let typeRaw = data["type"] as? Int,
-                  let type = UserType(rawValue: typeRaw),
-                  let email = data["email"] as? String,
-                  let inactive = data["inactive"] as? Bool,
-                  let createdOn = data["createdOn"] as? Timestamp,
-                  let createdBy = data["createdBy"] as? String
-
-            else { return nil }
-
-            // Skip inactive users
-            if inactive == true {
+            // REQUIRED fields (drop doc if missing)
+            guard
+                let fullName = data["fullName"] as? String,
+                let typeRaw = data["type"] as? Int,
+                let type = UserType(rawValue: typeRaw),
+                let email = data["email"] as? String
+            else {
+                print("Dropped doc (missing required fields):", doc.documentID)
                 return nil
             }
 
-            let subtypeRaw = data["subtype"] as? Int
-            let subtype = subtypeRaw.flatMap { SubType(rawValue: $0) }
+            // OPTIONAL Firestore fields → DEFAULTED for model
+            let userNo = data["userNo"] as? String ?? ""
+            let inactive = data["inactive"] as? Bool ?? false
+            let createdBy = data["createdBy"] as? String ?? "system"
+            let createdOn = (data["createdOn"] as? Timestamp)?.dateValue() ?? Date()
+            let subtype = (data["subtype"] as? Int).flatMap(SubType.init)
 
             return User(
-                id: id,
+                id: doc.documentID,     // Document ID
                 userNo: userNo,
                 fullName: fullName,
                 type: type,
                 subtype: subtype,
                 email: email,
-                createdOn: createdOn.dateValue(),
+                createdOn: createdOn,
                 createdBy: createdBy,
                 inactive: inactive
             )
         }
     }
+
 
 // MARK: - Assign New Request
     /// Assigns a new request to a servicer (Admin only)
@@ -778,19 +786,19 @@ final class RequestController {
         try await createHistoryRecord(requestRef: requestId, action: .assigned, sentBackReason: nil, reassignReason: nil)
         
         
-        //send a notification the request owner and technician
+        //send a notification the requester and technician
        let reqNo = requestData.self["requestNo"] as! String
-        let ownerID = requestData.self["ownerRef"] as! String
+        let requester = requestData.self["requesterRef"] as! String
         
-        let toWhoOwner: [String] = [ownerID]
+        let toWhoRequester: [String] = [requester]
         let toWhoServicer: [String] = [servicerId]
         
-        //Owner notif
-        let notifOwner: NotificationModel = NotificationModel(
+        //requester notif
+        let notifRequester: NotificationModel = NotificationModel(
             id: UUID().uuidString,
             title: "Servicer appointed on request number \"\(reqNo)\".",
             description: nil,
-            toWho: toWhoOwner,
+            toWho: toWhoRequester,
             type: NotiType.notification,
             requestRef: requestId.uuidString,
             createdOn: Date(),
@@ -799,9 +807,9 @@ final class RequestController {
             modifiedBy: nil,
             inactive: false
         )
-        await NotifCreateViewController.shared.createNotif(data: notifOwner)
+        await NotifCreateViewController.shared.createNotif(data: notifRequester)
         
-        //Owner notif
+        //servicer notif
         let notifServicer: NotificationModel = NotificationModel(
             id: UUID().uuidString,
             title: "Appointed to request number \"\(reqNo)\".",
@@ -1009,6 +1017,30 @@ final class RequestController {
 
         // Create history record for completing the request
         try await createHistoryRecord(requestRef: requestId, action: .completed, sentBackReason: nil, reassignReason: nil)
+        
+        //send a notification the requester
+       let reqNo = requestData.self["requestNo"] as! String
+        let requester = requestData.self["requesterRef"] as! String
+        
+        let toWhoRequester: [String] = [requester]
+        
+        //requester notif
+        let notifRequester: NotificationModel = NotificationModel(
+            id: UUID().uuidString,
+            title: "Request Completed for request number \"\(reqNo)\".",
+            description: nil,
+            toWho: toWhoRequester,
+            type: NotiType.notification,
+            requestRef: requestId.uuidString,
+            createdOn: Date(),
+            createdBy: userId,
+            modifiedOn: nil,
+            modifiedBy: nil,
+            inactive: false
+        )
+        await NotifCreateViewController.shared.createNotif(data: notifRequester)
+        
+        
     }
 
 // MARK: - Check For Delayed Requests
@@ -1032,9 +1064,10 @@ final class RequestController {
 
         // Query requests that are in progress and have an estimated end date
         let snapshot = try await db.collection("Request")
-            .whereField("inactive", isEqualTo: false)
             .whereField("status", isEqualTo: Status.inProgress.rawValue)
             .getDocuments()
+
+        print("Checking \(snapshot.documents.count) in-progress request(s) for delays")
 
         var delayedCount = 0
 
@@ -1052,18 +1085,54 @@ final class RequestController {
             if estimatedEndDate < now {
                 guard let idString = data["id"] as? String,
                       let requestId = UUID(uuidString: idString) else {
+                    print("⚠️ Skipping request with invalid ID")
                     continue
                 }
 
-                // Update status to delayed
-                try await db.collection("Request").document(requestId.uuidString).updateData([
+                let requestNo = data["requestNo"] as? String ?? "Unknown"
+                print("request \(requestNo) is delayed (end date: \(estimatedEndDate), now: \(now))")
+
+                // Create history record object first
+                let historyId = UUID()
+                let historyNo = try await getNextAutonumber(document: "requestHistories")
+
+                let history = RequestHistory(
+                    id: historyId,
+                    historyNo: historyNo,
+                    requestRef: requestId,
+                    action: .delayed,
+                    sentBackReason: nil,
+                    reassignReason: nil,
+                    createdOn: Date(),
+                    createdBy: userId,
+                    modifiedOn: nil,
+                    modifiedBy: nil,
+                    inactive: false
+                )
+
+                // Use batch write to ensure both operations succeed or both fail
+                let batch = db.batch()
+
+                // Update request status
+                let requestRef = db.collection("Request").document(requestId.uuidString)
+                batch.updateData([
                     "status": Status.delayed.rawValue,
                     "modifiedOn": Timestamp(date: Date()),
                     "modifiedBy": userId
-                ])
+                ], forDocument: requestRef)
 
-                // Create history record for delayed status
-                try await createHistoryRecord(requestRef: requestId, action: .delayed, sentBackReason: nil, reassignReason: nil)
+                // Add history record
+                let historyRef = db.collection("RequestHistory").document(historyId.uuidString)
+                do {
+                    let historyData = try Firestore.Encoder().encode(history)
+                    batch.setData(historyData, forDocument: historyRef)
+                } catch {
+                    print("Failed to encode history for request \(requestId): \(error)")
+                    continue
+                }
+
+                // Commit batch
+                try await batch.commit()
 
                 delayedCount += 1
             }

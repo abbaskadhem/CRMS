@@ -133,7 +133,6 @@ struct Request: Codable, Identifiable {
     var estimatedEndDate: Date?      // Estimated end date the servicer schedueles
     var actualStartDate: Date?       // Actual Start Date (when servicer clicks start, this is set)
     var actualEndDate: Date?         // Actual End Date (when servicer clicks complete, this is set)
-    var ownerId: String              // Owner ID (Firebase Auth UID)
 
     // Default Common Fields
     var createdOn: Date              // Created on

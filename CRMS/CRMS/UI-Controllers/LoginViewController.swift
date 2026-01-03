@@ -19,8 +19,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var rememberMeButton: UIButton!
     @IBOutlet weak var loginButton: UIButton!
 
-    @IBOutlet weak var biometrics: UILabel!
-
     
     //property to disable the login button ONLY if both text fields are empty
     var isLoginButtonEnabled: Bool {
@@ -49,18 +47,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         forgotPassword.isUserInteractionEnabled = true
         forgotPassword.addGestureRecognizer(tapGesture)
         
-        //making "Login by biometrics" tappable
-        let tapGesture2 = UITapGestureRecognizer(target: self, action: #selector(biometricsTapped))
-        biometrics.isUserInteractionEnabled = true
-        biometrics.addGestureRecognizer(tapGesture2)
-        
-        //updateBiometricLabelVisibility
-        updateBiometricLabelVisibility()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        updateBiometricLabelVisibility()
     }
     
     //showing cursor
@@ -138,7 +124,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             }
             
             UserDefaults.standard.set(user.uid, forKey: "userID")
-            self?.updateBiometricLabelVisibility()
             self?.checkUserRole(for: user)
         }
     }
@@ -155,12 +140,24 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 
                     switch role {
                     case UserType.admin.rawValue:
+                        // Check for delayed requests when admin logs in
+                        Task {
+                            do {
+                                let delayedCount = try await RequestController.shared.checkForDelayedRequests()
+                                if delayedCount > 0 {
+                                    print(" Marked \(delayedCount) request(s) as delayed")
+                                }
+                            } catch {
+                                print("Failed to check for delayed requests: \(error)")
+                            }
+                        }
+
                         let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
                         vc = adminStoryboard.instantiateInitialViewController()
                     case UserType.servicer.rawValue:
                         // TODO: Create separate Servicer storyboard
-                        let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
-                        vc = adminStoryboard.instantiateInitialViewController()
+                        let servicerStoryboard = UIStoryboard(name: "Servicer", bundle: nil)
+                        vc = servicerStoryboard.instantiateInitialViewController()
                     case UserType.requester.rawValue:
                         let requesterStoryboard = UIStoryboard(name: "Requester", bundle: nil)
                         vc = requesterStoryboard.instantiateInitialViewController()
@@ -186,60 +183,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             }
         }
     }
-    
-    
-    @objc private func biometricsTapped(){
-        
-        //check for previous session
-        guard let user = Auth.auth().currentUser else {
-            showAlert(title: "Not Logged In", message: "Plaese login with email & password first")
-            return
-        }
-
-        let context = LAContext()
-        var error: NSError?
-        let reason = "Authentication is required to continue"
-        
-        guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
-            let msg = error?.localizedDescription ?? "Face ID / Touch ID is not available"
-            showAlert(title: "Unavailable", message: msg)
-            return
-        }
-        
-        context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason){
-            [weak self] success, evaluateError in
-            guard let self else {
-                return
-            }
-            
-            DispatchQueue.main.async{
-                if success {
-                    UserDefaults.standard.set(user.uid, forKey: "userID")
-                    //navigate to correct home page
-                    self.checkUserRole(for: user)
-                }
-                else {
-                    let msg = (evaluateError as NSError?)?.localizedDescription ?? "Authentication Failed"
-                    self.showAlert(title: "Authentication Failed", message: msg)
-                }
-            }
-        }
-    }
-    
-    //show/hide face id label
-    private func updateBiometricLabelVisibility(){
-        
-        //checking if the device supports Face ID / Touch ID
-        let context = LAContext()
-        var error: NSError?
-        let available = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
-        
-        let loggedin = (Auth.auth().currentUser != nil)
-        
-        //showing label only if user have a firebase session & device supports biometrics
-        biometrics.isHidden = !(available && loggedin)
-    }
-
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()

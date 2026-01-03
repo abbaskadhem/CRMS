@@ -81,7 +81,15 @@ class InventoryViewController: UIViewController,
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView() // remove empty cells
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SpacerCell")
+        tableView.register(
+               InventoryParentCell.self,
+               forCellReuseIdentifier: InventoryParentCell.reuseID
+           )
+
+           tableView.register(
+               InventoryChildCell.self,
+               forCellReuseIdentifier: InventoryChildCell.reuseID
+           )
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 44
         tableView.separatorStyle = .none
@@ -106,137 +114,85 @@ class InventoryViewController: UIViewController,
     
     //MARK: Table: number Of Sections
     func numberOfSections(in tableView: UITableView) -> Int {
-            return parentCategories.count
-        }
+        parentCategories.count
+    }
+
     
     //MARK: Table: number Of Rows In Section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let parent = parentCategories[section]
-
-        let expanded = isSearching ? true : parent.isExpanded
-
-        return expanded ? children(for: parent).count * 2 + 1 : 0
+        return parent.isExpanded
+            ? children(for: parent).count + 1
+            : 1
     }
+
 
 
     //MARK: Table: cell For Row At
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        if indexPath.row % 2 == 0 {
-            
-            // Empty spacer cell
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "SpacerCell", for: indexPath)
-                    cell.backgroundColor = .clear
-            cell.isUserInteractionEnabled = false
-            return cell
-        }else{
+        let parent = parentCategories[indexPath.section]
+
+        // Parent row
+        if indexPath.row == 0 {
             let cell = tableView.dequeueReusableCell(
-                withIdentifier: "InventoryCategoryCell",
+                withIdentifier: "InventoryParentCell",
                 for: indexPath
-            ) as! InventoryCategoryCell
-            
-            let childIndex = (indexPath.row - 1) / 2
-            let parent = parentCategories[indexPath.section]
-            let child = children(for: parent)[childIndex]
-            
-            cell.textLabel?.text = child.name
-            
+            ) as! InventoryParentCell
+
+            cell.configure(
+                title: parent.name,
+                expanded: parent.isExpanded
+            )
             return cell
         }
+
+        // Child rows
+        let childIndex = indexPath.row - 1
+        let child = children(for: parent)[childIndex]
+
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: InventoryChildCell.reuseID,
+            for: indexPath
+        ) as! InventoryChildCell
+
+        cell.configure(title: child.name)
+        return cell
+
     }
 
-    //MARK: Table: view For Header In Section
-    func tableView(_ tableView: UITableView,
-                   viewForHeaderInSection section: Int) -> UIView? {
-
-        let parent = parentCategories[section]
-
-        let headerView = UIView()
-        headerView.backgroundColor = AppColors.secondary
-        headerView.layer.cornerRadius = 8
-        headerView.clipsToBounds = true
-        headerView.tag = section
-
-        // Title
-        let titleLabel = UILabel()
-        titleLabel.text = parent.name
-        titleLabel.textColor = AppColors.text
-        titleLabel.font = .boldSystemFont(ofSize: 16)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        // Arrow
-        let arrowImageView = UIImageView(image: UIImage(named: "custom_arrow"))
-        arrowImageView.contentMode = .scaleAspectFit
-
-        arrowImageView.translatesAutoresizingMaskIntoConstraints = false
-        arrowImageView.tag = 999   // IMPORTANT: identify arrow later
-
-        // Rotate arrow if expanded
-        arrowImageView.transform = parent.isExpanded
-            ? CGAffineTransform(rotationAngle: .pi / 2)
-            : .identity
-
-        headerView.addSubview(titleLabel)
-        headerView.addSubview(arrowImageView)
-
-        NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
-            titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
-
-            arrowImageView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -16),
-            arrowImageView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
-            arrowImageView.widthAnchor.constraint(equalToConstant: 12),
-            arrowImageView.heightAnchor.constraint(equalToConstant: 12)
-        ])
-
-        let tap = UITapGestureRecognizer(target: self, action: #selector(toggleSection(_:)))
-        headerView.addGestureRecognizer(tap)
-
-        return headerView
-    }
-
-
-    //MARK: Table: height For Header In Section
-        func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-            return 44
-        }
-        
-    //MARK: Table: height For Row At
-    func tableView(_ tableView: UITableView,
-                   heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return indexPath.row % 2 == 0 ? 10:UITableView.automaticDimension
-    }
-    
-    //MARK: Table: height For Footer In Section
-    func tableView(_ tableView: UITableView,
-                   heightForFooterInSection section: Int) -> CGFloat {
-        return 12
-    }
-    
-    //MARK: Table: view For Footer In Section
-    func tableView(_ tableView: UITableView,
-                   viewForFooterInSection section: Int) -> UIView? {
-        return UIView()
-    }
-    
     //MARK: Table: did Select Row At
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // Ignore spacer rows
-        guard indexPath.row % 2 != 0 else { return }
 
         let parent = parentCategories[indexPath.section]
-        let childIndex = (indexPath.row - 1) / 2
-        let child = children(for: parent)[childIndex]
-        print(child.name)
-        
-        // Store the selected child temporarily
-        selectedChild = child
 
-            // Perform the segue
-            performSegue(withIdentifier: "ShowItemSegue", sender: self)
-        
+        // Parent row → expand / collapse
+        if indexPath.row == 0 {
+            categories = categories.map {
+                var c = $0
+                if c.id == parent.id {
+                    c.isExpanded.toggle()
+                }
+                return c
+            }
+
+            tableView.reloadSections(
+                IndexSet(integer: indexPath.section),
+                with: .automatic
+            )
+            return
+        }
+
+        // Child row → navigate
+        let childIndex = indexPath.row - 1
+        let child = children(for: parent)[childIndex]
+
+        selectedChild = child
+        performSegue(withIdentifier: "ShowItemSegue", sender: self)
     }
+
+
     
     //MARK: toggle section
     @objc private func toggleSection(_ sender: UITapGestureRecognizer) {

@@ -10,82 +10,91 @@ import FirebaseAuth
 import FirebaseFirestore
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-    
+
     var window: UIWindow?
-    
-    
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+
+    func scene(
+        _ scene: UIScene,
+        willConnectTo session: UISceneSession,
+        options connectionOptions: UIScene.ConnectionOptions
+    ) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-                
+
         window = UIWindow(windowScene: windowScene)
-                
-        // Check if remember me is enabled and user is logged in
+
+        // Check remember me + logged in user
         let rememberUser = UserDefaults.standard.bool(forKey: "rememberMeButton")
+
         guard rememberUser, let currentUser = Auth.auth().currentUser else {
-            let loginVC = UIStoryboard(name: "Main", bundle: nil)
-                .instantiateViewController(identifier: "WelcomeViewController") as! WelcomeViewController
-            window?.rootViewController = loginVC
-            window?.makeKeyAndVisible()
+            showLogin()
             return
         }
 
-        // Check user role if credentials exist
         checkUserRole(for: currentUser)
-
     }
-         
-    // Check for role function (non-async callback version)
+
+    // MARK: - Role Handling
+
     private func checkUserRole(for user: FirebaseAuth.User) {
-        // Check for connectivity (implement this method or remove)
+
         Task {
             guard await hasInternetConnection() else {
                 showAlert(title: "No Internet", message: "Please check your connection.")
                 fallbackToLogin()
                 return
             }
-                
+
             let db = Firestore.firestore()
             let userID = user.uid
-                
+
             db.collection("User").document(userID).getDocument { [weak self] snapshot, error in
                 guard let self = self else { return }
-                    
+
                 if let error = error {
                     self.showAlert(title: "Error", message: error.localizedDescription)
                     self.fallbackToLogin()
                     return
                 }
-                    
-                // User exists
+
                 guard let snapshot = snapshot, snapshot.exists else {
                     self.showAlert(title: "User Not Found", message: "No user found with this ID.")
                     self.fallbackToLogin()
                     return
                 }
-                    
-                // Fetch role type
+
                 let role = snapshot.get("type") as? Int ?? -1
-
-                // TODO: Create separate storyboards/tab bar controllers for Servicer and Requester roles
-                // Currently all roles use Admin.storyboard as a temporary solution
-                let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
-                var vc: UIViewController?
-
-                // Navigate based on user role
-
-                // Fetch role type
+                var rootVC: UIViewController?
 
                 switch role {
-                case 1000: // admin
-                    vc = UIStoryboard(name: "Admin", bundle: nil).instantiateInitialViewController()
 
-                case 1002: // servicer / technician
-                    vc = UIStoryboard(name: "Servicer", bundle: nil).instantiateInitialViewController()
-                  
-                    // vc = UIStoryboard(name: "Admin", bundle: nil).instantiateInitialViewController()
+                case 1000: // Admin
+                    Task {
+                        do {
+                            let delayedCount = try await RequestController.shared.checkForDelayedRequests()
+                            if delayedCount > 0 {
+                                print("Marked \(delayedCount) delayed request(s)")
+                            }
+                        } catch {
+                            print("Failed to check delayed requests: \(error)")
+                        }
+                    }
 
-                case 1001: // requester
-                    vc = UIStoryboard(name: "Requester", bundle: nil).instantiateInitialViewController()
+                    rootVC = UIStoryboard(
+                        name: "Admin",
+                        bundle: nil
+                    ).instantiateInitialViewController()
+
+                case 1002: // Servicer / Technician
+                    rootVC = UIStoryboard(
+                        name: "Servicer",
+                        bundle: nil
+                    ).instantiateInitialViewController()
+
+                case 1001: // Requester
+                    rootVC = UIStoryboard(
+                        name: "Requester",
+                        bundle: nil
+                    ).instantiateInitialViewController()
 
                 default:
                     self.showAlert(title: "Invalid Role", message: "Unknown user role.")
@@ -93,54 +102,69 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     return
                 }
 
-                if let vc = vc {
-                    self.window?.rootViewController = vc
-                    self.window?.makeKeyAndVisible()
-                }
-
-                if let vc = vc {
-                    self.window?.rootViewController = vc
-                    self.window?.makeKeyAndVisible()
-                }
-                
-                if let vc = vc {
-                    self.window?.rootViewController = vc
+                if let rootVC = rootVC {
+                    self.window?.rootViewController = rootVC
                     self.window?.makeKeyAndVisible()
                 }
             }
         }
     }
-    
-    private func fallbackToLogin() {
-        let loginVC = UIStoryboard(name: "Main", bundle: nil)
-            .instantiateViewController(identifier: "LoginViewController") as! LoginViewController
+
+    // MARK: - Navigation Helpers
+
+    private func showLogin() {
+        let loginVC = UIStoryboard(
+            name: "Main",
+            bundle: nil
+        ).instantiateViewController(
+            identifier: "WelcomeViewController"
+        )
+
         window?.rootViewController = loginVC
         window?.makeKeyAndVisible()
     }
-        
+
+    private func fallbackToLogin() {
+        let loginVC = UIStoryboard(
+            name: "Main",
+            bundle: nil
+        ).instantiateViewController(
+            identifier: "LoginViewController"
+        )
+
+        window?.rootViewController = loginVC
+        window?.makeKeyAndVisible()
+    }
+
+    // MARK: - Alerts
+
     private func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alert = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert
+        )
         alert.addAction(UIAlertAction(title: "OK", style: .default))
-            
-        // Safely present from root view controller chain
+
         if let presentedVC = window?.rootViewController?.presentedViewController {
             presentedVC.present(alert, animated: true)
         } else {
             window?.rootViewController?.present(alert, animated: true)
         }
     }
-    
-    // MARK: - Network Check (implement based on your needs)
+
+    // MARK: - Network
+
     private func hasInternetConnection() async -> Bool {
-        // Simple Reachability check - implement your preferred method
-        // For now, return true or use NWPathMonitor
+        // Implement real check later if needed
         return true
     }
-    
+
+    // MARK: - Scene lifecycle (unused)
+
     func sceneDidDisconnect(_ scene: UIScene) {}
     func sceneDidBecomeActive(_ scene: UIScene) {}
     func sceneWillResignActive(_ scene: UIScene) {}
     func sceneWillEnterForeground(_ scene: UIScene) {}
     func sceneDidEnterBackground(_ scene: UIScene) {}
-        
 }
