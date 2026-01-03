@@ -118,12 +118,14 @@ final class RequestController {
             modifiedBy: nil,
             inactive: false
         )
-        
+
         do {
-            try db.collection("RequestHistory")
+            let historyData = try Firestore.Encoder().encode(history)
+            try await db.collection("RequestHistory")
                 .document(history.id.uuidString)
-                .setData(from: history)
+                .setData(historyData)
         } catch {
+            print("❌ Failed to create history record: \(error.localizedDescription)")
             throw NetworkError.serverUnavailable
         }
 
@@ -273,15 +275,19 @@ final class RequestController {
             inactive: false
         )
         
-        try await createHistoryRecord(requestRef: request.id, action: .submitted, sentBackReason: nil, reassignReason: nil)
-        
-        do{
-            try db.collection("Request")
+        // Encode and write request to Firestore
+        do {
+            let requestData = try Firestore.Encoder().encode(request)
+            try await db.collection("Request")
                 .document(request.id.uuidString)
-                .setData(from: request)
-        } catch{
+                .setData(requestData)
+        } catch {
+            print("❌ Failed to submit request: \(error.localizedDescription)")
             throw NetworkError.serverUnavailable
         }
+
+        // Create history record after successful request write
+        try await createHistoryRecord(requestRef: request.id, action: .submitted, sentBackReason: nil, reassignReason: nil)
     }
 
 // MARK: - Fetch All Requests (Filtered by User Type)
