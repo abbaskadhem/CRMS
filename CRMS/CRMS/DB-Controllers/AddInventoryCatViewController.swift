@@ -1,15 +1,14 @@
 //
-//  AddCategoryViewController.swift
-//  Inventory
+//  AddInventoryCatViewController.swift
+//  CRMS
 //
-//  Created by BP-36-201-11 on 25/12/2025.
+//  Created by Reem Janahi on 03/01/2026.
 //
 
 import UIKit
 import FirebaseFirestore
 
-class AddCategoryViewController: UIViewController {
-
+class AddInventoryCatViewController: UIViewController {
     var userid:String!
     
     var categoriesArray: [ItemCategoryModel] = []
@@ -38,7 +37,7 @@ class AddCategoryViewController: UIViewController {
         }
         configUI()
         
-        print("Popover AddCategoryViewController!!")
+        print("Popover AddInventoryCatViewController!!")
     }
     
     //MARK: Configure the UI

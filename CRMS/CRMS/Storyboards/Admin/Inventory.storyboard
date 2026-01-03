@@ -228,10 +228,10 @@
             </objects>
             <point key="canvasLocation" x="4778" y="-561"/>
         </scene>
-        <!--Add Sub Category View Controller-->
+        <!--Add Inventory Sub Cat View Controller-->
         <scene sceneID="ZIR-8X-tKc">
             <objects>
-                <viewController storyboardIdentifier="AddSubCategoryViewController" id="HXc-HP-dAL" customClass="AddSubCategoryViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddInventorySubCatViewController" id="HXc-HP-dAL" customClass="AddInventorySubCatViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="fc3-xm-ND7">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="422"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -580,6 +580,7 @@
                     <navigationItem key="navigationItem" id="BKk-IG-wAo"/>
                     <connections>
                         <outlet property="addView" destination="cnx-IX-qHD" id="dib-Eh-qJJ"/>
+                        <outlet property="searchBar" destination="LRy-f6-VMI" id="iUS-Je-HxF"/>
                         <outlet property="tableView" destination="yLJ-Yk-hQX" id="ga1-ki-GBp"/>
                         <segue destination="5GT-QD-pwS" kind="show" identifier="ShowItemSegue" id="mtT-Oo-hmr"/>
                     </connections>
@@ -622,10 +623,10 @@
             </objects>
             <point key="canvasLocation" x="2206.8702290076335" y="113.38028169014085"/>
         </scene>
-        <!--Add Category View Controller-->
+        <!--Add Inventory Cat View Controller-->
         <scene sceneID="zK7-iX-VZX">
             <objects>
-                <viewController storyboardIdentifier="AddCategoryViewController" id="rKK-zn-zsL" customClass="AddCategoryViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddInventoryCatViewController" id="rKK-zn-zsL" customClass="AddInventoryCatViewController" customModule="CRMS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="vdL-5J-tQJ">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="422"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

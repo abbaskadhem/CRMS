@@ -101,7 +101,7 @@ final class CategoryManagementViewController: UIViewController {
     }
 
     private func showAddSubPopup(parentId: UUID) {
-        guard let vc = storyboard?.instantiateViewController(withIdentifier: "AddSubCatogryViewController") as? AddSubCatogryViewController else { return }
+        guard let vc = storyboard?.instantiateViewController(withIdentifier: "AddSubCategoryViewController") as? AddSubCategoryViewController else { return }
 
         vc.targetParentId = parentId
 
@@ -126,8 +126,8 @@ final class CategoryManagementViewController: UIViewController {
 
     @IBAction func addCategoryTapped(_ sender: UIButton) {
         guard let addVC = storyboard?.instantiateViewController(
-                withIdentifier: "AddCatogryViewController"
-            ) as? AddCatogryViewController else { return }
+                withIdentifier: "AddCategoryViewController"
+            ) as? AddCategoryViewController else { return }
 
             addVC.onCategoryAdded = { [weak self] in
                 Task { await self?.reloadCategories() }
@@ -231,12 +231,12 @@ class CategoryCell: UITableViewCell {
         selectionStyle = .none
         backgroundColor = .clear
 
-        containerView.backgroundColor = UIColor(red: 0.7, green: 0.8, blue: 0.85, alpha: 1.0)
-        containerView.layer.cornerRadius = 8
+        containerView.backgroundColor = AppColors.chartContainerBackground
+        containerView.layer.cornerRadius = AppSize.cornerRadius
         containerView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(containerView)
 
-        nameLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        nameLabel.font = AppTypography.headline
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(nameLabel)
 
@@ -263,6 +263,13 @@ class CategoryCell: UITableViewCell {
     func configure(with name: String, isExpanded: Bool) {
         nameLabel.text = name
         arrowImageView.image = UIImage(systemName: isExpanded ? "chevron.down" : "chevron.right")
+
+        // Configure accessibility
+        isAccessibilityElement = true
+        accessibilityLabel = "Category: \(name)"
+        accessibilityValue = isExpanded ? "Expanded" : "Collapsed"
+        accessibilityHint = isExpanded ? "Double tap to collapse" : "Double tap to expand"
+        accessibilityTraits = .button
     }
 }
 
@@ -283,14 +290,14 @@ class SubCategoryCell: UITableViewCell {
         selectionStyle = .none
         backgroundColor = .clear
 
-        containerView.backgroundColor = .white
-        containerView.layer.cornerRadius = 8
-        containerView.layer.borderWidth = 1
-        containerView.layer.borderColor = UIColor.lightGray.cgColor
+        containerView.backgroundColor = AppColors.inputBackground
+        containerView.layer.cornerRadius = AppSize.cornerRadius
+        containerView.layer.borderWidth = AppSize.borderWidth
+        containerView.layer.borderColor = AppColors.inputBorder.cgColor
         containerView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(containerView)
 
-        nameLabel.font = UIFont.systemFont(ofSize: 15)
+        nameLabel.font = AppTypography.body
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(nameLabel)
 
@@ -326,6 +333,17 @@ class SubCategoryCell: UITableViewCell {
         nameLabel.text = name
         toggleSwitch.isOn = isActive
         toggleSwitch.isHidden = !isEditMode
+
+        // Configure accessibility
+        isAccessibilityElement = true
+        accessibilityLabel = "Subcategory: \(name)"
+        if isEditMode {
+            accessibilityValue = isActive ? "Active" : "Inactive"
+            accessibilityHint = "Double tap to toggle status"
+        } else {
+            accessibilityValue = nil
+            accessibilityHint = nil
+        }
     }
 }
 
@@ -354,7 +372,8 @@ extension CategoryManagementViewController: UISearchBarDelegate {
 
 // MARK: - Add Category
 
-class AddCatogryViewController: UIViewController {
+/// View controller for adding a new parent category
+class AddCategoryViewController: UIViewController {
 
     var onCategoryAdded: (() -> Void)?
 
@@ -398,7 +417,8 @@ class AddCatogryViewController: UIViewController {
 
 // MARK: - Add SubCategory
 
-final class AddSubCatogryViewController: UIViewController {
+/// View controller for adding a subcategory under a parent category
+final class AddSubCategoryViewController: UIViewController {
 
     @IBOutlet weak var nameTextView: UITextView!
     @IBOutlet weak var saveButton: UIButton!

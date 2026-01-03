@@ -71,7 +71,7 @@ class DetailViewController: UIViewController,
 //MARK: make everything editable
     @objc private func editItem() {
         if isEditingItem {
-            showConfirmationOverlay()
+            showConfirmationOverlay(nil, nil)
         } else {
             isEditingItem = true
             draftItem = item
@@ -89,7 +89,7 @@ class DetailViewController: UIViewController,
     }
 
     //MARK: conformation overlay
-    private func showConfirmationOverlay() {
+    private func showConfirmationOverlay(_ message: String?,_ type: String?) {
         let overlay = UIView(frame: view.bounds)
         overlay.backgroundColor = UIColor.black.withAlphaComponent(0.4)
         overlay.alpha = 0
@@ -107,11 +107,11 @@ class DetailViewController: UIViewController,
         title.textAlignment = .center
 
         //message
-        let message = UILabel()
-        message.text = "Are you sure you want to save the edits?"
-        message.font = .systemFont(ofSize: 15)
-        message.textAlignment = .center
-        message.numberOfLines = 0
+        let messageLabel = UILabel()
+        messageLabel.text = message ?? "Are you sure you want to save the edits?"
+        messageLabel.font = .systemFont(ofSize: 15)
+        messageLabel.textAlignment = .center
+        messageLabel.numberOfLines = 0
 
         //cancel
         let noButton = UIButton(type: .system)
@@ -127,14 +127,19 @@ class DetailViewController: UIViewController,
         yesButton.backgroundColor = AppColors.primary
         yesButton.setTitleColor(.white, for: .normal)
         yesButton.layer.cornerRadius = 8
-        yesButton.addTarget(self, action: #selector(confirmSaveTapped), for: .touchUpInside)
+        if type == nil {
+            yesButton.addTarget(self, action: #selector(confirmSaveTapped), for: .touchUpInside)
+        }else if type == "delete"{
+            yesButton.addTarget(self, action: #selector(confirmDeletion), for: .touchUpInside)
+        }
+       
 
         let buttons = UIStackView(arrangedSubviews: [noButton, yesButton])
         buttons.axis = .horizontal
         buttons.spacing = 12
         buttons.distribution = .fillEqually
 
-        let stack = UIStackView(arrangedSubviews: [title, message, buttons])
+        let stack = UIStackView(arrangedSubviews: [title, messageLabel, buttons])
         stack.axis = .vertical
         stack.spacing = 16
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -162,7 +167,7 @@ class DetailViewController: UIViewController,
     }
     
     //MARK: succsess overlay
-    private func showSuccessOverlay() {
+    private func showSuccessOverlay(_ message: String?) {
         let overlay = UIView(frame: view.bounds)
         overlay.backgroundColor = UIColor.black.withAlphaComponent(0.35)
         overlay.alpha = 0
@@ -178,7 +183,7 @@ class DetailViewController: UIViewController,
         check.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
 
         let label = UILabel()
-        label.text = "Item Details Saved Successfully"
+        label.text = message ?? "Item Details Saved Successfully"
         label.font = .boldSystemFont(ofSize: 16)
         label.textAlignment = .center
         label.numberOfLines = 2
@@ -274,7 +279,7 @@ class DetailViewController: UIViewController,
     @objc private func confirmSaveTapped() {
         dismissConfirmationOverlay()
         commitAndExitEditMode()
-        showSuccessOverlay()
+        showSuccessOverlay(nil)
     }
 
     //MARK: overlay dissmissal
@@ -364,20 +369,34 @@ class DetailViewController: UIViewController,
     //MARK: delete the whole item
     @objc private func deleteItem() {
         print("Delete \(item.name)")
-        Firestore.firestore()
-            .collection("Item")
-            .document(item.id)
-            .delete { error in
-                if let error = error {
-                    print("Error deleting item: \(error)")
-                } else {
-                    print("Item deleted successfully")
-                }
-            }
+        showConfirmationOverlay("Are you sure you want to delete this item?", "delete")
+       
 
     }
 
 
+    //MARK: Confirm Delete
+    @objc private func confirmDeletion() {
+        
+        dismissConfirmationOverlay()
+        showSuccessOverlay("Deleted Successfully")
+
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [self] in
+            Firestore.firestore()
+                .collection("Item")
+                .document(item.id)
+                .delete { [self] error in
+                    if let error = error {
+                        print("Error deleting item: \(error)")
+                    } else {
+                        self.navigationController?.popViewController(animated: true)
+                        print("Item deleted successfully")
+                    }
+                }
+        }
+       
+    }
 
     
 //MARK:    headers

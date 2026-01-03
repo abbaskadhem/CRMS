@@ -14,10 +14,11 @@ enum UserType: Int, Codable {
 }
 
 enum SubType: Int, Codable {
-    case student = 1000
-    case staff = 1001
-    case maintenance = 1002
-    case technician = 1003
+    case admin = 1000
+    case student = 1001
+    case staff = 1002
+    case maintenance = 1003
+    case technician = 1004
 }
 
 // MARK: - User

@@ -16,12 +16,19 @@ class AddItemViewController: UIViewController,
 
     @IBOutlet weak var tableView: UITableView!
     
+    
+    //MARK: Variables
    var existingItems: [ItemModel] = []
     
     var currentUserID = SessionManager.shared.currentUserId!
     
     var categoryID: String?
     var subcategoryID: String?
+    
+    private var isEditingItem = false
+    private var draftItem: ItemModel?
+    private var confirmationOverlay: UIView?
+    private var successOverlay: UIView?
     
     private var listener: ListenerRegistration?
     
@@ -68,18 +75,7 @@ class AddItemViewController: UIViewController,
 
            
      }
-    
-    
 
-    
-     
-    private var isEditingItem = false
-    private var draftItem: ItemModel?
-    private var confirmationOverlay: UIView?
-    private var successOverlay: UIView?
-
-
-    
     //MARK: Edit Button
     @objc private func editItem() {
         showConfirmationOverlay("Are you sure you want to save the edits?", "edit")
@@ -135,7 +131,7 @@ class AddItemViewController: UIViewController,
         if type == "edit"{
             yesButton.addTarget(self, action: #selector(confirmSaveTapped), for: .touchUpInside)
         }else if type == "cancel"{
-            self.navigationController?.popViewController(animated: true)
+            yesButton.addTarget(self, action: #selector(confirmCancelTapped), for: .touchUpInside)
         }
         
          let buttons = UIStackView(arrangedSubviews: [noButton, yesButton])
@@ -169,63 +165,74 @@ class AddItemViewController: UIViewController,
              overlay.alpha = 1
          }
      }
+    
+    //MARK: cancel-confirm
+    @objc private func confirmCancelTapped() {
+        dismissConfirmationOverlay()
+        showSuccessOverlay("Canceled Successfully")
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
      
      //MARK: succsess overlay
-     private func showSuccessOverlay() {
-         let overlay = UIView(frame: view.bounds)
-         overlay.backgroundColor = UIColor.black.withAlphaComponent(0.35)
-         overlay.alpha = 0
+    private func showSuccessOverlay(_ message: String?) {
+        let overlay = UIView(frame: view.bounds)
+        overlay.backgroundColor = UIColor.black.withAlphaComponent(0.35)
+        overlay.alpha = 0
 
-         let container = UIView()
-         container.backgroundColor = .white
-         container.layer.cornerRadius = 16
-         container.translatesAutoresizingMaskIntoConstraints = false
+        let container = UIView()
+        container.backgroundColor = .white
+        container.layer.cornerRadius = 16
+        container.translatesAutoresizingMaskIntoConstraints = false
 
-         let check = UIImageView(image: UIImage(systemName: "checkmark.circle.fill"))
-         check.tintColor = AppColors.primary
-         check.contentMode = .scaleAspectFit
-         check.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        let check = UIImageView(image: UIImage(systemName: "checkmark.circle.fill"))
+        check.tintColor = AppColors.primary
+        check.contentMode = .scaleAspectFit
+        check.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
 
-         let label = UILabel()
-         label.text = "Item Details Saved Successfully"
-         label.font = .boldSystemFont(ofSize: 16)
-         label.textAlignment = .center
-         label.numberOfLines = 2
+        let label = UILabel()
+        label.text = message ?? "Announcement Created Successfully"
+        label.font = .boldSystemFont(ofSize: 16)
+        label.textAlignment = .center
+        label.numberOfLines = 2
 
-         let stack = UIStackView(arrangedSubviews: [check, label])
-         stack.axis = .vertical
-         stack.spacing = 12
-         stack.translatesAutoresizingMaskIntoConstraints = false
+        let stack = UIStackView(arrangedSubviews: [check, label])
+        stack.axis = .vertical
+        stack.spacing = 12
+        stack.translatesAutoresizingMaskIntoConstraints = false
 
-         container.addSubview(stack)
-         overlay.addSubview(container)
-         view.addSubview(overlay)
+        container.addSubview(stack)
+        overlay.addSubview(container)
+        view.addSubview(overlay)
 
-         NSLayoutConstraint.activate([
-             container.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
-             container.centerYAnchor.constraint(equalTo: overlay.centerYAnchor),
-             container.widthAnchor.constraint(equalToConstant: 260),
+        NSLayoutConstraint.activate([
+            container.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
+            container.centerYAnchor.constraint(equalTo: overlay.centerYAnchor),
+            container.widthAnchor.constraint(equalToConstant: 260),
 
-             check.heightAnchor.constraint(equalToConstant: 60),
+            check.heightAnchor.constraint(equalToConstant: 60),
 
-             stack.topAnchor.constraint(equalTo: container.topAnchor, constant: 24),
-             stack.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -24),
-             stack.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
-             stack.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20)
-         ])
+            stack.topAnchor.constraint(equalTo: container.topAnchor, constant: 24),
+            stack.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -24),
+            stack.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
+            stack.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20)
+        ])
 
-         successOverlay = overlay
+        successOverlay = overlay
 
-         UIView.animate(withDuration: 0.25) {
-             overlay.alpha = 1
-             check.transform = .identity
-         }
+        UIView.animate(withDuration: 0.25) {
+            overlay.alpha = 1
+            check.transform = .identity
+        }
 
-         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-             self.dismissSuccessOverlay()
-         }
-     }
-
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            self.dismissSuccessOverlay()
+            
+        }
+    }
+    
      //MARK: remove overlay
      private func dismissSuccessOverlay() {
          UIView.animate(withDuration: 0.25, animations: {
@@ -245,7 +252,6 @@ class AddItemViewController: UIViewController,
      @objc private func confirmSaveTapped() {
          dismissConfirmationOverlay()
          commitAndExitEditMode()
-         showSuccessOverlay()
      }
 
      //MARK: overlay dissmissal
@@ -265,6 +271,8 @@ class AddItemViewController: UIViewController,
          isEditingItem = false
          draftItem = nil
      }
+    
+    
 
      //MARK: commit changes once saved
     private func commitChanges() {
@@ -294,12 +302,12 @@ class AddItemViewController: UIViewController,
         }
         let unitCostString = unitCostCell.currentValue()
         guard let unitCost = Double(unitCostString) else {
-            showErrorBanner(title: "Unit Cost Cannot be empty")
+            showErrorBanner(title: "Invalid Unit Cost")
             return
         }
         let quantityString = quantityCell.currentValue()
         guard let quantity = Int(quantityString) else {
-            showErrorBanner(title: "Quantity Cannot be empty")
+            showErrorBanner(title: "Invalid Quantity")
             return
         }
         let vendor = vendorCell.currentValue()
@@ -322,20 +330,54 @@ class AddItemViewController: UIViewController,
             showErrorBanner(title: "Part already exists")
             return
         }
+        
+        //format details
+        let locale = Locale.current
+
+        let nameFormatted = name
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .capitalized(with: locale)
+
+        let partNoFormatted = partNo
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .uppercased()
+
+        if unitCost < 0 {
+            showErrorBanner(title: "Invalid Unit Cost")
+            return
+        }
+
+
+        if quantity < 0 {
+            showErrorBanner(title: "Invalid Quantity")
+            return
+        }
+
+
+        let vendorFormatted = vendor
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .capitalized(with: locale)
+
+        let descriptionFormatted = description
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let usageFormatted = usage
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
 
         let itemID = UUID().uuidString
 
         let payload: [String: Any?] = [
             "id": itemID,
-            "name": name,
-            "partNo": partNo,
+            "name": nameFormatted,
+            "partNo": partNoFormatted,
             "unitCost": unitCost,
-            "vendor": vendor,
+            "vendor": vendorFormatted,
             "itemCategoryRef": categoryID ,
             "itemSubcategoryRef": subcategoryID ,
             "quantity": quantity,
-            "description": description,
-            "usage": usage,
+            "description": descriptionFormatted,
+            "usage": usageFormatted,
             "createdOn": Timestamp(),
             "createdBy": currentUserID,
             "modifiedOn": nil,
@@ -350,7 +392,7 @@ class AddItemViewController: UIViewController,
                 
                 
                 try await ref.document(itemID).setData(payload as [String : Any])
-                
+                showSuccessOverlay(nil)
                 
               
                     

@@ -43,7 +43,7 @@ final class AdminRequestsViewController: UIViewController {
         searchBar.placeholder = "Search"
         searchBar.backgroundImage = UIImage()
         searchBar.searchTextField.backgroundColor = .white
-        searchBar.searchTextField.layer.cornerRadius = 18
+        searchBar.searchTextField.layer.cornerRadius = AppSize.cornerRadiusLarge
         searchBar.searchTextField.layer.masksToBounds = true
         searchBar.searchTextField.layer.borderWidth = 1
         searchBar.searchTextField.layer.borderColor = AppColors.inputBorder.cgColor
@@ -60,7 +60,14 @@ final class AdminRequestsViewController: UIViewController {
         tableView.dataSource = self
         tableView.backgroundColor = AppColors.background
         tableView.separatorStyle = .none
+        tableView.showsHorizontalScrollIndicator = false
+        tableView.showsVerticalScrollIndicator = true
+        // Only add vertical content insets, no horizontal to prevent horizontal scrolling
         tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+
+        // Enable automatic cell sizing for dynamic content
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 160
 
         // Register custom cell
         tableView.register(RequestCardCell.self, forCellReuseIdentifier: RequestCardCell.identifier)
@@ -159,12 +166,6 @@ final class AdminRequestsViewController: UIViewController {
     }
 
     // MARK: - Helpers
-
-    private func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
-    }
 }
 
 // MARK: - UITableViewDelegate & UITableViewDataSource
@@ -182,10 +183,6 @@ extension AdminRequestsViewController: UITableViewDelegate, UITableViewDataSourc
         let request = filteredRequests[indexPath.row]
         cell.configure(with: request)
         return cell
-    }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 160
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

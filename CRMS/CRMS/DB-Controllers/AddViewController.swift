@@ -36,7 +36,7 @@ class AddViewController: UIViewController {
     
     @IBAction func addCatTapped(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Inventory", bundle: nil)
-            if let categoryVC = storyboard.instantiateViewController(withIdentifier: "AddCategoryViewController") as? AddCategoryViewController {
+            if let categoryVC = storyboard.instantiateViewController(withIdentifier: "AddInventoryCatViewController") as? AddInventoryCatViewController {
                 categoryVC.modalPresentationStyle = .pageSheet // or .popover
                 categoryVC.sheetPresentationController?.detents = [.medium()] // adjust height
                 categoryVC.sheetPresentationController?.prefersGrabberVisible = true
@@ -49,7 +49,7 @@ class AddViewController: UIViewController {
     
     @IBAction func addSubCatTapped(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Inventory", bundle: nil)
-            if let categoryVC = storyboard.instantiateViewController(withIdentifier: "AddSubCategoryViewController") as? AddSubCategoryViewController {
+            if let categoryVC = storyboard.instantiateViewController(withIdentifier: "AddInventorySubCatViewController") as? AddInventorySubCatViewController {
                 categoryVC.modalPresentationStyle = .pageSheet // or .popover
                 categoryVC.sheetPresentationController?.detents = [.medium()] // adjust height
                 categoryVC.sheetPresentationController?.prefersGrabberVisible = true
@@ -76,8 +76,6 @@ class AddViewController: UIViewController {
     }
     
 
-    
-    
     /*
     // MARK: - Navigation
 

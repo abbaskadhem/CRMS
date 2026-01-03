@@ -31,23 +31,7 @@
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Wn-lO-Rex">
                                 <rect key="frame" x="16" y="225.66666666666669" width="361" height="542.33333333333326"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BDu-h7-WVS">
-                                        <rect key="frame" x="76" y="151.00000000000003" width="210" height="39"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="filled" title="Inventory Management"/>
-                                        <connections>
-                                            <segue destination="cRa-nh-FRW" kind="show" id="mDf-Iu-ewZ"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
                                 <color key="backgroundColor" red="0.96078431610000004" green="0.94117647410000005" blue="0.92549020049999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <constraints>
-                                    <constraint firstItem="BDu-h7-WVS" firstAttribute="top" secondItem="7Wn-lO-Rex" secondAttribute="top" constant="151" id="1Fh-xJ-Tlc"/>
-                                    <constraint firstAttribute="bottom" secondItem="BDu-h7-WVS" secondAttribute="bottom" constant="352.32999999999998" id="AEG-7e-Djb"/>
-                                    <constraint firstItem="BDu-h7-WVS" firstAttribute="leading" secondItem="7Wn-lO-Rex" secondAttribute="leading" constant="76" id="IWA-DF-k7i"/>
-                                    <constraint firstAttribute="trailing" secondItem="BDu-h7-WVS" secondAttribute="trailing" constant="75" id="tUO-a0-VOC"/>
-                                </constraints>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="AS7-iT-FNB"/>
@@ -83,16 +67,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2pQ-Ce-bTX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3736.6412213740455" y="133.80281690140845"/>
-        </scene>
-        <!--Inventory-->
-        <scene sceneID="pKQ-hD-aSJ">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Inventory" id="cRa-nh-FRW" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="lhR-Me-l5V"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="NVE-rx-lQx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="4588" y="134"/>
         </scene>
     </scenes>
     <resources>

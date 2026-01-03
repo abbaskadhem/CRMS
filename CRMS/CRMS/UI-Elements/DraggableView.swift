@@ -1,5 +1,5 @@
 //
-//  DraggbleView.swift
+//  DraggableView.swift
 //  CRMS
 //
 //  Created by Macos on 24/12/2025.
@@ -7,17 +7,18 @@
 
 import UIKit
 
+/// A view controller that presents content in a draggable popup sheet with blur background
 final class DraggablePopupViewController: UIViewController, UIGestureRecognizerDelegate {
 
     private let contentVC: UIViewController
     private let popupHeight: CGFloat
     private var originalY: CGFloat = 0
-    
+
     private let blurEffectView: UIVisualEffectView = {
-            let blurEffect = UIBlurEffect(style: .systemThinMaterialDark)
-            let view = UIVisualEffectView(effect: nil)
-            return view
-        }()
+        let blurEffect = UIBlurEffect(style: .systemThinMaterialDark)
+        let view = UIVisualEffectView(effect: nil)
+        return view
+    }()
 
     init(contentVC: UIViewController, height: CGFloat = UIScreen.main.bounds.height * 0.7) {
         self.contentVC = contentVC
@@ -37,20 +38,20 @@ final class DraggablePopupViewController: UIViewController, UIGestureRecognizerD
     }
 
     private func setupUI() {
-            blurEffectView.frame = view.bounds
-            blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            view.addSubview(blurEffectView)
-            
-            view.backgroundColor = .clear
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.addSubview(blurEffectView)
 
-            addChild(contentVC)
-            view.addSubview(contentVC.view)
-            contentVC.didMove(toParent: self)
-            
-            contentVC.view.frame = CGRect(x: 0, y: view.frame.height, width: view.frame.width, height: popupHeight)
-            originalY = view.frame.height - popupHeight
-        }
-    
+        view.backgroundColor = .clear
+
+        addChild(contentVC)
+        view.addSubview(contentVC.view)
+        contentVC.didMove(toParent: self)
+
+        contentVC.view.frame = CGRect(x: 0, y: view.frame.height, width: view.frame.width, height: popupHeight)
+        originalY = view.frame.height - popupHeight
+    }
+
     private func setupKeyboardObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -59,16 +60,16 @@ final class DraggablePopupViewController: UIViewController, UIGestureRecognizerD
     @objc private func keyboardWillShow(notification: NSNotification) {
         guard let userInfo = notification.userInfo,
               let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-        
+
         let keyboardHeight = keyboardFrame.cgRectValue.height
-        UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: AppAnimation.standard) {
             // Adjust the popup to sit right above the keyboard
             self.contentVC.view.frame.origin.y = self.view.frame.height - self.popupHeight - keyboardHeight + 100
         }
     }
 
     @objc private func keyboardWillHide(notification: NSNotification) {
-        UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: AppAnimation.standard) {
             self.contentVC.view.frame.origin.y = self.originalY
         }
     }
@@ -94,23 +95,28 @@ final class DraggablePopupViewController: UIViewController, UIGestureRecognizerD
         }
     }
 
+    /// Animates the popup into view
     func presentPopup() {
-        UIView.animate(withDuration: 0.3) {
-                    self.blurEffectView.effect = UIBlurEffect(style: .systemThinMaterialDark)
-                    self.contentVC.view.frame.origin.y = self.originalY
-                }    }
-
-    func dismissPopup() {
-            UIView.animate(withDuration: 0.25, animations: {
-                self.blurEffectView.effect = nil
-                self.contentVC.view.frame.origin.y = self.view.frame.height
-            }) { _ in
-                self.dismiss(animated: false)
-            }
+        UIView.animate(withDuration: AppAnimation.standard) {
+            self.blurEffectView.effect = UIBlurEffect(style: .systemThinMaterialDark)
+            self.contentVC.view.frame.origin.y = self.originalY
         }
+    }
+
+    /// Animates the popup out of view and dismisses
+    func dismissPopup() {
+        UIView.animate(withDuration: AppAnimation.standard, animations: {
+            self.blurEffectView.effect = nil
+            self.contentVC.view.frame.origin.y = self.view.frame.height
+        }) { _ in
+            self.dismiss(animated: false)
+        }
+    }
 
     private func snapBack() {
-        UIView.animate(withDuration: 0.2) { self.contentVC.view.frame.origin.y = self.originalY }
+        UIView.animate(withDuration: AppAnimation.quick) {
+            self.contentVC.view.frame.origin.y = self.originalY
+        }
     }
 
     private func setupPanGesture() {

@@ -10,20 +10,42 @@ import FirebaseFirestore
 
 class InventoryViewController: UIViewController,
                                UITableViewDelegate,
-                               UITableViewDataSource  {
+                               UITableViewDataSource,
+                               UISearchBarDelegate {
 
 
+    //MARK: Outlets
     @IBOutlet weak var tableView: UITableView!
     
+    @IBOutlet weak var searchBar: UISearchBar!
     
     //MARK: Variables
     var categories: [ItemCategoryModel] = []
     var selectedChild: ItemCategoryModel?
     var parentCategories: [ItemCategoryModel] {
-        categories.filter { $0.isParent && !$0.inactive }
+        if !isSearching {
+            return categories.filter { $0.isParent && !$0.inactive }
+        }
+
+        let parentIDs = Set(
+            filteredCategories.compactMap { $0.parentCategoryRef }
+        )
+
+        return categories.filter {
+            $0.isParent &&
+            parentIDs.contains($0.id) &&
+            !$0.inactive
+        }
     }
+
+    
     var overlayView: UIView!
     
+    //Search
+    private var isSearching = false
+    private var searchText = ""
+    private var filteredCategories: [ItemCategoryModel] = []
+
 
     private var listener: ListenerRegistration?
 
@@ -31,9 +53,21 @@ class InventoryViewController: UIViewController,
         super.viewDidLoad()
 
         listener = InventoryService.shared.listenToInventoryCategories { [weak self] categories in
-            self?.categories = categories
-            self?.tableView.reloadData()
+            guard let self else { return }
+
+            self.categories = categories.map {
+                var c = $0
+                c.isExpanded = false
+                return c
+            }
+
+            self.tableView.reloadData()
         }
+        searchBar.delegate = self
+        searchBar.placeholder = "Search"
+        searchBar.autocapitalizationType = .none
+
+
         setupTableView()
     }
 
@@ -57,20 +91,35 @@ class InventoryViewController: UIViewController,
 
     //MARK: Get all SubCategories
     func children(for parent: ItemCategoryModel) -> [ItemCategoryModel] {
-        categories.filter { !$0.isParent && $0.parentCategoryRef == parent.id && !$0.inactive }
+        if !isSearching {
+            return categories.filter {
+                !$0.isParent &&
+                $0.parentCategoryRef == parent.id &&
+                !$0.inactive
+            }
+        }
+
+        return filteredCategories.filter {
+            $0.parentCategoryRef == parent.id
+        }
     }
     
-    //MARK: Table functions: number Of Sections
+    //MARK: Table: number Of Sections
     func numberOfSections(in tableView: UITableView) -> Int {
             return parentCategories.count
         }
-    //MARK: Table functions: number Of Rows In Section
-        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            let parent = parentCategories[section]
-            return parent.isExpanded ? children(for: parent).count * 2+1: 0
-        }
+    
+    //MARK: Table: number Of Rows In Section
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let parent = parentCategories[section]
 
-    //MARK: Table functions: cell For Row At
+        let expanded = isSearching ? true : parent.isExpanded
+
+        return expanded ? children(for: parent).count * 2 + 1 : 0
+    }
+
+
+    //MARK: Table: cell For Row At
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
@@ -95,12 +144,9 @@ class InventoryViewController: UIViewController,
             
             return cell
         }
-
-           
     }
 
-
-    //MARK: Table functions: view For Header In Section
+    //MARK: Table: view For Header In Section
     func tableView(_ tableView: UITableView,
                    viewForHeaderInSection section: Int) -> UIView? {
 
@@ -151,27 +197,30 @@ class InventoryViewController: UIViewController,
     }
 
 
-    //MARK: Table functions: height For Header In Section
+    //MARK: Table: height For Header In Section
         func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
             return 44
         }
         
-    //MARK: Table functions: height For Row At
+    //MARK: Table: height For Row At
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath) -> CGFloat {
         return indexPath.row % 2 == 0 ? 10:UITableView.automaticDimension
     }
-    //MARK: Table functions: height For Footer In Section
+    
+    //MARK: Table: height For Footer In Section
     func tableView(_ tableView: UITableView,
                    heightForFooterInSection section: Int) -> CGFloat {
         return 12
     }
-    //MARK: Table functions: view For Footer In Section
+    
+    //MARK: Table: view For Footer In Section
     func tableView(_ tableView: UITableView,
                    viewForFooterInSection section: Int) -> UIView? {
         return UIView()
     }
-    //MARK: Table functions: did Select Row At
+    
+    //MARK: Table: did Select Row At
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Ignore spacer rows
         guard indexPath.row % 2 != 0 else { return }
@@ -191,6 +240,8 @@ class InventoryViewController: UIViewController,
     
     //MARK: toggle section
     @objc private func toggleSection(_ sender: UITapGestureRecognizer) {
+        guard !isSearching else { return }
+
         guard let headerView = sender.view else { return }
         let section = headerView.tag
 
@@ -204,15 +255,36 @@ class InventoryViewController: UIViewController,
             return c
         }
 
-        if let arrow = headerView.viewWithTag(999) {
-            UIView.animate(withDuration: 0.25) {
-                arrow.transform = isNowExpanded
-                    ? CGAffineTransform(rotationAngle: .pi / 2)
-                    : .identity
+        tableView.reloadSections([section], with: .automatic)
+    }
+
+    
+    //MARK: Apply Search
+    func applySearch(_ text: String) {
+        searchText = text.lowercased()
+        isSearching = !searchText.isEmpty
+
+        if isSearching {
+            filteredCategories = categories.filter {
+                !$0.isParent &&
+                !$0.inactive &&
+                $0.name.lowercased().contains(searchText)
             }
+        } else {
+            filteredCategories.removeAll()
         }
 
-        tableView.reloadSections([section], with: .automatic)
+        tableView.reloadData()
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        applySearch(searchText)
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        applySearch("")
     }
 
     

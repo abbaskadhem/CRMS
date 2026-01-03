@@ -7,8 +7,6 @@
 
 import UIKit
 import FirebaseAuth
-import FirebaseStorage
-import FirebaseFirestore
 
 class LoginViewController: UIViewController {
 
@@ -115,50 +113,45 @@ class LoginViewController: UIViewController {
     }
 
     
+    /// Checks the user role via SessionManager and navigates to the appropriate storyboard
     private func checkUserRole(for user: FirebaseAuth.User) {
-        let db = Firestore.firestore()
+        Task {
+            do {
+                // Use SessionManager to get user type from database
+                let role = try await SessionManager.shared.getUserType()
 
-        // Look up user document by Firebase Auth UID
-        db.collection("User").document(user.uid).getDocument { [weak self] snapshot, error in
-            guard let self = self else { return }
+                await MainActor.run {
+                    var vc: UIViewController?
 
-            if let error = error {
-                self.showAlert(title: "Error", message: error.localizedDescription)
-                return
-            }
+                    switch role {
+                    case UserType.admin.rawValue:
+                        let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
+                        vc = adminStoryboard.instantiateInitialViewController()
+                    case UserType.servicer.rawValue:
+                        // TODO: Create separate Servicer storyboard
+                        let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
+                        vc = adminStoryboard.instantiateInitialViewController()
+                    case UserType.requester.rawValue:
+                        let requesterStoryboard = UIStoryboard(name: "Requester", bundle: nil)
+                        vc = requesterStoryboard.instantiateInitialViewController()
+                    default:
+                        self.showAlert(title: "Invalid Role", message: "Unknown user role.")
+                        return
+                    }
 
-            guard let snapshot = snapshot, snapshot.exists, let data = snapshot.data() else {
-                self.showAlert(title: "User Not Found", message: "No user profile found. Please contact support.")
-                return
-            }
-
-            let role = data["type"] as? Int ?? -1
-
-            var vc: UIViewController?
-
-            switch role {
-            case UserType.admin.rawValue:
-                let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
-                vc = adminStoryboard.instantiateInitialViewController()
-            case UserType.servicer.rawValue:
-                // TODO: Create separate Servicer storyboard
-                let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
-                vc = adminStoryboard.instantiateInitialViewController()
-            case UserType.requester.rawValue:
-                let requesterStoryboard = UIStoryboard(name: "Requester", bundle: nil)
-                vc = requesterStoryboard.instantiateInitialViewController()
-            default:
-                self.showAlert(title: "Invalid Role", message: "Unknown user role.")
-                return
-            }
-
-            if let vc = vc {
-                // Navigate using navigation controller or present modally
-                if let navController = self.navigationController {
-                    navController.pushViewController(vc, animated: true)
-                } else {
-                    vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: true)
+                    if let vc = vc {
+                        // Navigate using navigation controller or present modally
+                        if let navController = self.navigationController {
+                            navController.pushViewController(vc, animated: true)
+                        } else {
+                            vc.modalPresentationStyle = .fullScreen
+                            self.present(vc, animated: true)
+                        }
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    self.showAlert(title: "Error", message: error.localizedDescription)
                 }
             }
         }
@@ -166,14 +159,8 @@ class LoginViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        backgroundLogin.layer.cornerRadius = 200
+        backgroundLogin.layer.cornerRadius = 200  // Large custom radius for background design
         backgroundLogin.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         backgroundLogin.layer.masksToBounds = true
-    }
-
-    private func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
     }
 }

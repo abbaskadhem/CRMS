@@ -6,12 +6,29 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class NotificationsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
+    //MARK: Variables
     var user : User?
-
     
+    private let notificationService = NotificationService()
+    private var notifications: [NotificationModel] = []
+    private var visibleNotifications: [NotificationModel] = []
+    var selectedNotif: NotificationModel!
+    private var isAdmin: Bool {
+        user?.type == .admin
+    }
+
+    private var filterFromDate: Date?
+    private var filterToDate: Date?
+
+
+    @IBOutlet weak var tableView: UITableView!
+    
+    
+
     func loadUser() async {
         do {
             let currentUser = try await SessionManager.shared.getCurrentUser()
@@ -21,16 +38,6 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
             print(error)
         }
     }
-
-    private var isAdmin: Bool {
-        user?.type == .admin
-    }
-
-    private let notificationService = NotificationService()
-    private var notifications: [NotificationModel] = []
-    private var visibleNotifications: [NotificationModel] = []
-
-    @IBOutlet weak var tableView: UITableView!
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -71,6 +78,8 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
         notificationService.stopListening()
     }
     
+    
+    //MARK: Config UI
     private func configureUI() {
 
         if !isAdmin {
@@ -80,7 +89,7 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
         setupTableView()
     }
 
-    
+    //MARK: Setup table
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
@@ -96,6 +105,7 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
         tableView.estimatedRowHeight = 120
     }
     
+    //MARK: Apply Visibility Filter
     private func applyVisibilityFilter() {
         guard let user else {
             visibleNotifications = []
@@ -103,38 +113,47 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
             return
         }
 
-        visibleNotifications = notifications.filter { notification in
+        var result = notifications.filter { notification in
             switch notification.type {
 
             case .announcement:
-                // Admin sees announcements he created
                 if isAdmin && notification.createdBy == user.id {
                     return true
                 }
-
-                // Targeted announcement
                 return notification.toWho.contains(user.id)
 
             case .notification:
-                // Notifications are always strictly targeted
                 return notification.toWho.contains(user.id)
             }
         }
 
+        // Apply date filter if active
+        if let from = filterFromDate {
+            result = result.filter { $0.createdOn >= from }
+        }
+
+        if let to = filterToDate {
+            result = result.filter { $0.createdOn <= to }
+        }
+
+        visibleNotifications = result
         tableView.reloadData()
     }
 
 
 
+    //MARK: Hide Buttons
     private func hideAddButton() {
         navigationItem.rightBarButtonItem = nil
     }
 
 
+    //MARK: Table: number Of Rows In Section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
           visibleNotifications.count
       }
 
+    //MARK: Table: cell For Row At
       func tableView(
           _ tableView: UITableView,
           cellForRowAt indexPath: IndexPath
@@ -154,7 +173,8 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
           return cell
       }
     
-    var selectedNotif: NotificationModel!
+    
+    //MARK: Table: did Select Row At
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
             selectedNotif = visibleNotifications[indexPath.row]
@@ -164,6 +184,7 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
             performSegue(withIdentifier: "ShowNotifDetailSegue", sender: self)
         }else{
             //go to the ticket itself
+            performSegue(withIdentifier: "ShowNotifSegue", sender: self)
         }
     }
     
@@ -174,8 +195,44 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
         
     }
     
-    // MARK: - Navigation
+    //MARK: Filter
+    @IBAction func filterBtnTapped(_ sender: Any) {
+        let vc = NotificationFilterViewController()
 
+           vc.onApply = { [weak self] from, to in
+               self?.applyDateFilter(from: from, to: to)
+           }
+
+           vc.onClear = { [weak self] in
+               self?.clearDateFilter()
+           }
+
+           if let sheet = vc.sheetPresentationController {
+               sheet.detents = [.medium()]
+               sheet.prefersGrabberVisible = true
+               sheet.preferredCornerRadius = 20
+           }
+
+           present(vc, animated: true)
+    }
+    
+    //MARK: Date Filter
+    private func applyDateFilter(from: Date?, to: Date?) {
+        filterFromDate = from
+        filterToDate = to
+        applyVisibilityFilter()
+    }
+    
+    //MARK: Clear Filter
+    private func clearDateFilter() {
+        filterFromDate = nil
+        filterToDate = nil
+        applyVisibilityFilter()
+    }
+
+
+    
+    // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowNotifDetailSegue",
            let notifVC = segue.destination as? NotifDetailViewController {
@@ -188,13 +245,18 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
                let vc = segue.destination as? NotifCreateViewController {
                 vc.currentUser = user
             }
+        
+        
+        //TODO: Navigate to the request detail page
+//        if segue.identifier == "ShowNotifSegue",
+//           let vc = segue.destination as? NotifViewController {
+//            vc.currentUser = user
+//            vc.reguestRef = selectedNotif.requestRef
+//        }
     }
 }
 
-import FirebaseFirestore
-
 extension NotificationModel {
-
     init?(document: QueryDocumentSnapshot) {
         let data = document.data()
         
