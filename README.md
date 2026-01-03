@@ -55,19 +55,39 @@
 ## Design Changes  
 
 ### User Login and Account Authentication  
-The OTP verification function has been removed from the final app due to a Firebase limitation, which lacks built-in support for this feature. Implementing it would require extended development time and could incur additional costs.  
+The OTP verification function has been removed from the final app due to Firebase limitations, which lack built-in support for this feature. Implementing it would require extended development time and may incur additional costs.  
 
 ### Admin Dashboard with Analytics  
-- Replaced buttons with segmented control based on tutor prototype feedback for easier navigation and improved user experience.  
+- Replaced buttons with segmented controls based on tutor prototype feedback for better navigation and usability.  
 - Added a **"Cancelled"** status section.  
-- Added **percentage labels** to each slice of the pie chart for better visualization.  
-- Changed the representation of request counts from percentages to actual numbers, allowing the admin to see both the percentage (in the chart) and the count (below).  
+- Added **percentage labels** to pie chart slices for improved data visualization.  
+- Changed the representation of requests from percentages to actual counts — percentages are shown in the chart and numbers below.  
 
 ### Request Details  
-Replaced the exclamation icon used for escalations with a clock icon to provide a holistic history view that includes escalation details.  
+Replaced the exclamation icon for escalations with a clock icon to present a holistic history view that includes escalation details.  
 
 ### Request Card  
-Replaced background with white for improved visibility and aesthetics.  
+Replaced the background with white to enhance visibility and aesthetics.  
+
+### Settings Page  
+Initially planned to use a `UITableView` to match the prototype, but due to technical limitations with cell configuration and selection handling, the team used standard `UIView` components. Minor style changes were applied to the appearance and background to maintain a modern look and ease of maintainability.  
+
+### Inventory Management Page  
+Combined the “Add Category” and “Add Subcategory” buttons into a single **+** button following tutor feedback.  
+
+### Notification Page  
+- Repositioned the date from the right side to the left, replacing it with an icon representing the notification type.  
+  - **Megaphone:** Announcement  
+  - **Bell:** Notification  
+- Added a **Clear Filter** button to reset date filters.  
+- Adjusted layout to address fixed navigation bar issues and improved visual balance.  
+- Moved the creation date to the left and replaced the edit icon with a simpler pencil design.  
+- Editing an announcement now redirects to the **Create Announcement** page since every update is considered a new entry.  
+
+### Dropdown → List View  
+This redesign was guided by usability and scalability rather than functional changes.  
+It enhances interface intuitiveness, simplifies user interactions, and ensures consistency with iOS platform standards.  
+Additionally, it improves maintainability and supports future feature expansion without major UI overhauls.  
 
 ---
 
@@ -78,7 +98,7 @@ Replaced background with white for improved visibility and aesthetics.
 
 ---
 
-## Simulators Used for Testing  
+## Simulator Used  
 
 - iPhone 16 Pro  
 
@@ -88,6 +108,3 @@ Replaced background with white for improved visibility and aesthetics.
 
 - **Email:** [hoor.yousif05@gmail.com](mailto:hoor.yousif05@gmail.com)  
 - **Password:** `hoor123`
-
-
-
