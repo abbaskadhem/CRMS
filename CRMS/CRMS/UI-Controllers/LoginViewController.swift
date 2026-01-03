@@ -147,6 +147,18 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 
                     switch role {
                     case UserType.admin.rawValue:
+                        // Check for delayed requests when admin logs in
+                        Task {
+                            do {
+                                let delayedCount = try await RequestController.shared.checkForDelayedRequests()
+                                if delayedCount > 0 {
+                                    print(" Marked \(delayedCount) request(s) as delayed")
+                                }
+                            } catch {
+                                print("Failed to check for delayed requests: \(error)")
+                            }
+                        }
+
                         let adminStoryboard = UIStoryboard(name: "Admin", bundle: nil)
                         vc = adminStoryboard.instantiateInitialViewController()
                     case UserType.servicer.rawValue:

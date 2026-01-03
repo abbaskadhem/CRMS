@@ -1032,9 +1032,10 @@ final class RequestController {
 
         // Query requests that are in progress and have an estimated end date
         let snapshot = try await db.collection("Request")
-            .whereField("inactive", isEqualTo: false)
             .whereField("status", isEqualTo: Status.inProgress.rawValue)
             .getDocuments()
+
+        print("Checking \(snapshot.documents.count) in-progress request(s) for delays")
 
         var delayedCount = 0
 
@@ -1052,18 +1053,54 @@ final class RequestController {
             if estimatedEndDate < now {
                 guard let idString = data["id"] as? String,
                       let requestId = UUID(uuidString: idString) else {
+                    print("⚠️ Skipping request with invalid ID")
                     continue
                 }
 
-                // Update status to delayed
-                try await db.collection("Request").document(requestId.uuidString).updateData([
+                let requestNo = data["requestNo"] as? String ?? "Unknown"
+                print("request \(requestNo) is delayed (end date: \(estimatedEndDate), now: \(now))")
+
+                // Create history record object first
+                let historyId = UUID()
+                let historyNo = try await getNextAutonumber(document: "requestHistories")
+
+                let history = RequestHistory(
+                    id: historyId,
+                    historyNo: historyNo,
+                    requestRef: requestId,
+                    action: .delayed,
+                    sentBackReason: nil,
+                    reassignReason: nil,
+                    createdOn: Date(),
+                    createdBy: userId,
+                    modifiedOn: nil,
+                    modifiedBy: nil,
+                    inactive: false
+                )
+
+                // Use batch write to ensure both operations succeed or both fail
+                let batch = db.batch()
+
+                // Update request status
+                let requestRef = db.collection("Request").document(requestId.uuidString)
+                batch.updateData([
                     "status": Status.delayed.rawValue,
                     "modifiedOn": Timestamp(date: Date()),
                     "modifiedBy": userId
-                ])
+                ], forDocument: requestRef)
 
-                // Create history record for delayed status
-                try await createHistoryRecord(requestRef: requestId, action: .delayed, sentBackReason: nil, reassignReason: nil)
+                // Add history record
+                let historyRef = db.collection("RequestHistory").document(historyId.uuidString)
+                do {
+                    let historyData = try Firestore.Encoder().encode(history)
+                    batch.setData(historyData, forDocument: historyRef)
+                } catch {
+                    print("Failed to encode history for request \(requestId): \(error)")
+                    continue
+                }
+
+                // Commit batch
+                try await batch.commit()
 
                 delayedCount += 1
             }
