@@ -1,0 +1,156 @@
+//draw container content
+private func drawViewContent(_ containerView: UIView) {
+
+    guard let context = UIGraphicsGetCurrentContext() else { return }
+
+    let maxDrawableHeight = pageBounds.height - startY - footerSpace
+
+    // Save original container frame
+    let originalContainerFrame = containerView.frame
+
+    // Force latest layout first
+    containerView.setNeedsLayout()
+    containerView.layoutIfNeeded()
+
+    // Find all nested scrolls
+    let scrolls = findAllScrollContainers(in: containerView)
+
+    // Save + expand scrollables using TEMP HEIGHT CONSTRAINTS (not frames)
+    struct SavedState {
+        let scroll: UIScrollView
+        let offset: CGPoint
+        let wasScrollEnabled: Bool
+        let tempHeight: NSLayoutConstraint?
+        let disabledHeights: [NSLayoutConstraint]
+    }
+
+    var saved: [SavedState] = []
+
+    for s in scrolls {
+
+        // Always reset offset so top is captured
+        let oldOffset = s.contentOffset
+        let oldScrollEnabled = s.isScrollEnabled
+
+        // Update nested lists before measuring
+        reloadNestedLists(in: s)
+        s.layoutIfNeeded()
+
+        // Determine full height depending on the type
+        var fullHeight = max(s.contentSize.height, s.bounds.height)
+
+        // If it's a collection view, use layout content size (more accurate)
+        if let c = s as? UICollectionView {
+            c.reloadData()
+            c.layoutIfNeeded()
+            c.collectionViewLayout.invalidateLayout()
+            c.layoutIfNeeded()
+            fullHeight = max(c.collectionViewLayout.collectionViewContentSize.height, c.bounds.height)
+            c.isScrollEnabled = false
+        }
+
+        // If it's a table view, use contentSize (and disable its scrolling)
+        if let t = s as? UITableView {
+            t.reloadData()
+            t.layoutIfNeeded()
+            fullHeight = max(t.contentSize.height, t.bounds.height)
+            t.isScrollEnabled = false
+        }
+
+        // Plain UIScrollView: disable scrolling so it behaves like expanded content
+        if (s is UITableView) == false && (s is UICollectionView) == false {
+            s.isScrollEnabled = false
+        }
+
+        // Apply temporary height override (handles existing height constraints safely)
+        let (temp, disabled) = overrideHeightConstraint(for: s, to: fullHeight)
+
+        // Apply offset AFTER sizing
+        s.contentOffset = .zero
+        s.setNeedsLayout()
+        s.layoutIfNeeded()
+
+        saved.append(SavedState(
+            scroll: s,
+            offset: oldOffset,
+            wasScrollEnabled: oldScrollEnabled,
+            tempHeight: temp,
+            disabledHeights: disabled
+        ))
+    }
+
+    // Re-layout the container now that inner heights are expanded
+    containerView.setNeedsLayout()
+    containerView.layoutIfNeeded()
+
+    // Compute a fitted height (now it will include the expanded scrollables)
+    let targetSize = CGSize(width: contentWidth, height: UIView.layoutFittingCompressedSize.height)
+    let fittedHeight = containerView.systemLayoutSizeFitting(
+        targetSize,
+        withHorizontalFittingPriority: .required,
+        verticalFittingPriority: .fittingSizeLevel
+    ).height
+
+    // Make container big enough so render doesn't clip
+    containerView.frame = CGRect(x: 0, y: 0, width: contentWidth, height: fittedHeight)
+    containerView.setNeedsLayout()
+    containerView.layoutIfNeeded()
+
+    // Scale down if too tall for the page
+    let scale = min(1.0, maxDrawableHeight / max(fittedHeight, 1))
+
+    // Render
+    context.saveGState()
+    context.translateBy(x: leftPadding, y: startY)
+    context.scaleBy(x: scale, y: scale)
+
+    // drawHierarchy sometimes captures better than layer.render for UIVisualEffect etc.
+    // If you prefer, swap to drawHierarchy. For now keep render:
+    containerView.layer.render(in: context)
+
+    context.restoreGState()
+
+    // Restore scroll states + constraints
+    for item in saved {
+        // Remove temp constraint
+        item.tempHeight?.isActive = false
+
+        // Re-enable previous height constraints
+        for c in item.disabledHeights { c.isActive = true }
+
+        // Restore scroll flags + offset
+        item.scroll.isScrollEnabled = item.wasScrollEnabled
+        item.scroll.contentOffset = item.offset
+
+        item.scroll.setNeedsLayout()
+        item.scroll.layoutIfNeeded()
+    }
+
+    // Restore container frame
+    containerView.frame = originalContainerFrame
+    containerView.setNeedsLayout()
+    containerView.layoutIfNeeded()
+}
+
+
+// Temporarily overrides height by disabling existing height constraints on the view
+private func overrideHeightConstraint(for view: UIView, to height: CGFloat) -> (NSLayoutConstraint, [NSLayoutConstraint]) {
+
+    // Find height constraints that directly affect this view (common in storyboard)
+    let toDisable = view.constraints.filter {
+        $0.isActive &&
+        $0.firstAttribute == .height &&
+        $0.firstItem as? UIView === view &&
+        $0.relation == .equal
+    }
+
+    // Disable them to avoid AutoLayout fighting our temp constraint
+    toDisable.forEach { $0.isActive = false }
+
+    // Add temp height constraint
+    let temp = view.heightAnchor.constraint(equalToConstant: height)
+    temp.priority = UILayoutPriority(999) // high but avoids some hard conflicts
+    temp.isActive = true
+
+    return (temp, toDisable)
+}
