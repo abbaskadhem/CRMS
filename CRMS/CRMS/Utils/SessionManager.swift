@@ -120,7 +120,6 @@ final class SessionManager {
             let snapshot = try await Firestore.firestore()
                 .collection("User")
                 .whereField("subtype", isEqualTo: subtype.rawValue)
-                .whereField("inactive", isEqualTo: false)
                 .getDocuments()
 
             return snapshot.documents.map { $0.documentID }
