@@ -1,3 +1,10 @@
+//
+//  CalendarViewController.swift
+//  CRMS
+//
+//Created by Maryam Abdulla
+//fetches and displays requests assigned to the logged-in servicer
+//
 import UIKit
 import FSCalendar
 
@@ -13,6 +20,7 @@ final class CalendarViewController: UIViewController,
     @IBOutlet weak var tasksTableView: UITableView!
 
     // MARK: - Calendar
+    ///container view for FSCalendar instance
     private let fsCalendar = FSCalendar()
 
     // MARK: - Calendar Header
@@ -43,32 +51,39 @@ final class CalendarViewController: UIViewController,
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        //Configure UI Components
         setupCalendar()
         setupCalendarHeader()
         setupSelectedDateLabel()
         setupTableView()
         updateMonthLabel()
+        
+        //enable dynamic row heights for request cards
+        tasksTableView.rowHeight = UITableView.automaticDimension
+        tasksTableView.estimatedRowHeight = 140
     }
 
     // MARK: - Calendar setup
+    ///configure and embeds FSCalendar inside its container view
     private func setupCalendar() {
         fsCalendar.translatesAutoresizingMaskIntoConstraints = false
         calendarView.addSubview(fsCalendar)
-
+        //Pin calendar to container edges
         NSLayoutConstraint.activate([
             fsCalendar.topAnchor.constraint(equalTo: calendarView.topAnchor),
             fsCalendar.bottomAnchor.constraint(equalTo: calendarView.bottomAnchor),
             fsCalendar.leadingAnchor.constraint(equalTo: calendarView.leadingAnchor),
             fsCalendar.trailingAnchor.constraint(equalTo: calendarView.trailingAnchor)
         ])
-
+        //Assign delegates
         fsCalendar.delegate = self
         fsCalendar.dataSource = self
         fsCalendar.scope = .month
         fsCalendar.scrollDirection = .horizontal
         fsCalendar.appearance.headerDateFormat = ""
         fsCalendar.headerHeight = 0
-
+        
+        //Hide default header
         let textColor = UIColor(red: 83/255, green: 105/255, blue: 127/255, alpha: 1)
         fsCalendar.appearance.weekdayTextColor = textColor
         fsCalendar.appearance.titleDefaultColor = textColor
@@ -79,6 +94,7 @@ final class CalendarViewController: UIViewController,
     }
 
     // MARK: - Header
+    ///Configure month label and navigation buttons
     private func setupCalendarHeader() {
         let color = UIColor(red: 83/255, green: 105/255, blue: 127/255, alpha: 1)
 
@@ -94,8 +110,8 @@ final class CalendarViewController: UIViewController,
         nextButton.addTarget(self, action: #selector(nextMonth), for: .touchUpInside)
 
         headerStack.axis = .horizontal
-        headerStack.distribution = .equalSpacing
         headerStack.alignment = .center
+        headerStack.distribution = .equalSpacing
         headerStack.addArrangedSubview(prevButton)
         headerStack.addArrangedSubview(monthLabel)
         headerStack.addArrangedSubview(nextButton)
@@ -110,19 +126,23 @@ final class CalendarViewController: UIViewController,
             headerStack.heightAnchor.constraint(equalToConstant: 30)
         ])
     }
-
+    
+    //Navigate to perivous month
     @objc private func previousMonth() {
         let prev = Calendar.current.date(byAdding: .month, value: -1, to: fsCalendar.currentPage)!
         fsCalendar.setCurrentPage(prev, animated: true)
         updateMonthLabel()
     }
 
+    //Navigate to next month
     @objc private func nextMonth() {
         let next = Calendar.current.date(byAdding: .month, value: 1, to: fsCalendar.currentPage)!
         fsCalendar.setCurrentPage(next, animated: true)
         updateMonthLabel()
     }
-
+    
+    
+    //update month label when calendar page changes
     private func updateMonthLabel() {
         monthLabel.text = monthFormatter.string(from: fsCalendar.currentPage)
     }
@@ -132,6 +152,7 @@ final class CalendarViewController: UIViewController,
     }
 
     // MARK: - Selected date pill
+    ///Configure the pill-style selected date label
     private func setupSelectedDateLabel() {
         selectedDateContainer.backgroundColor =
             UIColor(red: 138/255, green: 167/255, blue: 188/255, alpha: 1)
@@ -151,12 +172,14 @@ final class CalendarViewController: UIViewController,
             selectedDateContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             selectedDateContainer.topAnchor.constraint(equalTo: tasksTableView.topAnchor, constant: -44),
             selectedDateContainer.heightAnchor.constraint(equalToConstant: 32),
+
             selectedDateLabel.leadingAnchor.constraint(equalTo: selectedDateContainer.leadingAnchor, constant: 12),
             selectedDateLabel.centerYAnchor.constraint(equalTo: selectedDateContainer.centerYAnchor)
         ])
     }
 
     // MARK: - TableView
+    ///Configure table view appearance and registers custom cell
     private func setupTableView() {
         tasksTableView.delegate = self
         tasksTableView.dataSource = self
@@ -170,30 +193,39 @@ final class CalendarViewController: UIViewController,
     }
 
     // MARK: - Calendar selection
+    ///Trigged when a calendar date is selected
     func calendar(_ calendar: FSCalendar,
                   didSelect date: Date,
                   at monthPosition: FSCalendarMonthPosition) {
         selectedDateLabel.text = dateFormatter.string(from: date)
         fetchRequests(for: date)
     }
-
-    // MARK: - Fetch requests (OPTION A)
-    private func fetchRequests(for date: Date) {
+    //MARK: - Data fetching Logic
+    ///request assigned to the logged-in servicer are shown (not fully implemented)
+    private func fetchRequests(for selectedDate: Date) {
         Task {
             do {
                 guard await hasInternetConnection() else {
                     throw NetworkError.noInternet
                 }
 
-                let allModels = try await RequestController.shared
-                    .getAllRequestsForDisplay()
-
+                let userId = try SessionManager.shared.requireUserId()
+                let allModels = try await RequestController.shared.getAllRequestsForDisplay()
                 let calendar = Calendar.current
+
                 let filtered = allModels.filter { model in
-                    guard let startDate = model.request.estimatedStartDate else {
+
+                    guard model.request.servicerRef == userId else {
                         return false
                     }
-                    return calendar.isDate(startDate, inSameDayAs: date)
+
+                    let displayDate =
+                        model.request.estimatedStartDate ??
+                        model.request.actualStartDate ??
+                        model.request.modifiedOn ??
+                        model.request.createdOn
+
+                    return calendar.isDate(displayDate, inSameDayAs: selectedDate)
                 }
 
                 await MainActor.run {
@@ -202,7 +234,7 @@ final class CalendarViewController: UIViewController,
                 }
 
             } catch {
-                print("Calendar fetch error:", error.localizedDescription)
+                print("Calendar fetch error:", error)
                 await MainActor.run {
                     self.displayModels = []
                     self.tasksTableView.reloadData()
