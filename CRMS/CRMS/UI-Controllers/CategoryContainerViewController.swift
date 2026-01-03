@@ -61,16 +61,14 @@ class CategoryContainerViewController: UIViewController {
          
         //attaching data to chart
         let barData = BarChartData(dataSet: dataSet)
-        barData.barWidth = 0.25
+        barData.barWidth = 0.3
+        chart.xAxis.spaceMax = 0.2
+        chart.xAxis.spaceMin = 0.1
+        chart.fitBars = true
         chart.data = barData
         
         //styling the chart
         chart.chartDescription.enabled = false //showing the title
-        /*chart.chartDescription.text = title //title text
-        chart.chartDescription.font = AppTypography.headline
-        chart.chartDescription.textColor = AppColors.primary
-        chart.chartDescription.textAlign = .center
-        chart.chartDescription.yOffset = -50*/
         
         chart.legend.enabled = false //remove legend
         

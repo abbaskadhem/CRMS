@@ -171,15 +171,6 @@
                                     <constraint firstItem="BbP-zA-kCa" firstAttribute="top" secondItem="6jA-P7-BXe" secondAttribute="top" constant="144" id="pcY-d3-2uj"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login by Face ID/Touch ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9hT-yT-nBX">
-                                <rect key="frame" x="108" y="709" width="177" height="18"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="18" id="xqt-oo-UPZ"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <color key="textColor" red="0.96078431372549022" green="0.93725490196078431" blue="0.92156862745098034" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="NFe-cG-bx7"/>
                         <color key="backgroundColor" red="0.32549019610000002" green="0.41176470590000003" blue="0.49803921569999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -190,23 +181,18 @@
                             <constraint firstItem="NFe-cG-bx7" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="PjU-41-R9m" secondAttribute="bottom" constant="83.666666666666742" id="FMb-mN-hSN"/>
                             <constraint firstItem="6jA-P7-BXe" firstAttribute="centerX" secondItem="PjU-41-R9m" secondAttribute="centerX" id="FXo-bS-0Qc"/>
                             <constraint firstItem="NFe-cG-bx7" firstAttribute="trailing" secondItem="PjU-41-R9m" secondAttribute="trailing" constant="35" id="Lm2-yQ-4hC"/>
-                            <constraint firstItem="NFe-cG-bx7" firstAttribute="trailing" secondItem="9hT-yT-nBX" secondAttribute="trailing" constant="108" id="PbY-HZ-zup"/>
                             <constraint firstItem="PjU-41-R9m" firstAttribute="leading" secondItem="NFe-cG-bx7" secondAttribute="leading" constant="35" id="ULd-M1-brT"/>
                             <constraint firstItem="6jA-P7-BXe" firstAttribute="top" secondItem="dbb-cZ-FNk" secondAttribute="topMargin" constant="-162" id="Uhk-K1-paR"/>
                             <constraint firstItem="PjU-41-R9m" firstAttribute="centerX" secondItem="dbb-cZ-FNk" secondAttribute="centerX" id="UjV-mn-FXa"/>
-                            <constraint firstItem="NFe-cG-bx7" firstAttribute="bottom" secondItem="9hT-yT-nBX" secondAttribute="bottom" constant="57" id="Wei-fG-XLL"/>
                             <constraint firstItem="NFe-cG-bx7" firstAttribute="trailing" secondItem="PjU-41-R9m" secondAttribute="trailing" constant="35" id="Xm9-yC-zmJ"/>
                             <constraint firstItem="6jA-P7-BXe" firstAttribute="leading" secondItem="dbb-cZ-FNk" secondAttribute="leading" id="g3X-S3-beh"/>
-                            <constraint firstItem="9hT-yT-nBX" firstAttribute="top" secondItem="PjU-41-R9m" secondAttribute="bottom" constant="8.6699999999999999" id="iAG-ki-Rjr"/>
                             <constraint firstItem="PjU-41-R9m" firstAttribute="top" relation="greaterThanOrEqual" secondItem="6jA-P7-BXe" secondAttribute="bottom" constant="47" id="oun-Bh-MFR"/>
                             <constraint firstItem="PjU-41-R9m" firstAttribute="top" secondItem="dbb-cZ-FNk" secondAttribute="top" constant="372" id="vQi-rZ-H6t"/>
-                            <constraint firstItem="9hT-yT-nBX" firstAttribute="leading" secondItem="NFe-cG-bx7" secondAttribute="leading" constant="108" id="w1l-RK-l7T"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="uEh-05-xBv"/>
                     <connections>
                         <outlet property="backgroundLogin" destination="6jA-P7-BXe" id="6ke-Oa-YFA"/>
-                        <outlet property="biometrics" destination="9hT-yT-nBX" id="EZ2-AF-SJC"/>
                         <outlet property="emailTextField" destination="3eD-VV-FTZ" id="g0R-Fp-NXe"/>
                         <outlet property="forgotPassword" destination="0Ui-aW-8xh" id="VsN-Y8-cZF"/>
                         <outlet property="loginButton" destination="JKw-Dv-Tjo" id="aSd-mC-oVM"/>
