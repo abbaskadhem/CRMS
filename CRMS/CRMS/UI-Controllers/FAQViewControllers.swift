@@ -18,7 +18,7 @@ class FAQManagementViewController: UIViewController {
     }
 
     @IBAction func addButtonTapped(_ sender: Any) {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
             guard let faqVC = sb.instantiateViewController(withIdentifier: "NewFAQViewController") as? NewFAQViewController else { return }
 
             self.navigationController?.pushViewController(faqVC, animated: true)
@@ -74,7 +74,7 @@ extension FAQManagementViewController: UITableViewDataSource, UITableViewDelegat
 
         let selectedItem = faqList[indexPath.row]
         print(selectedItem.question)
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard = UIStoryboard(name: "Faq", bundle: nil)
         let vc = storyboard.instantiateViewController(
              withIdentifier: "FAQDetailsViewController"
 
@@ -105,7 +105,7 @@ class FAQDetailsViewController: UIViewController {
     }
 
     func showConfirmDelete() {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "ConfirmDeleteViewController") as! ConfirmDeleteViewController
 
         vc.id = id
@@ -159,7 +159,7 @@ class NewFAQViewController: UIViewController {
     }
 
     private func showAddConfirmationScreen() {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
 
         let vc = sb.instantiateViewController(
             withIdentifier: "FAQConfirmationViewController"
@@ -186,7 +186,7 @@ class NewFAQViewController: UIViewController {
     @IBAction func cancelButtonAction(_ sender: Any) {
         view.endEditing(true)
 
-            let sb = UIStoryboard(name: "Main", bundle: nil)
+            let sb = UIStoryboard(name: "Faq", bundle: nil)
             let vc = sb.instantiateViewController(withIdentifier: "CancelAddingConfirmationViewController") as! CancelAddingConfirmationViewController
 
             // Set the closure here
@@ -236,7 +236,7 @@ class EditFAQViewController: UIViewController {
     }
 
     func showConfirmEditAlert() {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
         let vc = sb.instantiateViewController(
             withIdentifier: "ConfirmEditAlertViewController"
         ) as! ConfirmEditAlertViewController
@@ -306,7 +306,7 @@ final class FAQConfirmationViewController: UIViewController {
 
 
     private func showSuccessAndCloseConfirmation() {
-            let sb = UIStoryboard(name: "Main", bundle: nil)
+            let sb = UIStoryboard(name: "Faq", bundle: nil)
             let successVC = sb.instantiateViewController(
                 withIdentifier: "FAQSuccessViewController"
             ) as! FAQSuccessViewController
@@ -377,7 +377,7 @@ final class ConfirmEditAlertViewController: UIViewController {
     }
 
     private func showSuccessAndClose() {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
         let successVC = sb.instantiateViewController(
             withIdentifier: "FAQEditSuccessViewController"
         ) as! FAQEditSuccessViewController
@@ -441,7 +441,7 @@ final class ConfirmDeleteViewController: UIViewController {
     }
 
     private func showDeleteSuccessAndClose() {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let sb = UIStoryboard(name: "Faq", bundle: nil)
         let raw = sb.instantiateViewController(withIdentifier: "DeleteSuccessViewController")
         print("Loaded type:", type(of: raw))
 
