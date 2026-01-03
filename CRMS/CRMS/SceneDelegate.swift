@@ -74,6 +74,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // Navigate based on user role
                 switch role {
                 case 1000: // admin
+                    // Check for delayed requests when admin logs in via auto-login
+                    Task {
+                        do {
+                            let delayedCount = try await RequestController.shared.checkForDelayedRequests()
+                            if delayedCount > 0 {
+                                print("Marked \(delayedCount) request(s) as delayed")
+                            }
+                        } catch {
+                            print(" Failed to check for delayed requests: \(error)")
+                        }
+                    }
+
                     vc = adminStoryboard.instantiateInitialViewController()
                 case 1002: // servicer
                     vc = adminStoryboard.instantiateInitialViewController()
